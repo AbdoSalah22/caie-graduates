@@ -1,0 +1,23 @@
+/**
+ * Firestore Security Rules
+ * 
+ * Copy these rules to Firebase Console → Firestore Database → Rules
+ */
+
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+    
+    // Companies collection - readable by all, writable only by server
+    match /companies/{company} {
+      allow read: if true;
+      allow write: if false; // Only server-side API can write
+    }
+    
+    // Submissions collection - no public access
+    match /submissions/{submission} {
+      allow read: if false;  // Keep submissions private
+      allow write: if false; // Only server-side API can write
+    }
+  }
+}
