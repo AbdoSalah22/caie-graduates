@@ -51,10 +51,10 @@ export default function SuggestCompanyPage() {
       setSuccess(true);
       setCompanyName("");
 
-      // Redirect to submit page after 2 seconds
+      // Redirect to board after 2 seconds
       setTimeout(() => {
-        router.push("/submit");
-      }, 2000);
+        router.push("/");
+      }, 1000);
     } catch (err: any) {
       setError(err.message || "An error occurred");
     } finally {
@@ -69,7 +69,7 @@ export default function SuggestCompanyPage() {
         <div className="text-center mb-8">
           <Link href="/submit" className="inline-block">
             <h1 className="text-4xl font-bold text-white mb-2 hover:text-blue-400 transition-colors">
-              GradBoard
+              CESS Graduates
             </h1>
           </Link>
           <p className="text-gray-400">Suggest a new company</p>
@@ -128,10 +128,10 @@ export default function SuggestCompanyPage() {
 
           {/* Back Link */}
           <Link
-            href="/submit"
+            href="/"
             className="block text-center mt-4 text-gray-400 hover:text-white transition-colors"
           >
-            ← Back to submit form
+            ← Back to graduates board
           </Link>
         </form>
       </div>

@@ -18,19 +18,11 @@ export default function CompanyPage() {
   const params = useParams();
   const companyName = decodeURIComponent(params.name as string);
   const [graduates, setGraduates] = useState<Graduate[]>([]);
-  const [companyColor, setCompanyColor] = useState("#3B82F6");
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
     const fetchGraduates = async () => {
       try {
-        // Fetch company color
-        const companyRef = doc(db, "companies", companyName);
-        const companyDoc = await getDoc(companyRef);
-        if (companyDoc.exists()) {
-          setCompanyColor(companyDoc.data().color || "#3B82F6");
-        }
-
         // Fetch all graduates for this company
         const q = query(
           collection(db, "submissions"),
@@ -85,10 +77,7 @@ export default function CompanyPage() {
             ← Back to Board
           </Link>
           <div className="flex items-center gap-4">
-            <div
-              className="w-16 h-16 rounded-lg"
-              style={{ backgroundColor: companyColor }}
-            ></div>
+            <div className="w-16 h-16 rounded-lg bg-gray-600"></div>
             <div>
               <h1 className="text-4xl font-bold text-white">{companyName}</h1>
               <p className="text-gray-400 mt-1">

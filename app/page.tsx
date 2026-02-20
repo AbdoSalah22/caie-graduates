@@ -6,6 +6,7 @@ import { db } from "@/lib/firebase";
 import { Node, Company } from "@/types";
 import { MIN_RADIUS, SCALING_FACTOR } from "@/lib/constants";
 import Artboard from "@/components/Artboard";
+import ProfileModal from "@/components/ProfileModal";
 import Link from "next/link";
 
 /**
@@ -21,6 +22,7 @@ import Link from "next/link";
 export default function Home() {
   const [nodes, setNodes] = useState<Node[]>([]);
   const [loading, setLoading] = useState(true);
+  const [isProfileModalOpen, setIsProfileModalOpen] = useState(false);
 
   useEffect(() => {
     // Set up real-time listener for companies collection
@@ -42,7 +44,6 @@ export default function Home() {
             id: companyName,
             count: data.count,
             radius,
-            color: data.color, // Include custom color from admin
             logoUrl: data.logoUrl, // Include logo URL
           });
         });
@@ -79,12 +80,20 @@ export default function Home() {
       <Artboard nodes={nodes} />
 
       {/* Floating action buttons */}
-      <Link
+      {/* <Link
         href="/submit"
         className="fixed bottom-8 right-8 bg-blue-600 hover:bg-blue-700 text-white rounded-full px-6 py-3 shadow-2xl transition-all duration-300 hover:scale-105 font-semibold z-10"
       >
         + Add Graduate
-      </Link>
+      </Link> */}
+
+      {/* My Profile button */}
+      <button
+        onClick={() => setIsProfileModalOpen(true)}
+        className="fixed top-8 right-8 bg-blue-600 hover:bg-blue-700 text-white rounded-full px-6 py-3 shadow-2xl transition-all duration-300 hover:scale-105 font-semibold z-10"
+      >
+        My Profile
+      </button>
 
       {/* Admin button hidden - only accessible via direct URL */}
       {/* <Link
@@ -96,12 +105,18 @@ export default function Home() {
 
       {/* Title overlay */}
       <div className="fixed top-8 left-8 z-10">
-        <h1 className="text-4xl font-bold text-white mb-2">GradBoard</h1>
+        <h1 className="text-4xl font-bold text-white mb-2">CESS Graduates</h1>
         <p className="text-gray-400">
           {nodes.length} {nodes.length === 1 ? "company" : "companies"} •{" "}
           {nodes.reduce((sum, node) => sum + node.count, 0)} graduates
         </p>
       </div>
+
+      {/* Profile Modal */}
+      <ProfileModal
+        isOpen={isProfileModalOpen}
+        onClose={() => setIsProfileModalOpen(false)}
+      />
     </main>
   );
 }

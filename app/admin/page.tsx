@@ -7,7 +7,6 @@ import Link from "next/link";
 
 interface CompanyItem {
   name: string;
-  color: string;
   count: number;
   logoUrl?: string;
 }
@@ -17,7 +16,6 @@ export default function AdminPage() {
   const [isAuthenticated, setIsAuthenticated] = useState(false);
   const [companies, setCompanies] = useState<CompanyItem[]>([]);
   const [newCompanyName, setNewCompanyName] = useState("");
-  const [newCompanyColor, setNewCompanyColor] = useState("#3B82F6");
   const [newCompanyLogo, setNewCompanyLogo] = useState("");
   const [loading, setLoading] = useState(false);
   const [message, setMessage] = useState("");
@@ -43,7 +41,6 @@ export default function AdminPage() {
         const data = doc.data();
         companiesList.push({
           name: doc.id,
-          color: data.color || "#3B82F6",
           count: data.count || 0,
           logoUrl: data.logoUrl,
         });
@@ -68,13 +65,11 @@ export default function AdminPage() {
       const companyRef = doc(db, "companies", newCompanyName.trim());
       await setDoc(companyRef, {
         count: 0,
-        color: newCompanyColor,
         logoUrl: newCompanyLogo.trim() || null,
       });
 
       setMessage(`Company "${newCompanyName}" added successfully!`);
       setNewCompanyName("");
-      setNewCompanyColor("#3B82F6");
       setNewCompanyLogo("");
       loadCompanies();
     } catch (error) {
@@ -83,18 +78,6 @@ export default function AdminPage() {
     } finally {
       setLoading(false);
       setTimeout(() => setMessage(""), 3000);
-    }
-  };
-  const handleUpdateColor = async (companyName: string, newColor: string) => {
-    try {
-      const companyRef = doc(db, "companies", companyName);
-      await setDoc(companyRef, { color: newColor }, { merge: true });
-      setMessage(`Color updated for ${companyName}`);
-      loadCompanies();
-      setTimeout(() => setMessage(""), 3000);
-    } catch (error) {
-      console.error("Error updating color:", error);
-      setMessage("Error updating color");
     }
   };
 
@@ -201,16 +184,6 @@ export default function AdminPage() {
                   disabled={loading}
                 />
               </div>
-              <div>
-                <label className="block text-gray-300 mb-2">Color</label>
-                <input
-                  type="color"
-                  value={newCompanyColor}
-                  onChange={(e) => setNewCompanyColor(e.target.value)}
-                  className="h-12 w-24 bg-gray-700 rounded-lg border border-gray-600 cursor-pointer"
-                  disabled={loading}
-                />
-              </div>
             </div>
             <div className="flex gap-4 items-end">
               <div className="flex-1">
@@ -260,12 +233,7 @@ export default function AdminPage() {
                 <div className="flex items-center justify-between">
                   <div className="flex items-center gap-4 flex-1">
                     <div
-                      className="w-12 h-12 rounded-lg flex items-center justify-center"
-                      style={{
-                        backgroundColor: company.logoUrl
-                          ? "#ffffff"
-                          : company.color,
-                      }}
+                      className="w-12 h-12 rounded-lg flex items-center justify-center bg-gray-600"
                     >
                       {company.logoUrl && (
                         <img
@@ -286,14 +254,6 @@ export default function AdminPage() {
                     </div>
                   </div>
                   <div className="flex items-center gap-3">
-                    <input
-                      type="color"
-                      value={company.color}
-                      onChange={(e) =>
-                        handleUpdateColor(company.name, e.target.value)
-                      }
-                      className="h-10 w-20 bg-gray-600 rounded-lg border border-gray-500 cursor-pointer"
-                    />
                     <Link
                       href={`/company/${encodeURIComponent(company.name)}`}
                       className="text-blue-400 hover:text-blue-300 transition-colors"

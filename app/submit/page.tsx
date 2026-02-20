@@ -132,7 +132,7 @@ export default function SubmitPage() {
         <div className="text-center mb-8">
           <Link href="/" className="inline-block">
             <h1 className="text-4xl font-bold text-white mb-2 hover:text-blue-400 transition-colors">
-              GradBoard
+              CESS Graduates
             </h1>
           </Link>
           <p className="text-gray-400">Submit your information</p>

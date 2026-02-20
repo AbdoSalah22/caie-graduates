@@ -5,7 +5,7 @@ import "./globals.css";
 const inter = Inter({ subsets: ["latin"] });
 
 export const metadata: Metadata = {
-  title: "GradBoard - Graduate Company Visualization",
+  title: "CESS Graduates Board",
   description:
     "A dynamic artboard displaying company logos sized by graduate count",
 };

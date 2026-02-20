@@ -2,7 +2,6 @@ export interface Node {
   id: string; // company name
   count: number;
   radius: number; // computed size
-  color?: string; // custom color from admin
   logoUrl?: string; // path to logo image in public/logos/
   x?: number;
   y?: number;
@@ -20,7 +19,6 @@ export interface Submission {
 
 export interface Company {
   count: number;
-  color?: string;
   logoUrl?: string; // path to logo image in public/logos/
 }
 
