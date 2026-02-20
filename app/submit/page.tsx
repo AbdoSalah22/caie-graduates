@@ -231,6 +231,19 @@ export default function SubmitPage() {
             </select>
           </div>
 
+          {/* Suggest Company Section */}
+          <div className="mb-6 p-4 bg-gray-700 rounded-lg border border-gray-600">
+            <label className="block text-gray-300 font-semibold mb-2">
+              If your company is not in the list, add it here
+            </label>
+            <Link
+              href="/suggest-company"
+              className="inline-block w-full bg-gray-600 hover:bg-gray-500 text-white font-semibold py-2 px-4 rounded-lg transition-all duration-300 hover:scale-105 text-center"
+            >
+              Suggest
+            </Link>
+          </div>
+
           {/* Error Message */}
           {error && (
             <div className="mb-6 bg-red-600 text-white px-4 py-3 rounded-lg">

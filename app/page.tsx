@@ -86,12 +86,13 @@ export default function Home() {
         + Add Graduate
       </Link>
 
-      <Link
+      {/* Admin button hidden - only accessible via direct URL */}
+      {/* <Link
         href="/admin"
         className="fixed bottom-8 left-8 bg-gray-700 hover:bg-gray-600 text-white rounded-full px-6 py-3 shadow-2xl transition-all duration-300 hover:scale-105 font-semibold z-10"
       >
         Admin
-      </Link>
+      </Link> */}
 
       {/* Title overlay */}
       <div className="fixed top-8 left-8 z-10">
