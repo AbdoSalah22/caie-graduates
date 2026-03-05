@@ -18,11 +18,20 @@ export default function CompanyPage() {
   const params = useParams();
   const companyName = decodeURIComponent(params.name as string);
   const [graduates, setGraduates] = useState<Graduate[]>([]);
+  const [companyLogoUrl, setCompanyLogoUrl] = useState<string | null>(null);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
     const fetchGraduates = async () => {
       try {
+        // Fetch company details (logo)
+        const companyRef = doc(db, "companies", companyName);
+        const companyDoc = await getDoc(companyRef);
+        if (companyDoc.exists()) {
+          const companyData = companyDoc.data() as { logoUrl?: string };
+          setCompanyLogoUrl(companyData.logoUrl || null);
+        }
+
         // Fetch all graduates for this company
         const q = query(
           collection(db, "submissions"),
@@ -77,7 +86,15 @@ export default function CompanyPage() {
             ← Back to Board
           </Link>
           <div className="flex items-center gap-4">
-            <div className="w-16 h-16 rounded-lg bg-gray-600"></div>
+            <div className="w-16 h-16 rounded-lg bg-gray-600 flex items-center justify-center">
+              {companyLogoUrl && (
+                <img
+                  src={companyLogoUrl}
+                  alt={`${companyName} logo`}
+                  className="w-12 h-12 object-contain"
+                />
+              )}
+            </div>
             <div>
               <h1 className="text-4xl font-bold text-white">{companyName}</h1>
               <p className="text-gray-400 mt-1">
