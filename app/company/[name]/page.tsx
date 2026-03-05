@@ -35,7 +35,7 @@ export default function CompanyPage() {
         // Fetch all graduates for this company
         const q = query(
           collection(db, "submissions"),
-          where("company", "==", companyName)
+          where("company", "==", companyName),
         );
         const querySnapshot = await getDocs(q);
 
@@ -75,7 +75,7 @@ export default function CompanyPage() {
   }
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-gray-900 via-black to-gray-900 p-8">
+    <div className="min-h-screen bg-gradient-to-br from-gray-900 via-black to-gray-900 p-4 sm:p-8">
       <div className="max-w-5xl mx-auto">
         {/* Header */}
         <div className="mb-8">
@@ -95,9 +95,11 @@ export default function CompanyPage() {
                 />
               )}
             </div>
-            <div>
-              <h1 className="text-4xl font-bold text-white">{companyName}</h1>
-              <p className="text-gray-400 mt-1">
+            <div className="min-w-0">
+              <h1 className="text-2xl sm:text-4xl font-bold text-white break-words">
+                {companyName}
+              </h1>
+              <p className="text-gray-400 mt-1 text-sm sm:text-base">
                 {graduates.length}{" "}
                 {graduates.length === 1 ? "Employee" : "Employees"}
               </p>
@@ -106,8 +108,10 @@ export default function CompanyPage() {
         </div>
 
         {/* Employees List */}
-        <div className="bg-gray-800 rounded-lg shadow-2xl p-6">
-          <h2 className="text-2xl font-bold text-white mb-6">Employees</h2>
+        <div className="bg-gray-800 rounded-lg shadow-2xl p-4 sm:p-6">
+          <h2 className="text-xl sm:text-2xl font-bold text-white mb-4 sm:mb-6">
+            Employees
+          </h2>
 
           {graduates.length === 0 ? (
             <p className="text-gray-400 text-center py-8">
@@ -118,26 +122,28 @@ export default function CompanyPage() {
               {graduates.map((grad, index) => (
                 <div
                   key={index}
-                  className="flex items-center justify-between bg-gray-700 p-4 rounded-lg hover:bg-gray-600 transition-all"
+                  className="flex flex-col sm:flex-row sm:items-center justify-between gap-2 sm:gap-4 bg-gray-700 p-3 sm:p-4 rounded-lg hover:bg-gray-600 transition-all"
                 >
-                  <div className="flex-1">
-                    <h3 className="text-lg font-semibold text-white">
+                  <div className="flex-1 min-w-0">
+                    <h3 className="text-base sm:text-lg font-semibold text-white truncate">
                       {grad.name}
                     </h3>
-                    <p className="text-gray-400 text-sm">{grad.title}</p>
+                    <p className="text-gray-400 text-xs sm:text-sm truncate">
+                      {grad.title}
+                    </p>
                   </div>
                   <a
                     href={grad.linkedin}
                     target="_blank"
                     rel="noopener noreferrer"
-                    className="bg-blue-600 hover:bg-blue-700 text-white px-6 py-2 rounded-lg font-semibold transition-all flex items-center gap-2"
+                    className="bg-blue-600 hover:bg-blue-700 text-white px-4 py-1.5 sm:px-6 sm:py-2 rounded-lg font-semibold text-sm sm:text-base transition-all flex items-center justify-center gap-2 shrink-0"
                   >
                     <svg
-                      className="w-5 h-5"
+                      className="w-4 h-4 sm:w-5 sm:h-5"
                       fill="currentColor"
                       viewBox="0 0 24 24"
                     >
-                      <path d="M20.447 20.452h-3.554v-5.569c0-1.328-.027-3.037-1.852-3.037-1.853 0-2.136 1.445-2.136 2.939v5.667H9.351V9h3.414v1.561h.046c.477-.9 1.637-1.85 3.37-1.85 3.601 0 4.267 2.37 4.267 5.455v6.286zM5.337 7.433c-1.144 0-2.063-.926-2.063-2.065 0-1.138.92-2.063 2.063-2.063 1.14 0 2.064.925 2.064 2.063 0 1.139-.925 2.065-2.064 2.065zm1.782 13.019H3.555V9h3.564v11.452zM22.225 0H1.771C.792 0 0 .774 0 1.729v20.542C0 23.227.792 24 1.771 24h20.451C23.2 24 24 23.227 24 22.271V1.729C24 .774 23.2 0 22.222 0h.003z"/>
+                      <path d="M20.447 20.452h-3.554v-5.569c0-1.328-.027-3.037-1.852-3.037-1.853 0-2.136 1.445-2.136 2.939v5.667H9.351V9h3.414v1.561h.046c.477-.9 1.637-1.85 3.37-1.85 3.601 0 4.267 2.37 4.267 5.455v6.286zM5.337 7.433c-1.144 0-2.063-.926-2.063-2.065 0-1.138.92-2.063 2.063-2.063 1.14 0 2.064.925 2.064 2.063 0 1.139-.925 2.065-2.064 2.065zm1.782 13.019H3.555V9h3.564v11.452zM22.225 0H1.771C.792 0 0 .774 0 1.729v20.542C0 23.227.792 24 1.771 24h20.451C23.2 24 24 23.227 24 22.271V1.729C24 .774 23.2 0 22.222 0h.003z" />
                     </svg>
                     LinkedIn
                   </a>

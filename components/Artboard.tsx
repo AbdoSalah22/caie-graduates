@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useRef, useState, useCallback } from "react";
 import { Node } from "@/types";
 import { useForceGraph } from "@/hooks/useForceGraph";
 import LogoNode from "./LogoNode";
@@ -9,13 +9,20 @@ interface ArtboardProps {
   nodes: Node[];
 }
 
+/** Compute responsive node size based on viewport width */
+function getNodeSize(width: number): number {
+  if (width < 480) return 64;
+  if (width < 768) return 80;
+  return 120;
+}
+
 /**
  * Artboard component - the main canvas for displaying company logos
  *
  * Manages the force simulation and renders all logo nodes
  * Automatically adjusts to full screen dimensions
  * Provides a dark, clean aesthetic background
- * Supports zoom (mouse wheel) and pan (drag)
+ * Supports zoom (mouse wheel / pinch) and pan (drag / touch drag)
  */
 export default function Artboard({ nodes }: ArtboardProps) {
   const containerRef = useRef<HTMLDivElement>(null);
@@ -27,6 +34,17 @@ export default function Artboard({ nodes }: ArtboardProps) {
 
   const MIN_ZOOM = 0.3;
   const MAX_ZOOM = 2.5;
+
+  // Refs for touch gesture tracking
+  const lastTouchDistance = useRef<number | null>(null);
+  const lastTouchCenter = useRef<{ x: number; y: number } | null>(null);
+  const isTouchDragging = useRef(false);
+
+  // Responsive node size
+  const nodeSize = getNodeSize(
+    dimensions.width ||
+      (typeof window !== "undefined" ? window.innerWidth : 1920),
+  );
 
   // Track container dimensions
   useEffect(() => {
@@ -62,6 +80,7 @@ export default function Artboard({ nodes }: ArtboardProps) {
     height:
       dimensions.height ||
       (typeof window !== "undefined" ? window.innerHeight : 1080),
+    nodeSize,
   });
 
   // Handle zoom with mouse wheel
@@ -105,6 +124,77 @@ export default function Artboard({ nodes }: ArtboardProps) {
     setIsDragging(false);
   };
 
+  // ── Touch handlers for mobile pan & pinch-to-zoom ──
+
+  const getTouchDistance = (touches: React.TouchList) => {
+    const dx = touches[0].clientX - touches[1].clientX;
+    const dy = touches[0].clientY - touches[1].clientY;
+    return Math.sqrt(dx * dx + dy * dy);
+  };
+
+  const getTouchCenter = (touches: React.TouchList) => ({
+    x: (touches[0].clientX + touches[1].clientX) / 2,
+    y: (touches[0].clientY + touches[1].clientY) / 2,
+  });
+
+  const handleTouchStart = useCallback(
+    (e: React.TouchEvent) => {
+      if (e.touches.length === 1) {
+        // Single finger → pan
+        isTouchDragging.current = true;
+        lastTouchCenter.current = null;
+        lastTouchDistance.current = null;
+        setDragStart({
+          x: e.touches[0].clientX - pan.x,
+          y: e.touches[0].clientY - pan.y,
+        });
+        setIsDragging(true);
+      } else if (e.touches.length === 2) {
+        // Two fingers → pinch
+        isTouchDragging.current = false;
+        setIsDragging(false);
+        lastTouchDistance.current = getTouchDistance(e.touches);
+        lastTouchCenter.current = getTouchCenter(e.touches);
+      }
+    },
+    [pan],
+  );
+
+  const handleTouchMove = useCallback(
+    (e: React.TouchEvent) => {
+      e.preventDefault(); // prevent browser scroll/zoom
+      if (e.touches.length === 1 && isTouchDragging.current) {
+        setPan({
+          x: e.touches[0].clientX - dragStart.x,
+          y: e.touches[0].clientY - dragStart.y,
+        });
+      } else if (e.touches.length === 2 && lastTouchDistance.current !== null) {
+        const newDist = getTouchDistance(e.touches);
+        const scale = newDist / lastTouchDistance.current;
+        lastTouchDistance.current = newDist;
+        setZoom((prev) => Math.max(MIN_ZOOM, Math.min(MAX_ZOOM, prev * scale)));
+
+        // Pan while pinching so the view stays centered between fingers
+        if (lastTouchCenter.current) {
+          const newCenter = getTouchCenter(e.touches);
+          setPan((prev) => ({
+            x: prev.x + (newCenter.x - lastTouchCenter.current!.x),
+            y: prev.y + (newCenter.y - lastTouchCenter.current!.y),
+          }));
+          lastTouchCenter.current = newCenter;
+        }
+      }
+    },
+    [dragStart],
+  );
+
+  const handleTouchEnd = useCallback(() => {
+    isTouchDragging.current = false;
+    lastTouchDistance.current = null;
+    lastTouchCenter.current = null;
+    setIsDragging(false);
+  }, []);
+
   const handleReset = () => {
     setZoom(1);
     setPan({ x: 0, y: 0 });
@@ -113,12 +203,16 @@ export default function Artboard({ nodes }: ArtboardProps) {
   return (
     <div
       ref={containerRef}
-      className="relative w-full h-screen bg-gradient-to-br from-gray-900 via-black to-gray-900 overflow-hidden"
+      className="artboard-container relative w-full h-screen bg-gradient-to-br from-gray-900 via-black to-gray-900 overflow-hidden"
       onMouseDown={handleMouseDown}
       onMouseMove={handleMouseMove}
       onMouseUp={handleMouseUp}
       onMouseLeave={handleMouseLeave}
-      style={{ cursor: isDragging ? "grabbing" : "grab" }}
+      onTouchStart={handleTouchStart}
+      onTouchMove={handleTouchMove}
+      onTouchEnd={handleTouchEnd}
+      onTouchCancel={handleTouchEnd}
+      style={{ cursor: isDragging ? "grabbing" : "grab", touchAction: "none" }}
     >
       <div
         style={{
@@ -131,17 +225,17 @@ export default function Artboard({ nodes }: ArtboardProps) {
         }}
       >
         {simulatedNodes.map((node) => (
-          <LogoNode key={node.id} node={node} />
+          <LogoNode key={node.id} node={node} nodeSize={nodeSize} />
         ))}
       </div>
 
       {nodes.length === 0 && (
         <div className="absolute inset-0 flex items-center justify-center pointer-events-none">
-          <div className="text-center">
-            <h2 className="text-3xl font-bold text-gray-400 mb-4">
+          <div className="text-center px-4">
+            <h2 className="text-xl sm:text-3xl font-bold text-gray-400 mb-2 sm:mb-4">
               No submissions yet
             </h2>
-            <p className="text-gray-500">
+            <p className="text-gray-500 text-sm sm:text-base">
               Be the first to submit your company!
             </p>
           </div>
@@ -149,15 +243,15 @@ export default function Artboard({ nodes }: ArtboardProps) {
       )}
 
       {/* Zoom indicator and reset button */}
-      <div className="absolute bottom-4 left-1/2 transform -translate-x-1/2 flex items-center gap-3">
-        <div className="bg-gray-800/80 text-white px-4 py-2 rounded-full text-sm pointer-events-none">
-          Zoom: {(zoom * 100).toFixed(0)}%
+      <div className="absolute bottom-3 sm:bottom-4 left-1/2 transform -translate-x-1/2 flex items-center gap-2 sm:gap-3">
+        <div className="bg-gray-800/80 text-white px-2.5 py-1 sm:px-4 sm:py-2 rounded-full text-xs sm:text-sm pointer-events-none">
+          {(zoom * 100).toFixed(0)}%
         </div>
         <button
           onClick={handleReset}
-          className="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-full text-sm transition-all pointer-events-auto shadow-lg hover:scale-105"
+          className="bg-blue-600 hover:bg-blue-700 text-white px-2.5 py-1 sm:px-4 sm:py-2 rounded-full text-xs sm:text-sm transition-all pointer-events-auto shadow-lg hover:scale-105"
         >
-          Reset View
+          Reset
         </button>
       </div>
     </div>

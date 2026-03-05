@@ -62,7 +62,7 @@ export default function Home() {
       (error) => {
         console.error("Error fetching companies:", error);
         setLoading(false);
-      }
+      },
     );
 
     // Cleanup listener on unmount
@@ -95,7 +95,7 @@ export default function Home() {
       {/* My Profile button */}
       <button
         onClick={() => setIsProfileModalOpen(true)}
-        className="fixed top-8 right-8 bg-blue-600 hover:bg-blue-700 text-white rounded-full px-6 py-3 shadow-2xl transition-all duration-300 hover:scale-105 font-semibold z-10"
+        className="fixed top-3 right-3 sm:top-8 sm:right-8 bg-blue-600 hover:bg-blue-700 text-white rounded-full px-3 py-1.5 sm:px-6 sm:py-3 text-xs sm:text-base shadow-2xl transition-all duration-300 hover:scale-105 font-semibold z-10"
       >
         My Profile
       </button>
@@ -109,9 +109,11 @@ export default function Home() {
       </Link> */}
 
       {/* Title overlay */}
-      <div className="fixed top-8 left-8 z-10">
-        <h1 className="text-4xl font-bold text-white mb-2">CESS Graduates</h1>
-        <p className="text-gray-400">
+      <div className="fixed top-3 left-3 sm:top-8 sm:left-8 z-10">
+        <h1 className="text-lg sm:text-4xl font-bold text-white mb-0.5 sm:mb-2">
+          CESS Graduates
+        </h1>
+        <p className="text-gray-400 text-xs sm:text-base">
           {nodes.length} {nodes.length === 1 ? "company" : "companies"} •{" "}
           {nodes.reduce((sum, node) => sum + node.count, 0)} graduates
         </p>

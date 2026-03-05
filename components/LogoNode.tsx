@@ -3,6 +3,7 @@ import Link from "next/link";
 
 interface LogoNodeProps {
   node: Node;
+  nodeSize?: number;
 }
 
 /**
@@ -12,12 +13,12 @@ interface LogoNodeProps {
  * CSS transitions provide smooth movement when positions update
  * Transform: translate(-50%, -50%) centers the node on its coordinates
  */
-export default function LogoNode({ node }: LogoNodeProps) {
+export default function LogoNode({ node, nodeSize }: LogoNodeProps) {
   const { x = 0, y = 0, id, logoUrl } = node;
 
-  // Fixed square size for all nodes
-  const size = 120;
-  const borderRadius = 12;
+  // Responsive square size — smaller on mobile
+  const size = nodeSize ?? 120;
+  const borderRadius = Math.round(size * 0.1);
 
   // Calculate font size based on text length to fit nicely in square
   const textLength = id.length;

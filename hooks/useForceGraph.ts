@@ -5,6 +5,7 @@ interface UseForceGraphProps {
   nodes: Node[];
   width: number;
   height: number;
+  nodeSize?: number;
 }
 
 /**
@@ -14,7 +15,7 @@ interface UseForceGraphProps {
  * Then continues to next frame outward
  */
 function generateSpiralGrid(
-  count: number
+  count: number,
 ): Array<{ row: number; col: number }> {
   const positions: Array<{ row: number; col: number }> = [];
 
@@ -127,7 +128,12 @@ function generateSpiralGrid(
  * Nodes are sorted by employee count (largest first)
  * Layout is responsive and centers nodes on the screen
  */
-export function useForceGraph({ nodes, width, height }: UseForceGraphProps) {
+export function useForceGraph({
+  nodes,
+  width,
+  height,
+  nodeSize: externalNodeSize,
+}: UseForceGraphProps) {
   const [positionedNodes, setPositionedNodes] = useState<Node[]>([]);
 
   useEffect(() => {
@@ -142,9 +148,9 @@ export function useForceGraph({ nodes, width, height }: UseForceGraphProps) {
     const centerX = width / 2;
     const centerY = height / 2;
 
-    // Fixed node size for all companies
-    const nodeSize = 120;
-    const spacing = 10;
+    // Responsive node size
+    const nodeSize = externalNodeSize ?? 120;
+    const spacing = Math.round(nodeSize * 0.08);
 
     // Spiral grid pattern from center outward
     // Position 0 is center, then spiral outward in a square pattern
