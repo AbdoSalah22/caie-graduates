@@ -57,8 +57,9 @@ export default function ProfileModal({ isOpen, onClose }: ProfileModalProps) {
     const fetchCompanies = async () => {
       try {
         const querySnapshot = await getDocs(collection(db, "companies"));
-        const companyNames = querySnapshot.docs.map((doc) => doc.id);
-        companyNames.sort();
+        const companyNames = querySnapshot.docs
+          .map((doc) => doc.id)
+          .sort((a, b) => a.localeCompare(b));
         setCompanies(companyNames);
       } catch (err) {
         console.error("Error fetching companies:", err);
@@ -448,13 +449,15 @@ export default function ProfileModal({ isOpen, onClose }: ProfileModalProps) {
                   <label className="block text-gray-300 font-semibold mb-2">
                     If your company is not in the list, add it here
                   </label>
-                  <Link
-                    href="/suggest-company"
+                  <a
+                    href="https://docs.google.com/forms/d/e/1FAIpQLScG4TfmYF4Is0Xzu07tY-I_bl9z8HVKC7MXK-w7D7_r-mS2HA/viewform?usp=publish-editor"
+                    target="_blank"
+                    rel="noopener noreferrer"
                     onClick={onClose}
                     className="inline-block w-full bg-gray-600 hover:bg-gray-500 text-white font-semibold py-2 px-4 rounded-lg transition-all duration-300 hover:scale-105 text-center"
                   >
                     Suggest
-                  </Link>
+                  </a>
                 </div>
 
                 {/* Error Message */}

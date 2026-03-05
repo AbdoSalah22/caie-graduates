@@ -37,6 +37,11 @@ export default function Home() {
           const data = doc.data() as Company;
           const companyName = doc.id;
 
+          // Skip companies with 0 graduates
+          if (!data.count || data.count <= 0) {
+            return;
+          }
+
           // Calculate radius based on graduate count
           const radius = MIN_RADIUS + data.count * SCALING_FACTOR;
 
