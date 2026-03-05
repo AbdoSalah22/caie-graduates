@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useRef, useState, useCallback } from "react";
+import { useEffect, useRef, useState } from "react";
 import { Node } from "@/types";
 import { useForceGraph } from "@/hooks/useForceGraph";
 import LogoNode from "./LogoNode";
@@ -125,74 +125,110 @@ export default function Artboard({ nodes }: ArtboardProps) {
   };
 
   // ── Touch handlers for mobile pan & pinch-to-zoom ──
+  // Registered as native (non-passive) listeners so e.preventDefault() works
+  // and the browser doesn't interfere with our custom gestures.
 
-  const getTouchDistance = (touches: React.TouchList) => {
+  const getTouchDistance = (touches: TouchList) => {
     const dx = touches[0].clientX - touches[1].clientX;
     const dy = touches[0].clientY - touches[1].clientY;
     return Math.sqrt(dx * dx + dy * dy);
   };
 
-  const getTouchCenter = (touches: React.TouchList) => ({
+  const getTouchCenter = (touches: TouchList) => ({
     x: (touches[0].clientX + touches[1].clientX) / 2,
     y: (touches[0].clientY + touches[1].clientY) / 2,
   });
 
-  const handleTouchStart = useCallback(
-    (e: React.TouchEvent) => {
+  // Keep latest pan/dragStart in refs so native listeners always see fresh values
+  const panRef = useRef(pan);
+  const dragStartRef = useRef(dragStart);
+  useEffect(() => {
+    panRef.current = pan;
+  }, [pan]);
+  useEffect(() => {
+    dragStartRef.current = dragStart;
+  }, [dragStart]);
+
+  useEffect(() => {
+    const container = containerRef.current;
+    if (!container) return;
+
+    const onTouchStart = (e: TouchEvent) => {
       if (e.touches.length === 1) {
-        // Single finger → pan
         isTouchDragging.current = true;
         lastTouchCenter.current = null;
         lastTouchDistance.current = null;
-        setDragStart({
-          x: e.touches[0].clientX - pan.x,
-          y: e.touches[0].clientY - pan.y,
-        });
+        const newDragStart = {
+          x: e.touches[0].clientX - panRef.current.x,
+          y: e.touches[0].clientY - panRef.current.y,
+        };
+        dragStartRef.current = newDragStart;
+        setDragStart(newDragStart);
         setIsDragging(true);
       } else if (e.touches.length === 2) {
-        // Two fingers → pinch
         isTouchDragging.current = false;
         setIsDragging(false);
         lastTouchDistance.current = getTouchDistance(e.touches);
         lastTouchCenter.current = getTouchCenter(e.touches);
       }
-    },
-    [pan],
-  );
+    };
 
-  const handleTouchMove = useCallback(
-    (e: React.TouchEvent) => {
-      e.preventDefault(); // prevent browser scroll/zoom
+    const onTouchMove = (e: TouchEvent) => {
+      e.preventDefault(); // stops browser zoom / scroll – requires non-passive
       if (e.touches.length === 1 && isTouchDragging.current) {
         setPan({
-          x: e.touches[0].clientX - dragStart.x,
-          y: e.touches[0].clientY - dragStart.y,
+          x: e.touches[0].clientX - dragStartRef.current.x,
+          y: e.touches[0].clientY - dragStartRef.current.y,
         });
       } else if (e.touches.length === 2 && lastTouchDistance.current !== null) {
         const newDist = getTouchDistance(e.touches);
-        const scale = newDist / lastTouchDistance.current;
-        lastTouchDistance.current = newDist;
-        setZoom((prev) => Math.max(MIN_ZOOM, Math.min(MAX_ZOOM, prev * scale)));
 
-        // Pan while pinching so the view stays centered between fingers
-        if (lastTouchCenter.current) {
-          const newCenter = getTouchCenter(e.touches);
-          setPan((prev) => ({
-            x: prev.x + (newCenter.x - lastTouchCenter.current!.x),
-            y: prev.y + (newCenter.y - lastTouchCenter.current!.y),
-          }));
-          lastTouchCenter.current = newCenter;
+        // Guard against zero / degenerate distance that would produce NaN
+        if (newDist > 1 && lastTouchDistance.current > 1) {
+          const scale = newDist / lastTouchDistance.current;
+
+          // Sanity-check: ignore wild scale jumps from fast gestures
+          if (isFinite(scale) && scale > 0.5 && scale < 2) {
+            setZoom((prev) =>
+              Math.max(MIN_ZOOM, Math.min(MAX_ZOOM, prev * scale)),
+            );
+          }
+
+          // Pan while pinching
+          if (lastTouchCenter.current) {
+            const newCenter = getTouchCenter(e.touches);
+            const dx = newCenter.x - lastTouchCenter.current.x;
+            const dy = newCenter.y - lastTouchCenter.current.y;
+            if (isFinite(dx) && isFinite(dy)) {
+              setPan((prev) => ({ x: prev.x + dx, y: prev.y + dy }));
+            }
+            lastTouchCenter.current = newCenter;
+          }
         }
-      }
-    },
-    [dragStart],
-  );
 
-  const handleTouchEnd = useCallback(() => {
-    isTouchDragging.current = false;
-    lastTouchDistance.current = null;
-    lastTouchCenter.current = null;
-    setIsDragging(false);
+        lastTouchDistance.current = newDist;
+      }
+    };
+
+    const onTouchEnd = () => {
+      isTouchDragging.current = false;
+      lastTouchDistance.current = null;
+      lastTouchCenter.current = null;
+      setIsDragging(false);
+    };
+
+    container.addEventListener("touchstart", onTouchStart, { passive: false });
+    container.addEventListener("touchmove", onTouchMove, { passive: false });
+    container.addEventListener("touchend", onTouchEnd);
+    container.addEventListener("touchcancel", onTouchEnd);
+
+    return () => {
+      container.removeEventListener("touchstart", onTouchStart);
+      container.removeEventListener("touchmove", onTouchMove);
+      container.removeEventListener("touchend", onTouchEnd);
+      container.removeEventListener("touchcancel", onTouchEnd);
+    };
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   const handleReset = () => {
@@ -208,10 +244,6 @@ export default function Artboard({ nodes }: ArtboardProps) {
       onMouseMove={handleMouseMove}
       onMouseUp={handleMouseUp}
       onMouseLeave={handleMouseLeave}
-      onTouchStart={handleTouchStart}
-      onTouchMove={handleTouchMove}
-      onTouchEnd={handleTouchEnd}
-      onTouchCancel={handleTouchEnd}
       style={{ cursor: isDragging ? "grabbing" : "grab", touchAction: "none" }}
     >
       <div
