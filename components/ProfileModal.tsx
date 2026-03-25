@@ -29,6 +29,7 @@ interface ProfileData {
   title: string;
   linkedin: string;
   company: string;
+  portfolioCv: string;
 }
 
 export default function ProfileModal({ isOpen, onClose }: ProfileModalProps) {
@@ -41,6 +42,7 @@ export default function ProfileModal({ isOpen, onClose }: ProfileModalProps) {
     title: "",
     linkedin: "",
     company: "",
+    portfolioCv: "",
   });
   const [error, setError] = useState("");
   const [success, setSuccess] = useState(false);
@@ -92,6 +94,7 @@ export default function ProfileModal({ isOpen, onClose }: ProfileModalProps) {
           title: submission.title || "",
           linkedin: submission.linkedin || "",
           company: submission.company || "",
+          portfolioCv: submission.portfolioCv || "",
         });
       } else {
         // Fallback: query by userId field (for backwards compatibility)
@@ -106,6 +109,7 @@ export default function ProfileModal({ isOpen, onClose }: ProfileModalProps) {
             title: submission.title || "",
             linkedin: submission.linkedin || "",
             company: submission.company || "",
+            portfolioCv: submission.portfolioCv || "",
           });
         }
       }
@@ -137,6 +141,7 @@ export default function ProfileModal({ isOpen, onClose }: ProfileModalProps) {
         title: "",
         linkedin: "",
         company: "",
+        portfolioCv: "",
       });
       setSuccess(false);
     } catch (err) {
@@ -187,6 +192,7 @@ export default function ProfileModal({ isOpen, onClose }: ProfileModalProps) {
           title: profileData.title.trim(),
           linkedin: profileData.linkedin.trim(),
           company: profileData.company.trim(),
+          portfolioCv: profileData.portfolioCv.trim() || "",
         }),
       });
 
@@ -416,6 +422,30 @@ export default function ProfileModal({ isOpen, onClose }: ProfileModalProps) {
                       })
                     }
                     placeholder="https://linkedin.com/in/yourprofile"
+                    className="w-full px-4 py-3 bg-gray-700 text-white rounded-lg border border-gray-600 focus:border-blue-500 focus:outline-none focus:ring-2 focus:ring-blue-500 transition-all"
+                    disabled={loading}
+                  />
+                </div>
+
+                {/* Portfolio/CV Input (optional) */}
+                <div>
+                  <label
+                    htmlFor="profile-portfolio-cv"
+                    className="block text-gray-300 font-semibold mb-2"
+                  >
+                    Portfolio/CV URL (optional)
+                  </label>
+                  <input
+                    id="profile-portfolio-cv"
+                    type="url"
+                    value={profileData.portfolioCv}
+                    onChange={(e) =>
+                      setProfileData({
+                        ...profileData,
+                        portfolioCv: e.target.value,
+                      })
+                    }
+                    placeholder="https://yourportfolio.com or https://yourcv.pdf"
                     className="w-full px-4 py-3 bg-gray-700 text-white rounded-lg border border-gray-600 focus:border-blue-500 focus:outline-none focus:ring-2 focus:ring-blue-500 transition-all"
                     disabled={loading}
                   />

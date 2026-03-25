@@ -100,6 +100,14 @@ export default function Home() {
         My Profile
       </button>
 
+      {/* Browse Graduates button */}
+      <Link
+        href="/browse-graduates"
+        className="fixed bottom-3 left-3 sm:bottom-8 sm:left-8 bg-gray-700 hover:bg-gray-600 text-white rounded-full px-3 py-1.5 sm:px-6 sm:py-3 text-xs sm:text-base shadow-2xl transition-all duration-300 hover:scale-105 font-semibold z-10"
+      >
+        Browse Graduates
+      </Link>
+
       {/* Admin button hidden - only accessible via direct URL */}
       {/* <Link
         href="/admin"

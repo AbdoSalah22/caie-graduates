@@ -26,5 +26,6 @@ export interface Graduate {
   name: string;
   title: string;
   linkedin: string;
+  portfolioCv?: string;
   timestamp: any;
 }

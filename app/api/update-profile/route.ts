@@ -31,7 +31,7 @@ export async function POST(request: NextRequest) {
   try {
     // Parse request body
     const body = await request.json();
-    const { userId, name, title, linkedin, company } = body;
+    const { userId, name, title, linkedin, company, portfolioCv } = body;
 
     // Validation
     if (!userId || typeof userId !== "string") {
@@ -67,6 +67,8 @@ export async function POST(request: NextRequest) {
     const trimmedTitle = title.trim();
     const trimmedLinkedin = linkedin.trim();
     const trimmedCompany = company.trim();
+    const trimmedPortfolioCv =
+      typeof portfolioCv === "string" ? portfolioCv.trim() : "";
 
     // Find user's existing submission
     // First try by document ID (userId)
@@ -150,6 +152,7 @@ export async function POST(request: NextRequest) {
         title: trimmedTitle,
         linkedin: trimmedLinkedin,
         company: trimmedCompany,
+        portfolioCv: trimmedPortfolioCv || null,
         updatedAt: serverTimestamp(),
       });
     } else {
@@ -161,6 +164,7 @@ export async function POST(request: NextRequest) {
         title: trimmedTitle,
         linkedin: trimmedLinkedin,
         company: trimmedCompany,
+        portfolioCv: trimmedPortfolioCv || null,
         timestamp: serverTimestamp(),
         updatedAt: serverTimestamp(),
       });
