@@ -1,7 +1,17 @@
 "use client";
 
-import { useState, useEffect } from "react";
-import { collection, getDocs, doc, setDoc } from "firebase/firestore";
+import { useState } from "react";
+import {
+  collection,
+  getDocs,
+  doc,
+  setDoc,
+  getDoc,
+  updateDoc,
+  deleteDoc,
+  serverTimestamp,
+  increment,
+} from "firebase/firestore";
 import { db } from "@/lib/firebase";
 import Link from "next/link";
 
@@ -11,22 +21,48 @@ interface CompanyItem {
   logoUrl?: string;
 }
 
+interface GraduateItem {
+  id: string;
+  name: string;
+  title: string;
+  linkedin: string;
+  company: string;
+  portfolioCv?: string;
+  graduationClass?: string;
+}
+
 export default function AdminPage() {
   const [password, setPassword] = useState("");
   const [isAuthenticated, setIsAuthenticated] = useState(false);
   const [companies, setCompanies] = useState<CompanyItem[]>([]);
   const [newCompanyName, setNewCompanyName] = useState("");
   const [newCompanyLogo, setNewCompanyLogo] = useState("");
+  const [graduates, setGraduates] = useState<GraduateItem[]>([]);
+  const [graduateForm, setGraduateForm] = useState({
+    name: "",
+    title: "",
+    linkedin: "",
+    company: "",
+    portfolioCv: "",
+    graduationClass: "",
+  });
+  const [editingGraduateId, setEditingGraduateId] = useState<string | null>(
+    null,
+  );
   const [loading, setLoading] = useState(false);
   const [message, setMessage] = useState("");
 
   const ADMIN_PASSWORD = "admin123"; // Change this to your secure password
+  const graduationYears = Array.from({ length: 2027 - 2014 + 1 }, (_, index) =>
+    String(2014 + index),
+  );
 
   const handleLogin = (e: React.FormEvent) => {
     e.preventDefault();
     if (password === ADMIN_PASSWORD) {
       setIsAuthenticated(true);
       loadCompanies();
+      loadGraduates();
     } else {
       setMessage("Incorrect password");
       setTimeout(() => setMessage(""), 3000);
@@ -50,6 +86,165 @@ export default function AdminPage() {
     } catch (error) {
       console.error("Error loading companies:", error);
       setMessage("Error loading companies");
+    }
+  };
+
+  const loadGraduates = async () => {
+    try {
+      const querySnapshot = await getDocs(collection(db, "submissions"));
+      const graduatesList: GraduateItem[] = [];
+      querySnapshot.forEach((snapshot) => {
+        const data = snapshot.data();
+        graduatesList.push({
+          id: snapshot.id,
+          name: data.name || "",
+          title: data.title || "",
+          linkedin: data.linkedin || "",
+          company: data.company || "",
+          portfolioCv: data.portfolioCv || "",
+          graduationClass: data.graduationClass || "",
+        });
+      });
+      graduatesList.sort((a, b) => a.name.localeCompare(b.name));
+      setGraduates(graduatesList);
+    } catch (error) {
+      console.error("Error loading graduates:", error);
+      setMessage("Error loading graduates");
+    }
+  };
+
+  const updateCompanyCount = async (companyName: string, delta: number) => {
+    if (!companyName.trim()) return;
+
+    const companyRef = doc(db, "companies", companyName.trim());
+    const companyDoc = await getDoc(companyRef);
+
+    if (companyDoc.exists()) {
+      await updateDoc(companyRef, {
+        count: increment(delta),
+      });
+    } else if (delta > 0) {
+      await setDoc(companyRef, {
+        count: 1,
+        logoUrl: null,
+      });
+    }
+  };
+
+  const resetGraduateForm = () => {
+    setGraduateForm({
+      name: "",
+      title: "",
+      linkedin: "",
+      company: "",
+      portfolioCv: "",
+      graduationClass: "",
+    });
+    setEditingGraduateId(null);
+  };
+
+  const handleSaveGraduate = async (e: React.FormEvent) => {
+    e.preventDefault();
+
+    if (!graduateForm.name.trim()) {
+      setMessage("Graduate name is required");
+      return;
+    }
+    if (!graduateForm.title.trim()) {
+      setMessage("Job title is required");
+      return;
+    }
+    if (!graduateForm.linkedin.trim()) {
+      setMessage("LinkedIn URL is required");
+      return;
+    }
+    if (!graduateForm.company.trim()) {
+      setMessage("Company is required");
+      return;
+    }
+
+    setLoading(true);
+    try {
+      const trimmedGraduate = {
+        name: graduateForm.name.trim(),
+        title: graduateForm.title.trim(),
+        linkedin: graduateForm.linkedin.trim(),
+        company: graduateForm.company.trim(),
+        portfolioCv: graduateForm.portfolioCv.trim() || null,
+        graduationClass: graduateForm.graduationClass.trim() || null,
+        updatedAt: serverTimestamp(),
+      };
+
+      if (editingGraduateId) {
+        const currentGraduate = graduates.find(
+          (item) => item.id === editingGraduateId,
+        );
+        const graduateRef = doc(db, "submissions", editingGraduateId);
+
+        if (
+          currentGraduate &&
+          currentGraduate.company !== graduateForm.company.trim()
+        ) {
+          await updateCompanyCount(currentGraduate.company, -1);
+          await updateCompanyCount(graduateForm.company.trim(), 1);
+        }
+
+        await updateDoc(graduateRef, trimmedGraduate);
+        setMessage("Graduate updated successfully");
+      } else {
+        const newGraduateRef = doc(collection(db, "submissions"));
+        await setDoc(newGraduateRef, {
+          ...trimmedGraduate,
+          timestamp: serverTimestamp(),
+        });
+        await updateCompanyCount(graduateForm.company.trim(), 1);
+        setMessage("Graduate added successfully");
+      }
+
+      resetGraduateForm();
+      await loadGraduates();
+      await loadCompanies();
+    } catch (error) {
+      console.error("Error saving graduate:", error);
+      setMessage("Error saving graduate");
+    } finally {
+      setLoading(false);
+      setTimeout(() => setMessage(""), 3000);
+    }
+  };
+
+  const handleEditGraduate = (graduate: GraduateItem) => {
+    setEditingGraduateId(graduate.id);
+    setGraduateForm({
+      name: graduate.name,
+      title: graduate.title,
+      linkedin: graduate.linkedin,
+      company: graduate.company,
+      portfolioCv: graduate.portfolioCv || "",
+      graduationClass: graduate.graduationClass || "",
+    });
+  };
+
+  const handleDeleteGraduate = async (graduateId: string) => {
+    const graduate = graduates.find((item) => item.id === graduateId);
+    if (!graduate) return;
+
+    const confirmed = window.confirm(
+      `Delete ${graduate.name} from ${graduate.company}?`,
+    );
+    if (!confirmed) return;
+
+    try {
+      await deleteDoc(doc(db, "submissions", graduateId));
+      await updateCompanyCount(graduate.company, -1);
+      setMessage("Graduate deleted successfully");
+      await loadGraduates();
+      await loadCompanies();
+    } catch (error) {
+      console.error("Error deleting graduate:", error);
+      setMessage("Error deleting graduate");
+    } finally {
+      setTimeout(() => setMessage(""), 3000);
     }
   };
 
@@ -87,7 +282,7 @@ export default function AdminPage() {
       await setDoc(
         companyRef,
         { logoUrl: newLogoUrl.trim() || null },
-        { merge: true }
+        { merge: true },
       );
       setMessage(`Logo updated for ${companyName}`);
       loadCompanies();
@@ -219,6 +414,190 @@ export default function AdminPage() {
           )}
         </div>
 
+        {/* Graduate Management */}
+        <div className="bg-gray-800 rounded-lg shadow-2xl p-6 mb-8">
+          <div className="flex justify-between items-center mb-4">
+            <h2 className="text-2xl font-bold text-white">
+              {editingGraduateId ? "Edit Graduate" : "Add Graduate"}
+            </h2>
+            {editingGraduateId ? (
+              <button
+                type="button"
+                onClick={resetGraduateForm}
+                className="text-sm text-gray-400 hover:text-white"
+              >
+                Cancel
+              </button>
+            ) : null}
+          </div>
+
+          <form onSubmit={handleSaveGraduate} className="space-y-4">
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+              <div>
+                <label className="block text-gray-300 mb-2">Full Name</label>
+                <input
+                  type="text"
+                  value={graduateForm.name}
+                  onChange={(e) =>
+                    setGraduateForm((prev) => ({
+                      ...prev,
+                      name: e.target.value,
+                    }))
+                  }
+                  className="w-full px-4 py-3 bg-gray-700 text-white rounded-lg border border-gray-600 focus:border-blue-500 focus:outline-none"
+                  disabled={loading}
+                />
+              </div>
+              <div>
+                <label className="block text-gray-300 mb-2">Job Title</label>
+                <input
+                  type="text"
+                  value={graduateForm.title}
+                  onChange={(e) =>
+                    setGraduateForm((prev) => ({
+                      ...prev,
+                      title: e.target.value,
+                    }))
+                  }
+                  className="w-full px-4 py-3 bg-gray-700 text-white rounded-lg border border-gray-600 focus:border-blue-500 focus:outline-none"
+                  disabled={loading}
+                />
+              </div>
+              <div>
+                <label className="block text-gray-300 mb-2">LinkedIn URL</label>
+                <input
+                  type="text"
+                  value={graduateForm.linkedin}
+                  onChange={(e) =>
+                    setGraduateForm((prev) => ({
+                      ...prev,
+                      linkedin: e.target.value,
+                    }))
+                  }
+                  className="w-full px-4 py-3 bg-gray-700 text-white rounded-lg border border-gray-600 focus:border-blue-500 focus:outline-none"
+                  disabled={loading}
+                />
+              </div>
+              <div>
+                <label className="block text-gray-300 mb-2">Company</label>
+                <select
+                  value={graduateForm.company}
+                  onChange={(e) =>
+                    setGraduateForm((prev) => ({
+                      ...prev,
+                      company: e.target.value,
+                    }))
+                  }
+                  className="w-full px-4 py-3 bg-gray-700 text-white rounded-lg border border-gray-600 focus:border-blue-500 focus:outline-none"
+                  disabled={loading}
+                >
+                  <option value="">Select company</option>
+                  {companies.map((company) => (
+                    <option key={company.name} value={company.name}>
+                      {company.name}
+                    </option>
+                  ))}
+                </select>
+              </div>
+              <div>
+                <label className="block text-gray-300 mb-2">
+                  Graduation Class
+                </label>
+                <select
+                  value={graduateForm.graduationClass}
+                  onChange={(e) =>
+                    setGraduateForm((prev) => ({
+                      ...prev,
+                      graduationClass: e.target.value,
+                    }))
+                  }
+                  className="w-full px-4 py-3 bg-gray-700 text-white rounded-lg border border-gray-600 focus:border-blue-500 focus:outline-none"
+                  disabled={loading}
+                >
+                  <option value="">Select year</option>
+                  {graduationYears.map((year) => (
+                    <option key={year} value={year}>
+                      {year}
+                    </option>
+                  ))}
+                </select>
+              </div>
+              <div>
+                <label className="block text-gray-300 mb-2">
+                  Portfolio / CV URL (optional)
+                </label>
+                <input
+                  type="text"
+                  value={graduateForm.portfolioCv}
+                  onChange={(e) =>
+                    setGraduateForm((prev) => ({
+                      ...prev,
+                      portfolioCv: e.target.value,
+                    }))
+                  }
+                  className="w-full px-4 py-3 bg-gray-700 text-white rounded-lg border border-gray-600 focus:border-blue-500 focus:outline-none"
+                  disabled={loading}
+                />
+              </div>
+            </div>
+
+            <button
+              type="submit"
+              disabled={loading}
+              className="bg-blue-600 hover:bg-blue-700 text-white px-6 py-3 rounded-lg font-semibold transition-all disabled:opacity-50"
+            >
+              {loading
+                ? "Saving..."
+                : editingGraduateId
+                  ? "Save Changes"
+                  : "Add Graduate"}
+            </button>
+          </form>
+        </div>
+
+        {/* Graduates List */}
+        <div className="bg-gray-800 rounded-lg shadow-2xl p-6 mb-8">
+          <h2 className="text-2xl font-bold text-white mb-4">
+            Existing Graduates ({graduates.length})
+          </h2>
+          <div className="space-y-3">
+            {graduates.map((graduate) => (
+              <div
+                key={graduate.id}
+                className="bg-gray-700 p-4 rounded-lg flex flex-col md:flex-row md:items-center justify-between gap-3"
+              >
+                <div>
+                  <h3 className="text-white font-semibold text-lg">
+                    {graduate.name}
+                  </h3>
+                  <p className="text-gray-400 text-sm">
+                    {graduate.title} • {graduate.company}
+                    {graduate.graduationClass
+                      ? ` • Class ${graduate.graduationClass}`
+                      : ""}
+                  </p>
+                </div>
+                <div className="flex gap-2">
+                  <button
+                    type="button"
+                    onClick={() => handleEditGraduate(graduate)}
+                    className="bg-gray-600 hover:bg-gray-500 text-white px-4 py-2 rounded-lg transition-all"
+                  >
+                    Edit
+                  </button>
+                  <button
+                    type="button"
+                    onClick={() => handleDeleteGraduate(graduate.id)}
+                    className="bg-red-600 hover:bg-red-500 text-white px-4 py-2 rounded-lg transition-all"
+                  >
+                    Delete
+                  </button>
+                </div>
+              </div>
+            ))}
+          </div>
+        </div>
+
         {/* Companies List */}
         <div className="bg-gray-800 rounded-lg shadow-2xl p-6">
           <h2 className="text-2xl font-bold text-white mb-4">
@@ -232,9 +611,7 @@ export default function AdminPage() {
               >
                 <div className="flex items-center justify-between">
                   <div className="flex items-center gap-4 flex-1">
-                    <div
-                      className="w-12 h-12 rounded-lg flex items-center justify-center bg-gray-600"
-                    >
+                    <div className="w-12 h-12 rounded-lg flex items-center justify-center bg-gray-600">
                       {company.logoUrl && (
                         <img
                           src={company.logoUrl}
