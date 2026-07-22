@@ -30,6 +30,7 @@ interface ProfileData {
   linkedin: string;
   company: string;
   portfolioCv: string;
+  graduationClass: string;
 }
 
 export default function ProfileModal({ isOpen, onClose }: ProfileModalProps) {
@@ -43,10 +44,14 @@ export default function ProfileModal({ isOpen, onClose }: ProfileModalProps) {
     linkedin: "",
     company: "",
     portfolioCv: "",
+    graduationClass: "",
   });
   const [error, setError] = useState("");
   const [success, setSuccess] = useState(false);
   const router = useRouter();
+  const graduationYears = Array.from({ length: 2027 - 2014 + 1 }, (_, index) =>
+    String(2014 + index),
+  );
 
   // Check auth state
   useEffect(() => {
@@ -95,6 +100,7 @@ export default function ProfileModal({ isOpen, onClose }: ProfileModalProps) {
           linkedin: submission.linkedin || "",
           company: submission.company || "",
           portfolioCv: submission.portfolioCv || "",
+          graduationClass: submission.graduationClass || "",
         });
       } else {
         // Fallback: query by userId field (for backwards compatibility)
@@ -110,6 +116,7 @@ export default function ProfileModal({ isOpen, onClose }: ProfileModalProps) {
             linkedin: submission.linkedin || "",
             company: submission.company || "",
             portfolioCv: submission.portfolioCv || "",
+            graduationClass: submission.graduationClass || "",
           });
         }
       }
@@ -142,6 +149,7 @@ export default function ProfileModal({ isOpen, onClose }: ProfileModalProps) {
         linkedin: "",
         company: "",
         portfolioCv: "",
+        graduationClass: "",
       });
       setSuccess(false);
     } catch (err) {
@@ -193,6 +201,7 @@ export default function ProfileModal({ isOpen, onClose }: ProfileModalProps) {
           linkedin: profileData.linkedin.trim(),
           company: profileData.company.trim(),
           portfolioCv: profileData.portfolioCv.trim() || "",
+          graduationClass: profileData.graduationClass.trim(),
         }),
       });
 
@@ -449,6 +458,35 @@ export default function ProfileModal({ isOpen, onClose }: ProfileModalProps) {
                     className="w-full px-4 py-3 bg-gray-700 text-white rounded-lg border border-gray-600 focus:border-blue-500 focus:outline-none focus:ring-2 focus:ring-blue-500 transition-all"
                     disabled={loading}
                   />
+                </div>
+
+                {/* Graduation Class Dropdown */}
+                <div>
+                  <label
+                    htmlFor="profile-graduation-class"
+                    className="block text-gray-300 font-semibold mb-2"
+                  >
+                    Graduation Class
+                  </label>
+                  <select
+                    id="profile-graduation-class"
+                    value={profileData.graduationClass}
+                    onChange={(e) =>
+                      setProfileData((prev) => ({
+                        ...prev,
+                        graduationClass: e.target.value,
+                      }))
+                    }
+                    className="w-full px-4 py-3 bg-gray-700 text-white rounded-lg border border-gray-600 focus:border-blue-500 focus:outline-none focus:ring-2 focus:ring-blue-500 transition-all"
+                    disabled={loading}
+                  >
+                    <option value="">Select your graduation class</option>
+                    {graduationYears.map((year) => (
+                      <option key={year} value={year}>
+                        {year}
+                      </option>
+                    ))}
+                  </select>
                 </div>
 
                 {/* Company Dropdown */}

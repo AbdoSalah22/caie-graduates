@@ -14,6 +14,7 @@ export interface Submission {
   title: string;
   linkedin: string;
   company: string;
+  graduationClass?: string;
   timestamp: any;
 }
 
@@ -27,5 +28,6 @@ export interface Graduate {
   title: string;
   linkedin: string;
   portfolioCv?: string;
+  graduationClass?: string;
   timestamp: any;
 }

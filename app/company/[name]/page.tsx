@@ -47,6 +47,7 @@ export default function CompanyPage() {
             title: data.title,
             linkedin: data.linkedin,
             portfolioCv: data.portfolioCv || undefined,
+            graduationClass: data.graduationClass || undefined,
             timestamp: data.timestamp,
           });
         });
@@ -129,9 +130,14 @@ export default function CompanyPage() {
                     <h3 className="text-base sm:text-lg font-semibold text-white truncate">
                       {grad.name}
                     </h3>
-                    <p className="text-gray-400 text-xs sm:text-sm truncate">
-                      {grad.title}
-                    </p>
+                    <div className="flex flex-wrap items-center gap-2 text-gray-400 text-xs sm:text-sm">
+                      {grad.graduationClass ? (
+                        <span className="inline-flex items-center rounded-full bg-gray-600/70 px-2.5 py-0.5 text-[11px] sm:text-xs font-medium text-gray-100">
+                          Class {grad.graduationClass}
+                        </span>
+                      ) : null}
+                      <p className="truncate">{grad.title}</p>
+                    </div>
                   </div>
                   <div className="flex items-center gap-2 shrink-0">
                     {grad.portfolioCv ? (

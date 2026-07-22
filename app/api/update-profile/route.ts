@@ -31,13 +31,21 @@ export async function POST(request: NextRequest) {
   try {
     // Parse request body
     const body = await request.json();
-    const { userId, name, title, linkedin, company, portfolioCv } = body;
+    const {
+      userId,
+      name,
+      title,
+      linkedin,
+      company,
+      portfolioCv,
+      graduationClass,
+    } = body;
 
     // Validation
     if (!userId || typeof userId !== "string") {
       return NextResponse.json(
         { error: "User ID is required" },
-        { status: 400 }
+        { status: 400 },
       );
     }
 
@@ -52,14 +60,14 @@ export async function POST(request: NextRequest) {
     if (!linkedin || typeof linkedin !== "string" || !linkedin.trim()) {
       return NextResponse.json(
         { error: "LinkedIn URL is required" },
-        { status: 400 }
+        { status: 400 },
       );
     }
 
     if (!company || typeof company !== "string" || !company.trim()) {
       return NextResponse.json(
         { error: "Company is required" },
-        { status: 400 }
+        { status: 400 },
       );
     }
 
@@ -69,6 +77,8 @@ export async function POST(request: NextRequest) {
     const trimmedCompany = company.trim();
     const trimmedPortfolioCv =
       typeof portfolioCv === "string" ? portfolioCv.trim() : "";
+    const trimmedGraduationClass =
+      typeof graduationClass === "string" ? graduationClass.trim() : "";
 
     // Find user's existing submission
     // First try by document ID (userId)
@@ -153,6 +163,7 @@ export async function POST(request: NextRequest) {
         linkedin: trimmedLinkedin,
         company: trimmedCompany,
         portfolioCv: trimmedPortfolioCv || null,
+        graduationClass: trimmedGraduationClass,
         updatedAt: serverTimestamp(),
       });
     } else {
@@ -165,6 +176,7 @@ export async function POST(request: NextRequest) {
         linkedin: trimmedLinkedin,
         company: trimmedCompany,
         portfolioCv: trimmedPortfolioCv || null,
+        graduationClass: trimmedGraduationClass,
         timestamp: serverTimestamp(),
         updatedAt: serverTimestamp(),
       });
@@ -179,9 +191,10 @@ export async function POST(request: NextRequest) {
           title: trimmedTitle,
           linkedin: trimmedLinkedin,
           company: trimmedCompany,
+          graduationClass: trimmedGraduationClass,
         },
       },
-      { status: 200 }
+      { status: 200 },
     );
   } catch (error: any) {
     console.error("Error updating profile:", error);
@@ -191,7 +204,7 @@ export async function POST(request: NextRequest) {
         error: "Failed to update profile",
         details: error.message,
       },
-      { status: 500 }
+      { status: 500 },
     );
   }
 }
