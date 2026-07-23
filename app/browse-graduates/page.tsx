@@ -187,8 +187,15 @@ export default function BrowseGraduatesPage() {
                     </div>
 
                     <div className="min-w-0">
-                      <div className="text-white font-semibold truncate">
-                        {grad.name}
+                      <div className="flex items-center gap-2 flex-wrap">
+                        <div className="text-white font-semibold truncate">
+                          {grad.name}
+                        </div>
+                        {grad.graduationClass ? (
+                          <span className="inline-flex items-center rounded-full border border-cyan-400/40 bg-cyan-500/10 px-2.5 py-0.5 text-[11px] font-semibold uppercase tracking-wide text-cyan-300 shadow-sm">
+                            {grad.graduationClass}
+                          </span>
+                        ) : null}
                       </div>
                       <div className="text-gray-400 text-sm truncate">
                         {grad.title}
@@ -196,11 +203,6 @@ export default function BrowseGraduatesPage() {
                       <div className="text-gray-500 text-xs truncate">
                         {grad.company}
                       </div>
-                      {grad.graduationClass ? (
-                        <div className="text-blue-400 text-xs font-medium mt-1">
-                          Class {grad.graduationClass}
-                        </div>
-                      ) : null}
                     </div>
                   </div>
 
