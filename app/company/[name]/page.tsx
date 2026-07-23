@@ -67,41 +67,36 @@ export default function CompanyPage() {
 
   if (loading) {
     return (
-      <div className="flex items-center justify-center h-screen bg-gray-900">
-        <div className="text-center">
-          <div className="animate-spin rounded-full h-16 w-16 border-t-2 border-b-2 border-blue-500 mx-auto mb-4"></div>
-          <p className="text-gray-400">Loading employees...</p>
+      <div className="page-shell flex min-h-screen items-center justify-center">
+        <div className="surface-card-soft px-8 py-10 text-center">
+          <div className="mx-auto mb-4 h-14 w-14 animate-spin rounded-full border-2 border-cyan-400/30 border-t-cyan-400"></div>
+          <p className="text-slate-300">Loading employees...</p>
         </div>
       </div>
     );
   }
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-gray-900 via-black to-gray-900 p-4 sm:p-8">
-      <div className="max-w-5xl mx-auto">
+    <div className="page-shell px-4 py-4 sm:px-6 sm:py-6 lg:px-8 lg:py-8">
+      <div className="page-container">
         {/* Header */}
-        <div className="mb-8">
-          <Link
-            href="/"
-            className="inline-flex items-center text-gray-400 hover:text-white transition-colors mb-4"
-          >
+        <div className="page-header mb-8">
+          <Link href="/" className="ghost-link mb-4">
             ← Back to Board
           </Link>
           <div className="flex items-center gap-4">
-            <div className="w-16 h-16 rounded-lg bg-gray-600 flex items-center justify-center">
+            <div className="flex h-16 w-16 items-center justify-center rounded-lg border border-slate-700/70 bg-white p-2 shadow-sm">
               {companyLogoUrl && (
                 <img
                   src={companyLogoUrl}
                   alt={`${companyName} logo`}
-                  className="w-12 h-12 object-contain"
+                  className="max-h-full max-w-full object-contain"
                 />
               )}
             </div>
             <div className="min-w-0">
-              <h1 className="text-2xl sm:text-4xl font-bold text-white break-words">
-                {companyName}
-              </h1>
-              <p className="text-gray-400 mt-1 text-sm sm:text-base">
+              <h1 className="page-title break-words">{companyName}</h1>
+              <p className="page-subtitle">
                 {graduates.length}{" "}
                 {graduates.length === 1 ? "Employee" : "Employees"}
               </p>
@@ -110,13 +105,16 @@ export default function CompanyPage() {
         </div>
 
         {/* Employees List */}
-        <div className="bg-gray-800 rounded-lg shadow-2xl p-4 sm:p-6">
-          <h2 className="text-xl sm:text-2xl font-bold text-white mb-4 sm:mb-6">
-            Employees
-          </h2>
+        <div className="surface-card p-4 sm:p-6">
+          <div className="mb-4 flex items-center justify-between sm:mb-6">
+            <h2 className="text-xl font-semibold text-white sm:text-2xl">
+              Employees
+            </h2>
+            <div className="info-badge">{graduates.length} total</div>
+          </div>
 
           {graduates.length === 0 ? (
-            <p className="text-gray-400 text-center py-8">
+            <p className="py-8 text-center text-slate-400">
               No employees registered yet
             </p>
           ) : (
@@ -124,20 +122,18 @@ export default function CompanyPage() {
               {graduates.map((grad, index) => (
                 <div
                   key={index}
-                  className="flex flex-col sm:flex-row sm:items-center justify-between gap-2 sm:gap-4 bg-gray-700 p-3 sm:p-4 rounded-lg hover:bg-gray-600 transition-all"
+                  className="flex flex-col gap-3 rounded-2xl border border-slate-800/80 bg-slate-800/70 p-3 transition-all duration-200 hover:-translate-y-0.5 hover:border-slate-600 hover:bg-slate-700/80 sm:flex-row sm:items-center sm:justify-between sm:gap-4 sm:p-4"
                 >
                   <div className="flex-1 min-w-0">
-                    <h3 className="text-base sm:text-lg font-semibold text-white truncate">
-                      {grad.name}
-                    </h3>
-                    <div className="flex flex-wrap items-center gap-2 text-gray-400 text-xs sm:text-sm">
+                    <div className="flex flex-wrap items-center gap-2">
+                      <h3 className="premium-name truncate">{grad.name}</h3>
                       {grad.graduationClass ? (
-                        <span className="inline-flex items-center rounded-full bg-gray-600/70 px-2.5 py-0.5 text-[11px] sm:text-xs font-medium text-gray-100">
-                          Class {grad.graduationClass}
+                        <span className="info-badge">
+                          {grad.graduationClass}
                         </span>
                       ) : null}
-                      <p className="truncate">{grad.title}</p>
                     </div>
+                    <div className="premium-muted truncate">{grad.title}</div>
                   </div>
                   <div className="flex items-center gap-2 shrink-0">
                     {grad.portfolioCv ? (
@@ -145,7 +141,7 @@ export default function CompanyPage() {
                         href={grad.portfolioCv}
                         target="_blank"
                         rel="noopener noreferrer"
-                        className="bg-blue-600 hover:bg-blue-700 text-white px-4 py-1.5 sm:px-6 sm:py-2 rounded-lg font-semibold text-sm sm:text-base transition-all flex items-center justify-center gap-2 shrink-0"
+                        className="primary-btn shrink-0 px-4 py-1.5 sm:px-6 sm:py-2"
                       >
                         <span>Portfolio/CV</span>
                         <svg
@@ -168,7 +164,7 @@ export default function CompanyPage() {
                       href={grad.linkedin}
                       target="_blank"
                       rel="noopener noreferrer"
-                      className="bg-blue-600 hover:bg-blue-700 text-white px-4 py-1.5 sm:px-6 sm:py-2 rounded-lg font-semibold text-sm sm:text-base transition-all flex items-center justify-center gap-2 shrink-0"
+                      className="primary-btn shrink-0 px-4 py-1.5 sm:px-6 sm:py-2"
                     >
                       <svg
                         className="w-4 h-4 sm:w-5 sm:h-5"

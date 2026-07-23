@@ -90,34 +90,27 @@ export default function BrowseGraduatesPage() {
   }, [submissions, selectedCompany, search]);
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-gray-900 via-black to-gray-900 p-4 sm:p-8">
-      <div className="max-w-5xl mx-auto">
-        <div className="mb-6">
-          <Link
-            href="/"
-            className="inline-flex items-center text-gray-400 hover:text-white transition-colors mb-4"
-          >
+    <div className="page-shell px-4 py-4 sm:px-6 sm:py-6 lg:px-8 lg:py-8">
+      <div className="page-container max-w-5xl">
+        <div className="page-header mb-6">
+          <Link href="/" className="ghost-link mb-4">
             ← Back to Board
           </Link>
-          <h1 className="text-2xl sm:text-4xl font-bold text-white">
-            Browse Graduates
-          </h1>
-          <p className="text-gray-400 mt-2 text-sm sm:text-base">
+          <h1 className="page-title">Browse Graduates</h1>
+          <p className="page-subtitle">
             Filter by company and view Portfolio/CV + LinkedIn for each
             graduate.
           </p>
         </div>
 
-        <div className="bg-gray-800 rounded-lg shadow-2xl p-4 sm:p-6 mb-6">
+        <div className="surface-card p-4 sm:p-6 mb-6">
           <div className="flex flex-col sm:flex-row gap-3 sm:items-end">
             <div className="flex-1">
-              <label className="block text-gray-300 font-semibold mb-2">
-                Company
-              </label>
+              <label className="section-label">Company</label>
               <select
                 value={selectedCompany}
                 onChange={(e) => setSelectedCompany(e.target.value)}
-                className="w-full px-4 py-3 bg-gray-700 text-white rounded-lg border border-gray-600 focus:border-blue-500 focus:outline-none focus:ring-2 focus:ring-blue-500 transition-all"
+                className="field-select"
               >
                 <option value="all">All companies</option>
                 {companyOptions.map((name) => (
@@ -129,14 +122,12 @@ export default function BrowseGraduatesPage() {
             </div>
 
             <div className="flex-1">
-              <label className="block text-gray-300 font-semibold mb-2">
-                Search
-              </label>
+              <label className="section-label">Search</label>
               <input
                 value={search}
                 onChange={(e) => setSearch(e.target.value)}
                 placeholder="Search name, title, or company"
-                className="w-full px-4 py-3 bg-gray-700 text-white rounded-lg border border-gray-600 focus:border-blue-500 focus:outline-none focus:ring-2 focus:ring-blue-500 transition-all"
+                className="field-input"
               />
             </div>
 
@@ -146,7 +137,7 @@ export default function BrowseGraduatesPage() {
                   setSelectedCompany("all");
                   setSearch("");
                 }}
-                className="bg-gray-700 hover:bg-gray-600 text-white px-4 py-3 rounded-lg font-semibold transition-all"
+                className="secondary-btn px-4 py-3"
               >
                 Clear
               </button>
@@ -159,8 +150,8 @@ export default function BrowseGraduatesPage() {
         </div>
 
         {filtered.length === 0 ? (
-          <div className="bg-gray-800 rounded-lg shadow-2xl p-8 text-center">
-            <p className="text-gray-400">No graduates match your filters.</p>
+          <div className="surface-card p-8 text-center">
+            <p className="text-slate-400">No graduates match your filters.</p>
           </div>
         ) : (
           <div className="space-y-4">
@@ -169,18 +160,18 @@ export default function BrowseGraduatesPage() {
               return (
                 <div
                   key={grad.id}
-                  className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 bg-gray-700 p-3 sm:p-4 rounded-lg hover:bg-gray-600 transition-all"
+                  className="flex flex-col gap-3 rounded-2xl border border-slate-800/80 bg-slate-800/70 p-3 transition-all duration-200 hover:-translate-y-0.5 hover:border-slate-600 hover:bg-slate-700/80 sm:flex-row sm:items-center sm:justify-between sm:p-4"
                 >
                   <div className="flex items-center gap-3 min-w-0">
-                    <div className="w-10 h-10 rounded-lg bg-gray-600 flex items-center justify-center overflow-hidden shrink-0">
+                    <div className="flex h-12 w-12 shrink-0 items-center justify-center overflow-hidden rounded-xl border border-slate-600/70 bg-white p-1.75 shadow-sm">
                       {logoUrl ? (
                         <img
                           src={logoUrl}
                           alt={`${grad.company} logo`}
-                          className="w-7 h-7 object-contain"
+                          className="max-h-full max-w-full object-contain"
                         />
                       ) : (
-                        <div className="text-xs font-bold text-white">
+                        <div className="text-xs font-semibold text-slate-700">
                           {grad.company.slice(0, 1).toUpperCase()}
                         </div>
                       )}
@@ -197,10 +188,8 @@ export default function BrowseGraduatesPage() {
                           </span>
                         ) : null}
                       </div>
-                      <div className="text-gray-400 text-sm truncate">
-                        {grad.title}
-                      </div>
-                      <div className="text-gray-500 text-xs truncate">
+                      <div className="premium-muted truncate">{grad.title}</div>
+                      <div className="text-xs truncate text-slate-500">
                         {grad.company}
                       </div>
                     </div>
@@ -212,7 +201,7 @@ export default function BrowseGraduatesPage() {
                         href={grad.portfolioCv}
                         target="_blank"
                         rel="noopener noreferrer"
-                        className="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-lg font-semibold text-sm transition-all flex items-center gap-2"
+                        className="primary-btn gap-2 px-4 py-2"
                       >
                         <span>Portfolio/CV</span>
                         <svg
@@ -237,7 +226,7 @@ export default function BrowseGraduatesPage() {
                         href={grad.linkedin}
                         target="_blank"
                         rel="noopener noreferrer"
-                        className="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-lg font-semibold text-sm transition-all flex items-center gap-2"
+                        className="primary-btn gap-2 px-4 py-2"
                       >
                         <svg
                           className="w-4 h-4"

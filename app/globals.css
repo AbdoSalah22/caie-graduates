@@ -10,12 +10,14 @@
 
 body {
   color: rgb(var(--foreground-rgb));
-  background: linear-gradient(
-      to bottom,
-      transparent,
-      rgb(var(--background-end-rgb))
-    )
-    rgb(var(--background-start-rgb));
+  background:
+    radial-gradient(
+      circle at top left,
+      rgba(34, 211, 238, 0.12),
+      transparent 28%
+    ),
+    linear-gradient(135deg, #020617 0%, #071226 45%, #030712 100%);
+  min-height: 100vh;
   /* Prevent pull-to-refresh and overscroll bounce on mobile */
   overscroll-behavior: none;
   -webkit-overflow-scrolling: touch;
@@ -26,6 +28,76 @@ body {
   -webkit-user-select: none;
   user-select: none;
   -webkit-touch-callout: none;
+}
+
+@layer components {
+  .page-shell {
+    @apply min-h-screen bg-transparent text-slate-100;
+  }
+
+  .page-container {
+    @apply mx-auto w-full max-w-6xl px-4 py-6 sm:px-6 lg:px-8 lg:py-8;
+  }
+
+  .surface-card {
+    @apply rounded-2xl border border-slate-700/70 bg-slate-900/75 shadow-[0_20px_60px_rgba(2,8,23,0.38)] backdrop-blur-xl;
+  }
+
+  .surface-card-soft {
+    @apply rounded-2xl border border-slate-800/70 bg-slate-800/70 shadow-[0_10px_35px_rgba(2,8,23,0.24)] backdrop-blur-xl;
+  }
+
+  .page-header {
+    @apply mb-8 rounded-3xl border border-slate-800/70 bg-slate-900/60 p-5 shadow-[0_20px_60px_rgba(2,8,23,0.28)] backdrop-blur-xl sm:p-8;
+  }
+
+  .page-title {
+    @apply text-2xl font-semibold tracking-tight text-white sm:text-3xl lg:text-4xl;
+  }
+
+  .page-subtitle {
+    @apply mt-2 text-sm text-slate-400 sm:text-base;
+  }
+
+  .section-label {
+    @apply mb-2 block text-xs font-semibold uppercase tracking-[0.25em] text-slate-400;
+  }
+
+  .field-input {
+    @apply w-full rounded-xl border border-slate-700 bg-slate-900/80 px-4 py-3 text-sm text-slate-100 shadow-inner shadow-slate-950/30 outline-none transition-all duration-200 placeholder:text-slate-500 focus:border-cyan-400 focus:ring-2 focus:ring-cyan-400/20;
+  }
+
+  .field-select {
+    @apply w-full rounded-xl border border-slate-700 bg-slate-900/80 px-4 py-3 text-sm text-slate-100 shadow-inner shadow-slate-950/30 outline-none transition-all duration-200 focus:border-cyan-400 focus:ring-2 focus:ring-cyan-400/20;
+  }
+
+  .primary-btn {
+    @apply inline-flex items-center justify-center rounded-xl bg-gradient-to-r from-blue-600 to-cyan-500 px-4 py-2.5 text-sm font-semibold text-white shadow-lg shadow-cyan-500/20 transition-all duration-200 hover:-translate-y-0.5 hover:shadow-cyan-400/30;
+  }
+
+  .secondary-btn {
+    @apply inline-flex items-center justify-center rounded-xl border border-slate-700 bg-slate-800/80 px-4 py-2.5 text-sm font-semibold text-slate-200 transition-all duration-200 hover:border-slate-500 hover:bg-slate-700;
+  }
+
+  .ghost-link {
+    @apply inline-flex items-center text-sm font-medium text-slate-400 transition-colors hover:text-white;
+  }
+
+  .premium-name {
+    @apply text-base font-semibold tracking-tight text-white sm:text-lg;
+  }
+
+  .premium-muted {
+    @apply text-sm text-slate-400;
+  }
+
+  .info-badge {
+    @apply inline-flex items-center rounded-full border border-cyan-400/35 bg-cyan-500/10 px-2.5 py-1 text-[11px] font-semibold uppercase tracking-[0.24em] text-cyan-300;
+  }
+
+  .divider {
+    @apply h-px w-full bg-gradient-to-r from-transparent via-slate-700 to-transparent;
+  }
 }
 
 @layer utilities {

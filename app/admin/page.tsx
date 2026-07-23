@@ -332,17 +332,14 @@ export default function AdminPage() {
 
   if (!isAuthenticated) {
     return (
-      <div className="min-h-screen bg-gradient-to-br from-gray-900 via-black to-gray-900 flex items-center justify-center p-4">
-        <div className="max-w-md w-full">
-          <div className="text-center mb-8">
-            <h1 className="text-4xl font-bold text-white mb-2">Admin Panel</h1>
-            <p className="text-gray-400">Enter password to continue</p>
+      <div className="page-shell flex min-h-screen items-center justify-center p-4">
+        <div className="w-full max-w-md">
+          <div className="page-header mb-8 text-center">
+            <h1 className="page-title mb-2">Admin Panel</h1>
+            <p className="page-subtitle">Enter password to continue</p>
           </div>
 
-          <form
-            onSubmit={handleLogin}
-            className="bg-gray-800 rounded-lg shadow-2xl p-8"
-          >
+          <form onSubmit={handleLogin} className="surface-card p-8">
             <div className="mb-6">
               <label
                 htmlFor="password"
@@ -355,7 +352,7 @@ export default function AdminPage() {
                 type="password"
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
-                className="w-full px-4 py-3 bg-gray-700 text-white rounded-lg border border-gray-600 focus:border-blue-500 focus:outline-none focus:ring-2 focus:ring-blue-500"
+                className="field-input"
                 autoFocus
               />
             </div>
@@ -366,17 +363,11 @@ export default function AdminPage() {
               </div>
             )}
 
-            <button
-              type="submit"
-              className="w-full bg-blue-600 hover:bg-blue-700 text-white font-semibold py-3 rounded-lg transition-all"
-            >
+            <button type="submit" className="primary-btn w-full py-3">
               Login
             </button>
 
-            <Link
-              href="/"
-              className="block text-center mt-4 text-gray-400 hover:text-white transition-colors"
-            >
+            <Link href="/" className="ghost-link mt-4 block justify-center">
               ← Back to home
             </Link>
           </form>
@@ -386,42 +377,44 @@ export default function AdminPage() {
   }
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-gray-900 via-black to-gray-900 p-8">
-      <div className="max-w-6xl mx-auto">
-        <div className="flex justify-between items-center mb-8">
-          <h1 className="text-4xl font-bold text-white">Admin Panel</h1>
-          <Link
-            href="/"
-            className="bg-gray-700 hover:bg-gray-600 text-white px-6 py-2 rounded-lg transition-all"
-          >
+    <div className="page-shell px-4 py-4 sm:px-6 sm:py-6 lg:px-8 lg:py-8">
+      <div className="page-container max-w-6xl">
+        <div className="page-header mb-8 flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
+          <div>
+            <h1 className="page-title">Admin Panel</h1>
+            <p className="page-subtitle">
+              Manage companies, graduates, and site controls.
+            </p>
+          </div>
+          <Link href="/" className="secondary-btn px-6 py-2.5">
             ← Back to Board
           </Link>
         </div>
 
         {/* Add Company Form */}
-        <div className="bg-gray-800 rounded-lg shadow-2xl p-6 mb-8">
-          <h2 className="text-2xl font-bold text-white mb-4">
+        <div className="surface-card p-6 mb-8">
+          <h2 className="text-2xl font-semibold text-white mb-4">
             Add New Company
           </h2>
           <form onSubmit={handleAddCompany} className="space-y-4">
             <div className="flex gap-4 items-end">
               <div className="flex-1">
-                <label className="block text-gray-300 mb-2">Company Name</label>
+                <label className="section-label">Company Name</label>
                 <input
                   type="text"
                   value={newCompanyName}
                   onChange={(e) => setNewCompanyName(e.target.value)}
                   placeholder="Company Name"
-                  className="w-full px-4 py-3 bg-gray-700 text-white rounded-lg border border-gray-600 focus:border-blue-500 focus:outline-none"
+                  className="field-input"
                   disabled={loading}
                 />
               </div>
             </div>
             <div className="flex gap-4 items-end">
               <div className="flex-1">
-                <label className="block text-gray-300 mb-2">
+                <label className="section-label">
                   Logo URL{" "}
-                  <span className="text-gray-500 text-sm">
+                  <span className="text-slate-500 text-sm">
                     (optional - e.g., /logos/company.png)
                   </span>
                 </label>
@@ -430,14 +423,14 @@ export default function AdminPage() {
                   value={newCompanyLogo}
                   onChange={(e) => setNewCompanyLogo(e.target.value)}
                   placeholder="/logos/company.png or https://..."
-                  className="w-full px-4 py-3 bg-gray-700 text-white rounded-lg border border-gray-600 focus:border-blue-500 focus:outline-none"
+                  className="field-input"
                   disabled={loading}
                 />
               </div>
               <button
                 type="submit"
                 disabled={loading}
-                className="bg-blue-600 hover:bg-blue-700 text-white px-6 py-3 rounded-lg font-semibold transition-all disabled:opacity-50"
+                className="primary-btn px-6 py-3 disabled:cursor-not-allowed disabled:opacity-50"
               >
                 {loading ? "Adding..." : "Add Company"}
               </button>
@@ -445,18 +438,18 @@ export default function AdminPage() {
           </form>
 
           {message && (
-            <div className="mt-4 bg-green-600 text-white px-4 py-2 rounded-lg">
+            <div className="mt-4 rounded-xl border border-emerald-500/30 bg-emerald-500/10 px-4 py-2 text-sm text-emerald-200">
               {message}
             </div>
           )}
         </div>
 
         {/* Home Page Settings */}
-        <div className="bg-gray-800 rounded-lg shadow-2xl p-6 mb-8">
-          <h2 className="text-2xl font-bold text-white mb-4">
+        <div className="surface-card p-6 mb-8">
+          <h2 className="text-2xl font-semibold text-white mb-4">
             Home Page Settings
           </h2>
-          <div className="flex items-center justify-between rounded-lg bg-gray-700 p-4">
+          <div className="flex items-center justify-between rounded-2xl border border-slate-800/80 bg-slate-800/70 p-4">
             <div>
               <h3 className="text-white font-semibold">
                 Show My Profile button
@@ -479,14 +472,14 @@ export default function AdminPage() {
           <button
             type="button"
             onClick={saveSettings}
-            className="mt-4 bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-lg transition-all"
+            className="primary-btn mt-4 px-4 py-2"
           >
             Save Settings
           </button>
         </div>
 
         {/* Graduate Management */}
-        <div className="bg-gray-800 rounded-lg shadow-2xl p-6 mb-8">
+        <div className="surface-card p-6 mb-8">
           <div className="flex justify-between items-center mb-4">
             <h2 className="text-2xl font-bold text-white">
               {editingGraduateId ? "Edit Graduate" : "Add Graduate"}
@@ -495,7 +488,7 @@ export default function AdminPage() {
               <button
                 type="button"
                 onClick={resetGraduateForm}
-                className="text-sm text-gray-400 hover:text-white"
+                className="ghost-link text-sm"
               >
                 Cancel
               </button>
@@ -505,7 +498,7 @@ export default function AdminPage() {
           <form onSubmit={handleSaveGraduate} className="space-y-4">
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
               <div>
-                <label className="block text-gray-300 mb-2">Full Name</label>
+                <label className="section-label">Full Name</label>
                 <input
                   type="text"
                   value={graduateForm.name}
@@ -515,12 +508,12 @@ export default function AdminPage() {
                       name: e.target.value,
                     }))
                   }
-                  className="w-full px-4 py-3 bg-gray-700 text-white rounded-lg border border-gray-600 focus:border-blue-500 focus:outline-none"
+                  className="field-input"
                   disabled={loading}
                 />
               </div>
               <div>
-                <label className="block text-gray-300 mb-2">Job Title</label>
+                <label className="section-label">Job Title</label>
                 <input
                   type="text"
                   value={graduateForm.title}
@@ -530,12 +523,12 @@ export default function AdminPage() {
                       title: e.target.value,
                     }))
                   }
-                  className="w-full px-4 py-3 bg-gray-700 text-white rounded-lg border border-gray-600 focus:border-blue-500 focus:outline-none"
+                  className="field-input"
                   disabled={loading}
                 />
               </div>
               <div>
-                <label className="block text-gray-300 mb-2">LinkedIn URL</label>
+                <label className="section-label">LinkedIn URL</label>
                 <input
                   type="text"
                   value={graduateForm.linkedin}
@@ -545,12 +538,12 @@ export default function AdminPage() {
                       linkedin: e.target.value,
                     }))
                   }
-                  className="w-full px-4 py-3 bg-gray-700 text-white rounded-lg border border-gray-600 focus:border-blue-500 focus:outline-none"
+                  className="field-input"
                   disabled={loading}
                 />
               </div>
               <div>
-                <label className="block text-gray-300 mb-2">Company</label>
+                <label className="section-label">Company</label>
                 <select
                   value={graduateForm.company}
                   onChange={(e) =>
@@ -559,7 +552,7 @@ export default function AdminPage() {
                       company: e.target.value,
                     }))
                   }
-                  className="w-full px-4 py-3 bg-gray-700 text-white rounded-lg border border-gray-600 focus:border-blue-500 focus:outline-none"
+                  className="field-select"
                   disabled={loading}
                 >
                   <option value="">Select company</option>
@@ -571,9 +564,7 @@ export default function AdminPage() {
                 </select>
               </div>
               <div>
-                <label className="block text-gray-300 mb-2">
-                  Graduation Class
-                </label>
+                <label className="section-label">Graduation Class</label>
                 <select
                   value={graduateForm.graduationClass}
                   onChange={(e) =>
@@ -582,7 +573,7 @@ export default function AdminPage() {
                       graduationClass: e.target.value,
                     }))
                   }
-                  className="w-full px-4 py-3 bg-gray-700 text-white rounded-lg border border-gray-600 focus:border-blue-500 focus:outline-none"
+                  className="field-select"
                   disabled={loading}
                 >
                   <option value="">Select year</option>
@@ -594,7 +585,7 @@ export default function AdminPage() {
                 </select>
               </div>
               <div>
-                <label className="block text-gray-300 mb-2">
+                <label className="section-label">
                   Portfolio / CV URL (optional)
                 </label>
                 <input
@@ -606,7 +597,7 @@ export default function AdminPage() {
                       portfolioCv: e.target.value,
                     }))
                   }
-                  className="w-full px-4 py-3 bg-gray-700 text-white rounded-lg border border-gray-600 focus:border-blue-500 focus:outline-none"
+                  className="field-input"
                   disabled={loading}
                 />
               </div>
@@ -615,7 +606,7 @@ export default function AdminPage() {
             <button
               type="submit"
               disabled={loading}
-              className="bg-blue-600 hover:bg-blue-700 text-white px-6 py-3 rounded-lg font-semibold transition-all disabled:opacity-50"
+              className="primary-btn px-6 py-3 disabled:cursor-not-allowed disabled:opacity-50"
             >
               {loading
                 ? "Saving..."
@@ -627,15 +618,15 @@ export default function AdminPage() {
         </div>
 
         {/* Graduates List */}
-        <div className="bg-gray-800 rounded-lg shadow-2xl p-6 mb-8">
-          <h2 className="text-2xl font-bold text-white mb-4">
+        <div className="surface-card p-6 mb-8">
+          <h2 className="text-2xl font-semibold text-white mb-4">
             Existing Graduates ({graduates.length})
           </h2>
           <div className="space-y-3">
             {graduates.map((graduate) => (
               <div
                 key={graduate.id}
-                className="bg-gray-700 p-4 rounded-lg flex flex-col md:flex-row md:items-center justify-between gap-3"
+                className="flex flex-col gap-3 rounded-2xl border border-slate-800/80 bg-slate-800/70 p-4 md:flex-row md:items-center md:justify-between"
               >
                 <div>
                   <h3 className="text-white font-semibold text-lg">
@@ -652,14 +643,14 @@ export default function AdminPage() {
                   <button
                     type="button"
                     onClick={() => handleEditGraduate(graduate)}
-                    className="bg-gray-600 hover:bg-gray-500 text-white px-4 py-2 rounded-lg transition-all"
+                    className="secondary-btn px-4 py-2"
                   >
                     Edit
                   </button>
                   <button
                     type="button"
                     onClick={() => handleDeleteGraduate(graduate.id)}
-                    className="bg-red-600 hover:bg-red-500 text-white px-4 py-2 rounded-lg transition-all"
+                    className="rounded-lg bg-red-600 px-4 py-2 font-semibold text-white transition-all hover:bg-red-500"
                   >
                     Delete
                   </button>
@@ -670,15 +661,15 @@ export default function AdminPage() {
         </div>
 
         {/* Companies List */}
-        <div className="bg-gray-800 rounded-lg shadow-2xl p-6">
-          <h2 className="text-2xl font-bold text-white mb-4">
+        <div className="surface-card p-6">
+          <h2 className="text-2xl font-semibold text-white mb-4">
             Existing Companies ({companies.length})
           </h2>
           <div className="space-y-3">
             {companies.map((company) => (
               <div
                 key={company.name}
-                className="bg-gray-700 p-4 rounded-lg space-y-3"
+                className="space-y-3 rounded-2xl border border-slate-800/80 bg-slate-800/70 p-4"
               >
                 <div className="flex items-center justify-between">
                   <div className="flex items-center gap-4 flex-1">
@@ -704,7 +695,7 @@ export default function AdminPage() {
                   <div className="flex items-center gap-3">
                     <Link
                       href={`/company/${encodeURIComponent(company.name)}`}
-                      className="text-blue-400 hover:text-blue-300 transition-colors"
+                      className="text-cyan-400 transition-colors hover:text-cyan-300"
                     >
                       View Details →
                     </Link>
@@ -722,7 +713,7 @@ export default function AdminPage() {
                         handleUpdateLogo(company.name, e.target.value);
                       }
                     }}
-                    className="flex-1 px-3 py-2 bg-gray-600 text-white rounded-lg border border-gray-500 focus:border-blue-500 focus:outline-none text-sm"
+                    className="field-input flex-1 text-sm"
                   />
                 </div>
               </div>

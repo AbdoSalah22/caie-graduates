@@ -264,10 +264,10 @@ export default function Artboard({ nodes }: ArtboardProps) {
       {nodes.length === 0 && (
         <div className="absolute inset-0 flex items-center justify-center pointer-events-none">
           <div className="text-center px-4">
-            <h2 className="text-xl sm:text-3xl font-bold text-gray-400 mb-2 sm:mb-4">
+            <h2 className="mb-2 text-xl font-semibold text-slate-300 sm:mb-4 sm:text-3xl">
               No submissions yet
             </h2>
-            <p className="text-gray-500 text-sm sm:text-base">
+            <p className="text-sm text-slate-500 sm:text-base">
               Be the first to submit your company!
             </p>
           </div>
@@ -276,12 +276,12 @@ export default function Artboard({ nodes }: ArtboardProps) {
 
       {/* Zoom indicator and reset button */}
       <div className="absolute bottom-3 sm:bottom-4 left-1/2 transform -translate-x-1/2 flex items-center gap-2 sm:gap-3">
-        <div className="bg-gray-800/80 text-white px-2.5 py-1 sm:px-4 sm:py-2 rounded-full text-xs sm:text-sm pointer-events-none">
+        <div className="rounded-full border border-slate-700/70 bg-slate-900/70 px-2.5 py-1 text-xs text-slate-100 shadow-lg shadow-slate-950/30 sm:px-4 sm:py-2 sm:text-sm pointer-events-none">
           {(zoom * 100).toFixed(0)}%
         </div>
         <button
           onClick={handleReset}
-          className="bg-blue-600 hover:bg-blue-700 text-white px-2.5 py-1 sm:px-4 sm:py-2 rounded-full text-xs sm:text-sm transition-all pointer-events-auto shadow-lg hover:scale-105"
+          className="primary-btn rounded-full px-2.5 py-1 text-xs shadow-lg shadow-cyan-500/20 sm:px-4 sm:py-2 sm:text-sm"
         >
           Reset
         </button>

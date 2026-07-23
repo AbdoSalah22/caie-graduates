@@ -228,11 +228,11 @@ export default function ProfileModal({ isOpen, onClose }: ProfileModalProps) {
   if (!isOpen) return null;
 
   return (
-    <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4">
-      <div className="bg-gray-800 rounded-lg shadow-2xl max-w-md w-full max-h-[90vh] overflow-y-auto">
+    <div className="fixed inset-0 z-50 flex items-center justify-center bg-slate-950/70 p-4 backdrop-blur-sm">
+      <div className="surface-card max-h-[90vh] w-full max-w-md overflow-y-auto">
         {/* Header */}
-        <div className="sticky top-0 bg-gray-800 border-b border-gray-700 p-4 sm:p-6 flex justify-between items-center">
-          <h2 className="text-xl sm:text-2xl font-bold text-white">
+        <div className="sticky top-0 flex items-center justify-between border-b border-slate-800/80 bg-slate-900/80 p-4 sm:p-6">
+          <h2 className="text-xl font-semibold text-white sm:text-2xl">
             My Profile
           </h2>
           <button
@@ -297,7 +297,7 @@ export default function ProfileModal({ isOpen, onClose }: ProfileModalProps) {
               <button
                 onClick={handleGoogleSignIn}
                 disabled={loading}
-                className="w-full bg-white hover:bg-gray-100 text-gray-800 font-semibold py-3 px-6 rounded-lg transition-all duration-300 hover:scale-105 disabled:opacity-50 disabled:cursor-not-allowed disabled:hover:scale-100 flex items-center justify-center gap-3"
+                className="flex w-full items-center justify-center gap-3 rounded-xl bg-white px-6 py-3 font-semibold text-slate-800 transition-all duration-300 hover:-translate-y-0.5 hover:bg-slate-100 disabled:cursor-not-allowed disabled:opacity-50"
               >
                 {loading ? (
                   <>
@@ -339,12 +339,12 @@ export default function ProfileModal({ isOpen, onClose }: ProfileModalProps) {
             /* Profile Form View */
             <div>
               {/* User Info */}
-              <div className="mb-6 pb-6 border-b border-gray-700">
+              <div className="mb-6 border-b border-slate-800/80 pb-6">
                 <div className="flex items-center gap-4 mb-4">
                   <img
                     src={user.photoURL || "/default-avatar.png"}
                     alt={user.displayName || "User"}
-                    className="w-12 h-12 rounded-full"
+                    className="h-12 w-12 rounded-full border border-slate-700/70"
                   />
                   <div className="flex-1">
                     <h3 className="text-white font-semibold">
@@ -354,7 +354,7 @@ export default function ProfileModal({ isOpen, onClose }: ProfileModalProps) {
                   </div>
                   <button
                     onClick={handleSignOut}
-                    className="text-gray-400 hover:text-white text-sm transition-colors"
+                    className="text-sm text-slate-400 transition-colors hover:text-white"
                   >
                     Sign out
                   </button>
@@ -363,7 +363,7 @@ export default function ProfileModal({ isOpen, onClose }: ProfileModalProps) {
 
               {/* Success Message */}
               {success && (
-                <div className="mb-6 bg-green-600 text-white px-4 py-3 rounded-lg">
+                <div className="mb-6 rounded-xl border border-emerald-500/30 bg-emerald-500/10 px-4 py-3 text-sm text-emerald-200">
                   ✓ Profile updated successfully!
                 </div>
               )}
@@ -519,7 +519,7 @@ export default function ProfileModal({ isOpen, onClose }: ProfileModalProps) {
                 </div>
 
                 {/* Suggest Company Section */}
-                <div className="p-4 bg-gray-700 rounded-lg border border-gray-600">
+                <div className="rounded-2xl border border-slate-700/70 bg-slate-800/70 p-4">
                   <label className="block text-gray-300 font-semibold mb-2">
                     If your company is not in the list, add it here
                   </label>
@@ -528,7 +528,7 @@ export default function ProfileModal({ isOpen, onClose }: ProfileModalProps) {
                     target="_blank"
                     rel="noopener noreferrer"
                     onClick={onClose}
-                    className="inline-block w-full bg-gray-600 hover:bg-gray-500 text-white font-semibold py-2 px-4 rounded-lg transition-all duration-300 hover:scale-105 text-center"
+                    className="secondary-btn w-full py-2.5"
                   >
                     Suggest
                   </a>
@@ -545,7 +545,7 @@ export default function ProfileModal({ isOpen, onClose }: ProfileModalProps) {
                 <button
                   onClick={handleSave}
                   disabled={loading}
-                  className="w-full bg-blue-600 hover:bg-blue-700 text-white font-semibold py-3 rounded-lg transition-all duration-300 hover:scale-105 disabled:opacity-50 disabled:cursor-not-allowed disabled:hover:scale-100"
+                  className="primary-btn w-full py-3 disabled:cursor-not-allowed disabled:opacity-50"
                 >
                   {loading ? "Saving..." : "Save Profile"}
                 </button>

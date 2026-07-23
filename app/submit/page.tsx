@@ -46,7 +46,7 @@ export default function SubmitPage() {
   useEffect(() => {
     if (company.trim()) {
       const filtered = companies.filter((c) =>
-        c.toLowerCase().includes(company.toLowerCase())
+        c.toLowerCase().includes(company.toLowerCase()),
       );
       setFilteredCompanies(filtered);
       setShowSuggestions(filtered.length > 0);
@@ -126,36 +126,30 @@ export default function SubmitPage() {
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-gray-900 via-black to-gray-900 flex items-center justify-center p-4">
-      <div className="max-w-md w-full">
+    <div className="page-shell flex min-h-screen items-center justify-center p-4">
+      <div className="w-full max-w-md">
         {/* Header */}
-        <div className="text-center mb-8">
+        <div className="page-header mb-8 text-center">
           <Link href="/" className="inline-block">
-            <h1 className="text-4xl font-bold text-white mb-2 hover:text-blue-400 transition-colors">
+            <h1 className="page-title mb-2 hover:text-cyan-300 transition-colors">
               CESS Graduates
             </h1>
           </Link>
-          <p className="text-gray-400">Submit your information</p>
+          <p className="page-subtitle">Submit your information</p>
         </div>
 
         {/* Success Message */}
         {success && (
-          <div className="mb-6 bg-green-600 text-white px-4 py-3 rounded-lg animate-fade-in">
+          <div className="mb-6 rounded-xl border border-emerald-500/30 bg-emerald-500/10 px-4 py-3 text-sm text-emerald-200">
             ✓ Successfully submitted! Redirecting...
           </div>
         )}
 
         {/* Form */}
-        <form
-          onSubmit={handleSubmit}
-          className="bg-gray-800 rounded-lg shadow-2xl p-8"
-        >
+        <form onSubmit={handleSubmit} className="surface-card p-8">
           {/* Name Input */}
           <div className="mb-6">
-            <label
-              htmlFor="name"
-              className="block text-gray-300 font-semibold mb-2"
-            >
+            <label htmlFor="name" className="section-label">
               Your Name
             </label>
             <input
@@ -164,17 +158,14 @@ export default function SubmitPage() {
               value={name}
               onChange={(e) => setName(e.target.value)}
               placeholder="John Doe"
-              className="w-full px-4 py-3 bg-gray-700 text-white rounded-lg border border-gray-600 focus:border-blue-500 focus:outline-none focus:ring-2 focus:ring-blue-500 transition-all"
+              className="field-input"
               disabled={loading || success}
             />
           </div>
 
           {/* Title Input */}
           <div className="mb-6">
-            <label
-              htmlFor="title"
-              className="block text-gray-300 font-semibold mb-2"
-            >
+            <label htmlFor="title" className="section-label">
               Job Title
             </label>
             <input
@@ -183,17 +174,14 @@ export default function SubmitPage() {
               value={title}
               onChange={(e) => setTitle(e.target.value)}
               placeholder="Software Engineer"
-              className="w-full px-4 py-3 bg-gray-700 text-white rounded-lg border border-gray-600 focus:border-blue-500 focus:outline-none focus:ring-2 focus:ring-blue-500 transition-all"
+              className="field-input"
               disabled={loading || success}
             />
           </div>
 
           {/* LinkedIn Input */}
           <div className="mb-6">
-            <label
-              htmlFor="linkedin"
-              className="block text-gray-300 font-semibold mb-2"
-            >
+            <label htmlFor="linkedin" className="section-label">
               LinkedIn URL
             </label>
             <input
@@ -202,24 +190,21 @@ export default function SubmitPage() {
               value={linkedin}
               onChange={(e) => setLinkedin(e.target.value)}
               placeholder="https://linkedin.com/in/yourprofile"
-              className="w-full px-4 py-3 bg-gray-700 text-white rounded-lg border border-gray-600 focus:border-blue-500 focus:outline-none focus:ring-2 focus:ring-blue-500 transition-all"
+              className="field-input"
               disabled={loading || success}
             />
           </div>
 
           {/* Company Dropdown */}
           <div className="mb-6">
-            <label
-              htmlFor="company"
-              className="block text-gray-300 font-semibold mb-2"
-            >
+            <label htmlFor="company" className="section-label">
               Company
             </label>
             <select
               id="company"
               value={company}
               onChange={(e) => setCompany(e.target.value)}
-              className="w-full px-4 py-3 bg-gray-700 text-white rounded-lg border border-gray-600 focus:border-blue-500 focus:outline-none focus:ring-2 focus:ring-blue-500 transition-all"
+              className="field-select"
               disabled={loading || success}
             >
               <option value="">Select a company</option>
@@ -232,15 +217,15 @@ export default function SubmitPage() {
           </div>
 
           {/* Suggest Company Section */}
-          <div className="mb-6 p-4 bg-gray-700 rounded-lg border border-gray-600">
-            <label className="block text-gray-300 font-semibold mb-2">
+          <div className="mb-6 rounded-2xl border border-slate-700/70 bg-slate-800/70 p-4">
+            <label className="section-label">
               If your company is not in the list, add it here
             </label>
             <a
               href="https://docs.google.com/forms/d/e/1FAIpQLScG4TfmYF4Is0Xzu07tY-I_bl9z8HVKC7MXK-w7D7_r-mS2HA/viewform?usp=publish-editor"
               target="_blank"
               rel="noopener noreferrer"
-              className="inline-block w-full bg-gray-600 hover:bg-gray-500 text-white font-semibold py-2 px-4 rounded-lg transition-all duration-300 hover:scale-105 text-center"
+              className="secondary-btn w-full py-2.5"
             >
               Suggest
             </a>
@@ -248,7 +233,7 @@ export default function SubmitPage() {
 
           {/* Error Message */}
           {error && (
-            <div className="mb-6 bg-red-600 text-white px-4 py-3 rounded-lg">
+            <div className="mb-6 rounded-xl border border-rose-500/30 bg-rose-500/10 px-4 py-3 text-sm text-rose-200">
               {error}
             </div>
           )}
@@ -257,16 +242,13 @@ export default function SubmitPage() {
           <button
             type="submit"
             disabled={loading || success}
-            className="w-full bg-blue-600 hover:bg-blue-700 text-white font-semibold py-3 rounded-lg transition-all duration-300 hover:scale-105 disabled:opacity-50 disabled:cursor-not-allowed disabled:hover:scale-100"
+            className="primary-btn w-full py-3 disabled:cursor-not-allowed disabled:opacity-50"
           >
             {loading ? "Submitting..." : success ? "Submitted!" : "Submit"}
           </button>
 
           {/* Back Link */}
-          <Link
-            href="/"
-            className="block text-center mt-4 text-gray-400 hover:text-white transition-colors"
-          >
+          <Link href="/" className="ghost-link mt-4 block justify-center">
             ← Back to artboard
           </Link>
         </form>
