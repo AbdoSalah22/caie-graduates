@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { collection, onSnapshot, query } from "firebase/firestore";
+import { collection, onSnapshot, query, doc, getDoc } from "firebase/firestore";
 import { db } from "@/lib/firebase";
 import { Node, Company } from "@/types";
 import { MIN_RADIUS, SCALING_FACTOR } from "@/lib/constants";
@@ -23,8 +23,23 @@ export default function Home() {
   const [nodes, setNodes] = useState<Node[]>([]);
   const [loading, setLoading] = useState(true);
   const [isProfileModalOpen, setIsProfileModalOpen] = useState(false);
+  const [showProfileButton, setShowProfileButton] = useState(true);
 
   useEffect(() => {
+    const loadSettings = async () => {
+      try {
+        const settingsRef = doc(db, "settings", "home");
+        const settingsDoc = await getDoc(settingsRef);
+        if (settingsDoc.exists()) {
+          setShowProfileButton(settingsDoc.data().showProfileButton ?? true);
+        }
+      } catch (error) {
+        console.error("Error loading home settings:", error);
+      }
+    };
+
+    loadSettings();
+
     // Set up real-time listener for companies collection
     const q = query(collection(db, "companies"));
 
@@ -93,12 +108,14 @@ export default function Home() {
       </Link> */}
 
       {/* My Profile button */}
-      <button
-        onClick={() => setIsProfileModalOpen(true)}
-        className="fixed top-3 right-3 sm:top-8 sm:right-8 bg-blue-600 hover:bg-blue-700 text-white rounded-full px-3 py-1.5 sm:px-6 sm:py-3 text-xs sm:text-base shadow-2xl transition-all duration-300 hover:scale-105 font-semibold z-10"
-      >
-        My Profile
-      </button>
+      {showProfileButton ? (
+        <button
+          onClick={() => setIsProfileModalOpen(true)}
+          className="fixed top-3 right-3 sm:top-8 sm:right-8 bg-blue-600 hover:bg-blue-700 text-white rounded-full px-3 py-1.5 sm:px-6 sm:py-3 text-xs sm:text-base shadow-2xl transition-all duration-300 hover:scale-105 font-semibold z-10"
+        >
+          My Profile
+        </button>
+      ) : null}
 
       {/* Browse Graduates button */}
       <Link

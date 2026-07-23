@@ -51,6 +51,7 @@ export default function AdminPage() {
   );
   const [loading, setLoading] = useState(false);
   const [message, setMessage] = useState("");
+  const [showProfileButton, setShowProfileButton] = useState(true);
 
   const ADMIN_PASSWORD = "admin123"; // Change this to your secure password
   const graduationYears = Array.from({ length: 2027 - 2014 + 1 }, (_, index) =>
@@ -63,6 +64,7 @@ export default function AdminPage() {
       setIsAuthenticated(true);
       loadCompanies();
       loadGraduates();
+      loadSettings();
     } else {
       setMessage("Incorrect password");
       setTimeout(() => setMessage(""), 3000);
@@ -86,6 +88,41 @@ export default function AdminPage() {
     } catch (error) {
       console.error("Error loading companies:", error);
       setMessage("Error loading companies");
+    }
+  };
+
+  const loadSettings = async () => {
+    try {
+      const settingsRef = doc(db, "settings", "home");
+      const settingsDoc = await getDoc(settingsRef);
+      if (settingsDoc.exists()) {
+        const data = settingsDoc.data();
+        setShowProfileButton(data.showProfileButton ?? true);
+      } else {
+        setShowProfileButton(true);
+      }
+    } catch (error) {
+      console.error("Error loading settings:", error);
+    }
+  };
+
+  const saveSettings = async () => {
+    try {
+      const settingsRef = doc(db, "settings", "home");
+      await setDoc(
+        settingsRef,
+        {
+          showProfileButton,
+          updatedAt: serverTimestamp(),
+        },
+        { merge: true },
+      );
+      setMessage("Home page settings updated");
+    } catch (error) {
+      console.error("Error saving settings:", error);
+      setMessage("Error saving settings");
+    } finally {
+      setTimeout(() => setMessage(""), 3000);
     }
   };
 
@@ -412,6 +449,40 @@ export default function AdminPage() {
               {message}
             </div>
           )}
+        </div>
+
+        {/* Home Page Settings */}
+        <div className="bg-gray-800 rounded-lg shadow-2xl p-6 mb-8">
+          <h2 className="text-2xl font-bold text-white mb-4">
+            Home Page Settings
+          </h2>
+          <div className="flex items-center justify-between rounded-lg bg-gray-700 p-4">
+            <div>
+              <h3 className="text-white font-semibold">
+                Show My Profile button
+              </h3>
+              <p className="text-gray-400 text-sm">
+                Enable or disable the button on the home page.
+              </p>
+            </div>
+            <label className="relative inline-flex cursor-pointer items-center">
+              <input
+                type="checkbox"
+                checked={showProfileButton}
+                onChange={(e) => setShowProfileButton(e.target.checked)}
+                className="peer sr-only"
+              />
+              <div className="h-6 w-11 rounded-full bg-gray-600 peer-checked:bg-blue-600 transition-all"></div>
+              <div className="pointer-events-none absolute left-1 top-1 h-4 w-4 rounded-full bg-white transition-all peer-checked:translate-x-5"></div>
+            </label>
+          </div>
+          <button
+            type="button"
+            onClick={saveSettings}
+            className="mt-4 bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-lg transition-all"
+          >
+            Save Settings
+          </button>
         </div>
 
         {/* Graduate Management */}

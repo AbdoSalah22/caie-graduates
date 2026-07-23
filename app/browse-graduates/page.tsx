@@ -12,6 +12,7 @@ type SubmissionRow = {
   linkedin: string;
   company: string;
   portfolioCv?: string;
+  graduationClass?: string;
   timestamp?: any;
 };
 
@@ -39,6 +40,7 @@ export default function BrowseGraduatesPage() {
           linkedin: data.linkedin || "",
           company: data.company || "",
           portfolioCv: data.portfolioCv || undefined,
+          graduationClass: data.graduationClass || undefined,
           timestamp: data.timestamp,
         });
       });
@@ -72,13 +74,16 @@ export default function BrowseGraduatesPage() {
     const q = search.trim().toLowerCase();
 
     return submissions
-      .filter((s) => (selectedCompany === "all" ? true : s.company === selectedCompany))
+      .filter((s) =>
+        selectedCompany === "all" ? true : s.company === selectedCompany,
+      )
       .filter((s) => {
         if (!q) return true;
         return (
           s.name.toLowerCase().includes(q) ||
           s.title.toLowerCase().includes(q) ||
-          s.company.toLowerCase().includes(q)
+          s.company.toLowerCase().includes(q) ||
+          (s.graduationClass || "").toLowerCase().includes(q)
         );
       })
       .sort((a, b) => a.name.localeCompare(b.name));
@@ -94,9 +99,12 @@ export default function BrowseGraduatesPage() {
           >
             ← Back to Board
           </Link>
-          <h1 className="text-2xl sm:text-4xl font-bold text-white">Browse Graduates</h1>
+          <h1 className="text-2xl sm:text-4xl font-bold text-white">
+            Browse Graduates
+          </h1>
           <p className="text-gray-400 mt-2 text-sm sm:text-base">
-            Filter by company and view Portfolio/CV + LinkedIn for each graduate.
+            Filter by company and view Portfolio/CV + LinkedIn for each
+            graduate.
           </p>
         </div>
 
@@ -182,8 +190,17 @@ export default function BrowseGraduatesPage() {
                       <div className="text-white font-semibold truncate">
                         {grad.name}
                       </div>
-                      <div className="text-gray-400 text-sm truncate">{grad.title}</div>
-                      <div className="text-gray-500 text-xs truncate">{grad.company}</div>
+                      <div className="text-gray-400 text-sm truncate">
+                        {grad.title}
+                      </div>
+                      <div className="text-gray-500 text-xs truncate">
+                        {grad.company}
+                      </div>
+                      {grad.graduationClass ? (
+                        <div className="text-blue-400 text-xs font-medium mt-1">
+                          Class {grad.graduationClass}
+                        </div>
+                      ) : null}
                     </div>
                   </div>
 
@@ -240,4 +257,3 @@ export default function BrowseGraduatesPage() {
     </div>
   );
 }
-
