@@ -274,8 +274,8 @@ export default function Artboard({ nodes }: ArtboardProps) {
         </div>
       )}
 
-      {/* Zoom indicator and reset button */}
-      <div className="absolute bottom-3 sm:bottom-4 left-1/2 transform -translate-x-1/2 flex items-center gap-2 sm:gap-3">
+      {/* Zoom indicator and recenter button */}
+      <div className="absolute bottom-6 sm:bottom-4 left-1/2 transform -translate-x-1/2 flex items-center gap-2 sm:gap-3">
         <div className="rounded-full border border-slate-700/70 bg-slate-900/70 px-2.5 py-1 text-xs text-slate-100 shadow-lg shadow-slate-950/30 sm:px-4 sm:py-2 sm:text-sm pointer-events-none">
           {(zoom * 100).toFixed(0)}%
         </div>
@@ -283,7 +283,7 @@ export default function Artboard({ nodes }: ArtboardProps) {
           onClick={handleReset}
           className="primary-btn rounded-full px-2.5 py-1 text-xs shadow-lg shadow-cyan-500/20 sm:px-4 sm:py-2 sm:text-sm"
         >
-          Reset
+          Recenter
         </button>
       </div>
     </div>
