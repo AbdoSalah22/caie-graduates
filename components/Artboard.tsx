@@ -275,7 +275,10 @@ export default function Artboard({ nodes }: ArtboardProps) {
       )}
 
       {/* Zoom indicator and recenter button */}
-      <div className="absolute bottom-6 sm:bottom-4 left-1/2 transform -translate-x-1/2 flex items-center gap-2 sm:gap-3">
+      <div
+        className="absolute left-1/2 transform -translate-x-1/2 flex items-center gap-2 sm:gap-3"
+        style={{ bottom: "calc(env(safe-area-inset-bottom, 0px) + 4rem)" }}
+      >
         <div className="rounded-full border border-slate-700/70 bg-slate-900/70 px-2.5 py-1 text-xs text-slate-100 shadow-lg shadow-slate-950/30 sm:px-4 sm:py-2 sm:text-sm pointer-events-none">
           {(zoom * 100).toFixed(0)}%
         </div>
