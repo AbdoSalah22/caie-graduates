@@ -25,20 +25,17 @@ export default function LogoNode({ node, nodeSize }: LogoNodeProps) {
   const fontSize = Math.max(10, Math.min(14, 120 / textLength));
 
   // White glow for hover effect
-  const whiteGlow = "64, 64, 64";
-  const hoverScale = 1.06;
+  const whiteGlow = "255, 255, 255";
 
   return (
     <Link
       href={`/company/${encodeURIComponent(id)}`}
-      className="absolute transition-transform duration-300 ease-out flex items-center justify-center shadow-lg hover:z-50 hover:brightness-110 cursor-pointer"
+      className="absolute transition-all duration-300 ease-out flex items-center justify-center shadow-lg hover:scale-110 hover:z-50 hover:brightness-110 cursor-pointer"
       onMouseEnter={(e) => {
         e.currentTarget.style.boxShadow = `0 20px 60px rgba(${whiteGlow}, 0.6)`;
-        e.currentTarget.style.transform = `translate(-50%, -50%) scale(${hoverScale})`;
       }}
       onMouseLeave={(e) => {
         e.currentTarget.style.boxShadow = "";
-        e.currentTarget.style.transform = "translate(-50%, -50%)";
       }}
       style={{
         left: x,

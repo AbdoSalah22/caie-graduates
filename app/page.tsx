@@ -117,14 +117,6 @@ export default function Home() {
         </button>
       ) : null}
 
-      {/* Browse Graduates button */}
-      <Link
-        href="/browse-graduates"
-        className="fixed bottom-3 left-3 z-10 rounded-full border border-slate-700/70 bg-slate-800/80 px-3 py-1.5 text-xs font-semibold text-slate-100 shadow-[0_12px_30px_rgba(2,8,23,0.24)] transition-all duration-300 hover:-translate-y-0.5 hover:scale-[1.02] hover:bg-slate-700 sm:bottom-8 sm:left-8 sm:px-6 sm:py-3 sm:text-base"
-      >
-        Browse Graduates
-      </Link>
-
       {/* Admin button hidden - only accessible via direct URL */}
       {/* <Link
         href="/admin"
@@ -142,6 +134,12 @@ export default function Home() {
           {nodes.length} {nodes.length === 1 ? "company" : "companies"} •{" "}
           {nodes.reduce((sum, node) => sum + node.count, 0)} graduates
         </p>
+        <Link
+          href="/browse-graduates"
+          className="mt-3 inline-flex rounded-full border border-slate-700/70 bg-slate-800/80 px-3 py-1.5 text-[11px] font-semibold text-slate-100 shadow-[0_10px_24px_rgba(2,8,23,0.18)] transition-all duration-300 hover:bg-slate-700"
+        >
+          Browse Graduates
+        </Link>
       </div>
 
       {/* Profile Modal */}
