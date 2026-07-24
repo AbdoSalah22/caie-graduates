@@ -1,5 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
 import { db } from "@/lib/firebase";
+import { isValidLinkedInUrl } from "@/lib/utils";
 import {
   collection,
   addDoc,
@@ -58,6 +59,13 @@ export async function POST(request: NextRequest) {
     const trimmedTitle = title.trim();
     const trimmedLinkedin = linkedin.trim();
     const trimmedCompany = company.trim();
+
+    if (!isValidLinkedInUrl(trimmedLinkedin)) {
+      return NextResponse.json(
+        { error: "LinkedIn URL is invalid" },
+        { status: 400 },
+      );
+    }
 
     // 1. Add submission to submissions collection
     const submissionsRef = collection(db, "submissions");

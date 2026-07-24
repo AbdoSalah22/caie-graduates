@@ -3,6 +3,7 @@
 import { useState, useEffect } from "react";
 import { collection, getDocs } from "firebase/firestore";
 import { db } from "@/lib/firebase";
+import { isValidLinkedInUrl } from "@/lib/utils";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 
@@ -76,6 +77,12 @@ export default function SubmitPage() {
 
     if (!linkedin.trim()) {
       setError("Please enter your LinkedIn URL");
+      setLoading(false);
+      return;
+    }
+
+    if (!isValidLinkedInUrl(linkedin)) {
+      setError("Please enter a valid LinkedIn URL");
       setLoading(false);
       return;
     }

@@ -16,6 +16,7 @@ import {
   getDoc,
 } from "firebase/firestore";
 import { auth, db } from "@/lib/firebase";
+import { isValidLinkedInUrl } from "@/lib/utils";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
 
@@ -178,6 +179,12 @@ export default function ProfileModal({ isOpen, onClose }: ProfileModalProps) {
 
     if (!profileData.linkedin.trim()) {
       setError("Please enter your LinkedIn URL");
+      setLoading(false);
+      return;
+    }
+
+    if (!isValidLinkedInUrl(profileData.linkedin)) {
+      setError("Please enter a valid LinkedIn URL");
       setLoading(false);
       return;
     }

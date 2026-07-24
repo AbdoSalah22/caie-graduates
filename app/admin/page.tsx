@@ -12,8 +12,7 @@ import {
   serverTimestamp,
   increment,
 } from "firebase/firestore";
-import { db } from "@/lib/firebase";
-import Link from "next/link";
+import { db } from "@/lib/firebase";import { isValidLinkedInUrl } from "@/lib/utils";import Link from "next/link";
 
 interface CompanyItem {
   name: string;
@@ -195,6 +194,12 @@ export default function AdminPage() {
       setMessage("LinkedIn URL is required");
       return;
     }
+
+    if (!isValidLinkedInUrl(graduateForm.linkedin)) {
+      setMessage("Please enter a valid LinkedIn URL");
+      return;
+    }
+
     if (!graduateForm.company.trim()) {
       setMessage("Company is required");
       return;

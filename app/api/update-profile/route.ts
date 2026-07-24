@@ -1,5 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
 import { db } from "@/lib/firebase";
+import { isValidLinkedInUrl } from "@/lib/utils";
 import {
   collection,
   query,
@@ -77,6 +78,13 @@ export async function POST(request: NextRequest) {
     const trimmedCompany = company.trim();
     const trimmedPortfolioCv =
       typeof portfolioCv === "string" ? portfolioCv.trim() : "";
+
+    if (!isValidLinkedInUrl(trimmedLinkedin)) {
+      return NextResponse.json(
+        { error: "LinkedIn URL is invalid" },
+        { status: 400 },
+      );
+    }
     const trimmedGraduationClass =
       typeof graduationClass === "string" ? graduationClass.trim() : "";
 
