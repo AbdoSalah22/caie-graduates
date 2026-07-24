@@ -12,7 +12,9 @@ import {
   serverTimestamp,
   increment,
 } from "firebase/firestore";
-import { db } from "@/lib/firebase";import { isValidLinkedInUrl } from "@/lib/utils";import Link from "next/link";
+import { db } from "@/lib/firebase";
+import { isValidLinkedInUrl } from "@/lib/utils";
+import Link from "next/link";
 
 interface CompanyItem {
   name: string;

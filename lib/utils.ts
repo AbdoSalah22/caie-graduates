@@ -67,6 +67,7 @@ export function isValidLinkedInUrl(linkedinUrl: string): boolean {
   const url = linkedinUrl.trim();
   if (!url) return false;
 
-  const linkedinRegex = /^(https?:\/\/)?(www\.)?linkedin\.com\/(in|pub|company)\/[A-Za-z0-9\-_%]{2,}(\/.*)?$/i;
+  const linkedinRegex =
+    /^(https?:\/\/)?(www\.)?linkedin\.com\/(in|pub|company)\/[A-Za-z0-9\-_%]{2,}(\/.*)?$/i;
   return linkedinRegex.test(url);
 }

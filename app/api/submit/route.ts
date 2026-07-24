@@ -44,14 +44,14 @@ export async function POST(request: NextRequest) {
     if (!linkedin || typeof linkedin !== "string" || !linkedin.trim()) {
       return NextResponse.json(
         { error: "LinkedIn URL is required" },
-        { status: 400 }
+        { status: 400 },
       );
     }
 
     if (!company || typeof company !== "string" || !company.trim()) {
       return NextResponse.json(
         { error: "Company is required" },
-        { status: 400 }
+        { status: 400 },
       );
     }
 
@@ -104,7 +104,7 @@ export async function POST(request: NextRequest) {
           company: trimmedCompany,
         },
       },
-      { status: 200 }
+      { status: 200 },
     );
   } catch (error: any) {
     console.error("Error processing submission:", error);
@@ -114,7 +114,7 @@ export async function POST(request: NextRequest) {
         error: "Failed to process submission",
         details: error.message,
       },
-      { status: 500 }
+      { status: 500 },
     );
   }
 }
