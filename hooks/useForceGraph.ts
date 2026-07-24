@@ -18,106 +18,35 @@ function generateSpiralGrid(
   count: number,
 ): Array<{ row: number; col: number }> {
   const positions: Array<{ row: number; col: number }> = [];
+  if (count <= 0) return positions;
 
-  // Start at center (max heap position)
-  positions.push({ row: 0, col: 0 });
+  let x = 0;
+  let y = 0;
+  positions.push({ row: y, col: x });
 
   if (count === 1) return positions;
 
-  // Spiral outward in square frames
-  let layer = 1;
+  const directions = [
+    { dx: 1, dy: 0 },
+    { dx: 0, dy: -1 },
+    { dx: -1, dy: 0 },
+    { dx: 0, dy: 1 },
+  ];
+
+  let steps = 1;
+  let dirIndex = 0;
 
   while (positions.length < count) {
-    // Each layer forms a square frame around the previous
-    // Start at (0, layer) and go: right, up, left, left, down, down, right, right
-
-    const startRow = 0;
-    const startCol = layer;
-
-    // Position 1: Right of center (0, layer)
-    if (positions.length < count) {
-      positions.push({ row: startRow, col: startCol });
-    }
-
-    // Position 2: Up (-1, layer)
-    if (positions.length < count) {
-      positions.push({ row: startRow - 1, col: startCol });
-    }
-
-    // Position 3: Left (-1, layer-1)
-    if (positions.length < count) {
-      positions.push({ row: startRow - 1, col: startCol - 1 });
-    }
-
-    // Position 4: Left (-1, -layer)
-    if (positions.length < count) {
-      positions.push({ row: startRow - 1, col: -startCol });
-    }
-
-    // Position 5: Down (0, -layer)
-    if (positions.length < count) {
-      positions.push({ row: startRow, col: -startCol });
-    }
-
-    // Position 6: Down (1, -layer)
-    if (positions.length < count) {
-      positions.push({ row: startRow + 1, col: -startCol });
-    }
-
-    // Position 7: Right (1, -layer+1)
-    if (positions.length < count) {
-      positions.push({ row: startRow + 1, col: -startCol + 1 });
-    }
-
-    // Position 8: Right (1, layer)
-    if (positions.length < count) {
-      positions.push({ row: startRow + 1, col: startCol });
-    }
-
-    // Continue filling the rest of the perimeter for larger layers
-    if (layer > 1) {
-      // Top edge (right direction): from (-layer, -layer) to (-layer, layer-1)
-      for (let col = -layer; col < layer && positions.length < count; col++) {
-        // Skip positions we already added in the inner 3x3
-        if (layer === 1 || Math.abs(col) > 1 || col === -layer) {
-          positions.push({ row: -layer, col });
-        }
+    for (let repeat = 0; repeat < 2 && positions.length < count; repeat++) {
+      const { dx, dy } = directions[dirIndex % 4];
+      for (let step = 0; step < steps && positions.length < count; step++) {
+        x += dx;
+        y += dy;
+        positions.push({ row: y, col: x });
       }
-
-      // Right edge (down direction): from (-layer+1, layer) to (layer-1, layer)
-      for (
-        let row = -layer + 1;
-        row < layer && positions.length < count;
-        row++
-      ) {
-        // Skip positions already added
-        if (layer === 1 || Math.abs(row) > 1) {
-          positions.push({ row, col: layer });
-        }
-      }
-
-      // Bottom edge (left direction): from (layer, layer) to (layer, -layer+1)
-      for (let col = layer; col > -layer && positions.length < count; col--) {
-        // Skip positions already added
-        if (layer === 1 || Math.abs(col) > 1) {
-          positions.push({ row: layer, col });
-        }
-      }
-
-      // Left edge (up direction): from (layer-1, -layer) to (-layer+1, -layer)
-      for (
-        let row = layer - 1;
-        row > -layer && positions.length < count;
-        row--
-      ) {
-        // Skip positions already added
-        if (layer === 1 || Math.abs(row) > 1) {
-          positions.push({ row, col: -layer });
-        }
-      }
+      dirIndex += 1;
     }
-
-    layer++;
+    steps += 1;
   }
 
   return positions;
