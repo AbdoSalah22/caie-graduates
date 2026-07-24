@@ -53,7 +53,7 @@ export default function AdminPage() {
   const [message, setMessage] = useState("");
   const [showProfileButton, setShowProfileButton] = useState(true);
 
-  const ADMIN_PASSWORD = "admin123"; // Change this to your secure password
+  const ADMIN_PASSWORD = "caie@graduates"; // Change this to your secure password
   const graduationYears = Array.from({ length: 2027 - 2014 + 1 }, (_, index) =>
     String(2014 + index),
   );

@@ -10,7 +10,7 @@ This directory stores company logo images for the GradBoard application.
    - Supported formats: PNG, SVG, JPG, WEBP
 
 2. **Update via Admin Panel**:
-   - Go to `/admin` (password: `admin123`)
+   - Go to `/admin` (password: `caie@graduates`)
    - Find the company in the list
    - Enter the logo path in the "Logo URL" field: `/logos/google.png`
    - The logo will appear on the artboard immediately

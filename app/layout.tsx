@@ -12,7 +12,7 @@ export const viewport: Viewport = {
 };
 
 export const metadata: Metadata = {
-  title: "CESS Graduates Board",
+  title: "CAIE Graduates Board",
   description:
     "A dynamic artboard displaying company logos sized by graduate count",
 };

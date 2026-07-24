@@ -136,7 +136,7 @@ export default function Home() {
       {/* Title overlay */}
       <div className="fixed top-3 left-3 z-10 rounded-2xl border border-slate-800/70 bg-slate-950/50 px-3 py-2 backdrop-blur sm:top-8 sm:left-8 sm:px-4 sm:py-3">
         <h1 className="mb-0.5 text-lg font-semibold tracking-tight text-white sm:mb-2 sm:text-4xl">
-          CESS Graduates
+          CAIE Graduates
         </h1>
         <p className="text-xs text-slate-400 sm:text-base">
           {nodes.length} {nodes.length === 1 ? "company" : "companies"} •{" "}
