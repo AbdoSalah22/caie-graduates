@@ -16,28 +16,40 @@ import { useParams } from "next/navigation";
 
 export default function CompanyPage() {
   const params = useParams();
-  const companyName = decodeURIComponent(params.name as string);
+  const companyName = params?.name
+    ? decodeURIComponent(params.name as string)
+    : "";
   const [graduates, setGraduates] = useState<Graduate[]>([]);
   const [companyLogoUrl, setCompanyLogoUrl] = useState<string | null>(null);
   const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
     const fetchGraduates = async () => {
-      try {
-        // Fetch company details (logo)
-        const companyRef = doc(db, "companies", companyName);
-        const companyDoc = await getDoc(companyRef);
-        if (companyDoc.exists()) {
-          const companyData = companyDoc.data() as { logoUrl?: string };
-          setCompanyLogoUrl(companyData.logoUrl || null);
-        }
+      if (!companyName) {
+        setError("Invalid company selected");
+        setLoading(false);
+        return;
+      }
 
-        // Fetch all graduates for this company
-        const q = query(
+      try {
+        const companyRef = doc(db, "companies", companyName);
+        const submissionsQuery = query(
           collection(db, "submissions"),
           where("company", "==", companyName),
         );
-        const querySnapshot = await getDocs(q);
+
+        const [companyDoc, querySnapshot] = await Promise.all([
+          getDoc(companyRef),
+          getDocs(submissionsQuery),
+        ]);
+
+        if (companyDoc.exists()) {
+          const companyData = companyDoc.data() as { logoUrl?: string };
+          setCompanyLogoUrl(companyData.logoUrl || null);
+        } else {
+          setCompanyLogoUrl(null);
+        }
 
         const grads: Graduate[] = [];
         querySnapshot.forEach((doc) => {
@@ -52,11 +64,11 @@ export default function CompanyPage() {
           });
         });
 
-        // Sort by name
         grads.sort((a, b) => a.name.localeCompare(b.name));
         setGraduates(grads);
-      } catch (error) {
-        console.error("Error fetching graduates:", error);
+      } catch (fetchError) {
+        console.error("Error fetching graduates:", fetchError);
+        setError("Unable to load company graduates. Please try again.");
       } finally {
         setLoading(false);
       }
@@ -71,6 +83,19 @@ export default function CompanyPage() {
         <div className="surface-card-soft px-8 py-10 text-center">
           <div className="mx-auto mb-4 h-14 w-14 animate-spin rounded-full border-2 border-cyan-400/30 border-t-cyan-400"></div>
           <p className="text-slate-300">Loading employees...</p>
+        </div>
+      </div>
+    );
+  }
+
+  if (error) {
+    return (
+      <div className="page-shell flex min-h-screen items-center justify-center p-4">
+        <div className="surface-card-soft px-8 py-10 text-center">
+          <p className="mb-4 text-lg font-semibold text-white">{error}</p>
+          <Link href="/" className="primary-btn px-4 py-2">
+            Back to Board
+          </Link>
         </div>
       </div>
     );
