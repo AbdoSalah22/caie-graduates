@@ -30,7 +30,7 @@ export default function LogoNode({ node, nodeSize }: LogoNodeProps) {
   return (
     <Link
       href={`/company/${encodeURIComponent(id)}`}
-      className="absolute transition-all duration-300 ease-out flex items-center justify-center shadow-lg hover:scale-110 hover:z-50 hover:brightness-110 cursor-pointer"
+      className="absolute transition-transform duration-150 ease-out transform-gpu -translate-x-1/2 -translate-y-1/2 flex items-center justify-center shadow-lg hover:scale-110 hover:z-50 hover:brightness-110 active:scale-95 cursor-pointer"
       onMouseEnter={(e) => {
         e.currentTarget.style.boxShadow = `0 20px 60px rgba(${whiteGlow}, 0.6)`;
       }}
@@ -40,7 +40,6 @@ export default function LogoNode({ node, nodeSize }: LogoNodeProps) {
       style={{
         left: x,
         top: y,
-        transform: "translate(-50%, -50%)",
         width: `${size}px`,
         height: `${size}px`,
         borderRadius: `${borderRadius}px`,
