@@ -87,12 +87,6 @@ export default function SubmitPage() {
       return;
     }
 
-    if (!company) {
-      setError("Please select a company");
-      setLoading(false);
-      return;
-    }
-
     try {
       // Call API route
       const response = await fetch("/api/submit", {
@@ -214,7 +208,7 @@ export default function SubmitPage() {
               className="field-select"
               disabled={loading || success}
             >
-              <option value="">Select a company</option>
+              <option value="">Hide from board</option>
               {companies.map((companyName) => (
                 <option key={companyName} value={companyName}>
                   {companyName}

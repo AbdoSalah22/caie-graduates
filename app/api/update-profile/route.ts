@@ -65,9 +65,9 @@ export async function POST(request: NextRequest) {
       );
     }
 
-    if (!company || typeof company !== "string" || !company.trim()) {
+    if (company !== undefined && typeof company !== "string") {
       return NextResponse.json(
-        { error: "Company is required" },
+        { error: "Company must be a string" },
         { status: 400 },
       );
     }
@@ -75,7 +75,7 @@ export async function POST(request: NextRequest) {
     const trimmedName = name.trim();
     const trimmedTitle = title.trim();
     const trimmedLinkedin = linkedin.trim();
-    const trimmedCompany = company.trim();
+    const trimmedCompany = company ? company.trim() : "";
     const trimmedPortfolioCv =
       typeof portfolioCv === "string" ? portfolioCv.trim() : "";
 
@@ -129,21 +129,23 @@ export async function POST(request: NextRequest) {
         }
       }
 
-      // Increment new company
-      const newCompanyRef = doc(db, "companies", trimmedCompany);
-      const newCompanyDoc = await getDoc(newCompanyRef);
+      if (trimmedCompany) {
+        // Increment new company
+        const newCompanyRef = doc(db, "companies", trimmedCompany);
+        const newCompanyDoc = await getDoc(newCompanyRef);
 
-      if (newCompanyDoc.exists()) {
-        await updateDoc(newCompanyRef, {
-          count: increment(1),
-        });
-      } else {
-        // New company - create with count = 1
-        await setDoc(newCompanyRef, {
-          count: 1,
-        });
+        if (newCompanyDoc.exists()) {
+          await updateDoc(newCompanyRef, {
+            count: increment(1),
+          });
+        } else {
+          // New company - create with count = 1
+          await setDoc(newCompanyRef, {
+            count: 1,
+          });
+        }
       }
-    } else if (!oldCompany) {
+    } else if (!oldCompany && trimmedCompany) {
       // New submission - increment company count
       const companyRef = doc(db, "companies", trimmedCompany);
       const companyDoc = await getDoc(companyRef);

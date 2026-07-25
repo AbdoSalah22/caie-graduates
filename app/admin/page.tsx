@@ -202,10 +202,7 @@ export default function AdminPage() {
       return;
     }
 
-    if (!graduateForm.company.trim()) {
-      setMessage("Company is required");
-      return;
-    }
+    // Empty company selection hides the graduate from board
 
     setLoading(true);
     try {
@@ -229,8 +226,12 @@ export default function AdminPage() {
           currentGraduate &&
           currentGraduate.company !== graduateForm.company.trim()
         ) {
-          await updateCompanyCount(currentGraduate.company, -1);
-          await updateCompanyCount(graduateForm.company.trim(), 1);
+          if (currentGraduate.company.trim()) {
+            await updateCompanyCount(currentGraduate.company, -1);
+          }
+          if (graduateForm.company.trim()) {
+            await updateCompanyCount(graduateForm.company.trim(), 1);
+          }
         }
 
         await updateDoc(graduateRef, trimmedGraduate);
@@ -562,13 +563,16 @@ export default function AdminPage() {
                   className="field-select"
                   disabled={loading}
                 >
-                  <option value="">Select company</option>
+                  <option value="">Hide from board</option>
                   {companies.map((company) => (
                     <option key={company.name} value={company.name}>
                       {company.name}
                     </option>
                   ))}
                 </select>
+                <p className="mt-2 text-sm text-slate-400">
+                  Leave blank to hide this graduate from the board.
+                </p>
               </div>
               <div>
                 <label className="section-label">Graduation Class</label>

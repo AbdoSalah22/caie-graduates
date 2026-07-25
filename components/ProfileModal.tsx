@@ -190,9 +190,7 @@ export default function ProfileModal({ isOpen, onClose }: ProfileModalProps) {
     }
 
     if (!profileData.company.trim()) {
-      setError("Please select a company");
-      setLoading(false);
-      return;
+      // Hidden profile from board: allowed
     }
 
     try {
@@ -516,13 +514,16 @@ export default function ProfileModal({ isOpen, onClose }: ProfileModalProps) {
                     className="w-full px-4 py-3 bg-gray-700 text-white rounded-lg border border-gray-600 focus:border-blue-500 focus:outline-none focus:ring-2 focus:ring-blue-500 transition-all"
                     disabled={loading}
                   >
-                    <option value="">Select a company</option>
+                    <option value="">Hide from board</option>
                     {companies.map((companyName) => (
                       <option key={companyName} value={companyName}>
                         {companyName}
                       </option>
                     ))}
                   </select>
+                  <p className="mt-2 text-sm text-slate-400">
+                    Leave blank to hide your profile from the board.
+                  </p>
                 </div>
 
                 {/* Suggest Company Section */}
