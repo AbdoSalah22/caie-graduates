@@ -133,7 +133,7 @@ export default function SubmitPage() {
         <div className="page-header mb-8 text-center">
           <Link href="/" className="inline-block">
             <h1 className="page-title mb-2 hover:text-cyan-300 transition-colors">
-              CAIE Graduates
+              CAIE/CESS Graduates
             </h1>
           </Link>
           <p className="page-subtitle">Submit your information</p>
