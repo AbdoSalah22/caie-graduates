@@ -1,12 +1,10 @@
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useState } from "react";
 import {
   forceSimulation,
-  forceCenter,
   forceManyBody,
   forceCollide,
   forceX,
   forceY,
-  type Simulation,
 } from "d3-force";
 import { Node } from "@/types";
 import { BUBBLE_PADDING } from "@/lib/constants";
@@ -18,20 +16,18 @@ interface UseForceGraphProps {
 }
 
 /**
- * Custom hook that creates a D3 force simulation to position nodes.
+ * Custom hook that computes a deterministic, size-centered bubble layout.
  *
- * Each node's `radius` drives collision detection and spacing, producing
- * the "bubble grid" effect where larger companies get bigger bubbles.
- *
- * Forces applied:
- * - Center gravity: pulls nodes toward the viewport center
- * - Collision: prevents overlaps, respects per-node radius + padding
- * - Many-body: gentle repulsion to spread nodes out
- * - X/Y positioning: weak pull toward center to keep layout compact
+ * Companies with more graduates end up near the center of the board:
+ * - Nodes are sorted by count (largest first) and seeded on a golden-angle
+ *   spiral around the center, so the biggest bubbles start closest to it.
+ * - A radial pull (via forceX/forceY) scales with each node's radius, so
+ *   larger companies are attracted to the center more strongly.
+ * - The simulation is run synchronously to completion, producing the same
+ *   fixed layout on every load (no randomness, no animated jitter).
  */
 export function useForceGraph({ nodes, width, height }: UseForceGraphProps) {
   const [positionedNodes, setPositionedNodes] = useState<Node[]>([]);
-  const simulationRef = useRef<Simulation<Node, undefined> | null>(null);
 
   useEffect(() => {
     if (!nodes.length || !width || !height) {
@@ -39,28 +35,42 @@ export function useForceGraph({ nodes, width, height }: UseForceGraphProps) {
       return;
     }
 
-    // Stop any existing simulation before creating a new one
-    if (simulationRef.current) {
-      simulationRef.current.stop();
-    }
-
     const centerX = width / 2;
     const centerY = height / 2;
 
-    // Clone nodes so D3 can mutate x/y/vx/vy on them
-    const simNodes: Node[] = nodes.map((n) => ({
-      ...n,
-      x: n.x ?? centerX + (Math.random() - 0.5) * width * 0.3,
-      y: n.y ?? centerY + (Math.random() - 0.5) * height * 0.3,
-    }));
+    // Largest companies first, so they occupy the innermost spiral slots
+    const sorted = [...nodes].sort((a, b) => b.count - a.count);
 
-    const simulation = forceSimulation<Node>(simNodes)
-      // Pull toward center
-      .force("center", forceCenter<Node>(centerX, centerY).strength(0.05))
-      // Weak X/Y attraction to keep cluster compact
-      .force("x", forceX<Node>(centerX).strength(0.04))
-      .force("y", forceY<Node>(centerY).strength(0.04))
-      // Repulsion between nodes
+    // Golden-angle phyllotaxis spiral: deterministic, evenly spaced seeds
+    const goldenAngle = Math.PI * (3 - Math.sqrt(5));
+    const simNodes: Node[] = sorted.map((n, i) => {
+      const r = 10 * Math.sqrt(i);
+      return {
+        ...n,
+        x: centerX + r * Math.cos(i * goldenAngle),
+        y: centerY + r * Math.sin(i * goldenAngle),
+      };
+    });
+
+    const maxRadius = Math.max(...simNodes.map((n) => n.radius));
+
+    const simulation = forceSimulation<Node>(simNodes).stop();
+
+    // Radial pull toward center — stronger for bigger companies
+    simulation
+      .force(
+        "x",
+        forceX<Node>(centerX).strength(
+          (d) => 0.05 + 0.35 * (d.radius / maxRadius),
+        ),
+      )
+      .force(
+        "y",
+        forceY<Node>(centerY).strength(
+          (d) => 0.05 + 0.35 * (d.radius / maxRadius),
+        ),
+      )
+      // Gentle repulsion so equal-size companies spread into rings
       .force(
         "charge",
         forceManyBody<Node>()
@@ -73,28 +83,18 @@ export function useForceGraph({ nodes, width, height }: UseForceGraphProps) {
         forceCollide<Node>()
           .radius((d) => d.radius + BUBBLE_PADDING)
           .strength(0.9)
-          .iterations(3),
-      )
-      .alphaDecay(0.02)
-      .velocityDecay(0.35);
-
-    // Update React state on each tick
-    simulation.on("tick", () => {
-      setPositionedNodes(
-        simNodes.map((n) => ({
-          ...n,
-          x: n.x,
-          y: n.y,
-        })),
+          .iterations(4),
       );
-    });
 
-    simulationRef.current = simulation;
+    // Run synchronously until settled — same input, same output, every time
+    let ticks = 0;
+    while (ticks++ < 600 && simulation.alpha() > simulation.alphaMin()) {
+      simulation.tick();
+    }
 
-    return () => {
-      simulation.stop();
-      simulationRef.current = null;
-    };
+    setPositionedNodes(simNodes.map((n) => ({ ...n })));
+
+    return () => {};
   }, [nodes, width, height]);
 
   return positionedNodes;
