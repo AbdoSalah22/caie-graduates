@@ -1,8 +1,8 @@
 "use client";
 
-import { useEffect, useMemo, useState } from "react";
+import { useEffect, useMemo, useState, useCallback } from "react";
 import Link from "next/link";
-import { collection, onSnapshot } from "firebase/firestore";
+import { collection, getDocs } from "firebase/firestore";
 import { db } from "@/lib/firebase";
 
 type SubmissionRow = {
@@ -13,7 +13,6 @@ type SubmissionRow = {
   company: string;
   portfolioCv?: string;
   graduationClass?: string;
-  timestamp?: any;
 };
 
 type CompanyRow = {
@@ -24,15 +23,22 @@ type CompanyRow = {
 export default function BrowseGraduatesPage() {
   const [submissions, setSubmissions] = useState<SubmissionRow[]>([]);
   const [companies, setCompanies] = useState<Record<string, CompanyRow>>({});
+  const [loading, setLoading] = useState(true);
 
   const [selectedCompany, setSelectedCompany] = useState<string>("all");
   const [search, setSearch] = useState<string>("");
 
-  useEffect(() => {
-    const unsub = onSnapshot(collection(db, "submissions"), (snapshot) => {
+  const fetchData = useCallback(async () => {
+    setLoading(true);
+    try {
+      const [submissionsSnapshot, companiesSnapshot] = await Promise.all([
+        getDocs(collection(db, "submissions")),
+        getDocs(collection(db, "companies")),
+      ]);
+
       const rows: SubmissionRow[] = [];
-      snapshot.forEach((doc) => {
-        const data = doc.data() as any;
+      submissionsSnapshot.forEach((doc) => {
+        const data = doc.data();
         rows.push({
           id: doc.id,
           name: data.name || "",
@@ -41,26 +47,25 @@ export default function BrowseGraduatesPage() {
           company: data.company || "",
           portfolioCv: data.portfolioCv || undefined,
           graduationClass: data.graduationClass || undefined,
-          timestamp: data.timestamp,
         });
       });
       setSubmissions(rows);
-    });
 
-    return () => unsub();
-  }, []);
-
-  useEffect(() => {
-    const unsub = onSnapshot(collection(db, "companies"), (snapshot) => {
       const map: Record<string, CompanyRow> = {};
-      snapshot.forEach((doc) => {
+      companiesSnapshot.forEach((doc) => {
         map[doc.id] = doc.data() as CompanyRow;
       });
       setCompanies(map);
-    });
-
-    return () => unsub();
+    } catch (error) {
+      console.error("Error fetching data:", error);
+    } finally {
+      setLoading(false);
+    }
   }, []);
+
+  useEffect(() => {
+    fetchData();
+  }, [fetchData]);
 
   const companyOptions = useMemo(() => {
     const names = Object.keys(companies).filter((name) => {
@@ -131,7 +136,7 @@ export default function BrowseGraduatesPage() {
               />
             </div>
 
-            <div className="sm:pb-1">
+            <div className="flex gap-2 sm:pb-1">
               <button
                 onClick={() => {
                   setSelectedCompany("all");
@@ -140,6 +145,13 @@ export default function BrowseGraduatesPage() {
                 className="secondary-btn px-4 py-3"
               >
                 Clear
+              </button>
+              <button
+                onClick={fetchData}
+                disabled={loading}
+                className="secondary-btn px-4 py-3 disabled:opacity-50"
+              >
+                {loading ? "Loading..." : "Refresh"}
               </button>
             </div>
           </div>
@@ -163,7 +175,7 @@ export default function BrowseGraduatesPage() {
                   className="flex flex-col gap-3 rounded-2xl border border-slate-800/80 bg-slate-800/70 p-3 transition-all duration-200 hover:-translate-y-0.5 hover:border-slate-600 hover:bg-slate-700/80 sm:flex-row sm:items-center sm:justify-between sm:p-4"
                 >
                   <div className="flex items-center gap-3 min-w-0">
-                    <div className="flex h-12 w-12 shrink-0 items-center justify-center overflow-hidden rounded-xl border border-slate-600/70 bg-white p-1.75 shadow-sm">
+                    <div className="flex h-12 w-12 shrink-0 items-center justify-center overflow-hidden rounded-xl border border-slate-600/70 bg-white p-1.5 shadow-sm">
                       {logoUrl ? (
                         <img
                           src={logoUrl}

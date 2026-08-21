@@ -3,11 +3,25 @@
 import { useEffect, useState } from "react";
 import { collection, onSnapshot, query, doc, getDoc } from "firebase/firestore";
 import { db } from "@/lib/firebase";
-import { Node, Company } from "@/types";
-import { MIN_RADIUS, SCALING_FACTOR } from "@/lib/constants";
+import { Node } from "@/types";
+import { MIN_BUBBLE_SIZE, MAX_BUBBLE_SIZE } from "@/lib/constants";
 import Artboard from "@/components/Artboard";
 import ProfileModal from "@/components/ProfileModal";
 import Link from "next/link";
+
+/**
+ * Compute bubble radius using logarithmic scaling.
+ *
+ * Log scaling prevents a single dominant company from dwarfing all others.
+ * A company with 50 employees will be noticeably larger than one with 5,
+ * but not 10× larger.
+ */
+function computeRadius(count: number, maxCount: number): number {
+  if (maxCount <= 1) return MIN_BUBBLE_SIZE / 2;
+  const logScale = Math.log(count + 1) / Math.log(maxCount + 1);
+  const diameter = MIN_BUBBLE_SIZE + (MAX_BUBBLE_SIZE - MIN_BUBBLE_SIZE) * logScale;
+  return diameter / 2; // radius = half of diameter
+}
 
 /**
  * Main page - displays the dynamic logo artboard
@@ -17,7 +31,8 @@ import Link from "next/link";
  * - A company's graduate count changes
  * - Logo URLs are updated
  *
- * Automatically converts company data to nodes with computed radius
+ * Companies are sized proportionally to their graduate count
+ * using logarithmic scaling and D3 force-directed layout.
  */
 export default function Home() {
   const [nodes, setNodes] = useState<Node[]>([]);
@@ -46,27 +61,32 @@ export default function Home() {
     const unsubscribe = onSnapshot(
       q,
       (snapshot) => {
-        const companiesData: Node[] = [];
+        // First pass: collect raw data and find maxCount
+        const rawData: { id: string; count: number; logoUrl?: string }[] = [];
+        let maxCount = 1;
 
         snapshot.forEach((doc) => {
-          const data = doc.data() as Company;
-          const companyName = doc.id;
+          const data = doc.data();
+          const count = data.count || 0;
 
-          // Skip companies with 0 graduates
-          if (!data.count || data.count <= 0) {
-            return;
-          }
+          if (count <= 0) return; // Skip empty companies
 
-          // Calculate radius based on graduate count
-          const radius = MIN_RADIUS + data.count * SCALING_FACTOR;
-
-          companiesData.push({
-            id: companyName,
-            count: data.count,
-            radius,
-            logoUrl: data.logoUrl, // Include logo URL
+          rawData.push({
+            id: doc.id,
+            count,
+            logoUrl: data.logoUrl,
           });
+
+          if (count > maxCount) maxCount = count;
         });
+
+        // Second pass: compute logarithmic radii
+        const companiesData: Node[] = rawData.map((company) => ({
+          id: company.id,
+          count: company.count,
+          radius: computeRadius(company.count, maxCount),
+          logoUrl: company.logoUrl,
+        }));
 
         // Sort by count descending (largest companies first)
         companiesData.sort((a, b) => b.count - a.count);
@@ -99,14 +119,6 @@ export default function Home() {
     <main className="page-shell relative overflow-hidden">
       <Artboard nodes={nodes} />
 
-      {/* Floating action buttons */}
-      {/* <Link
-        href="/submit"
-        className="fixed bottom-8 right-8 bg-blue-600 hover:bg-blue-700 text-white rounded-full px-6 py-3 shadow-2xl transition-all duration-300 hover:scale-105 font-semibold z-10"
-      >
-        + Add Graduate
-      </Link> */}
-
       {/* My Profile button */}
       {showProfileButton ? (
         <button
@@ -116,14 +128,6 @@ export default function Home() {
           My Profile
         </button>
       ) : null}
-
-      {/* Admin button hidden - only accessible via direct URL */}
-      {/* <Link
-        href="/admin"
-        className="fixed bottom-8 left-8 bg-gray-700 hover:bg-gray-600 text-white rounded-full px-6 py-3 shadow-2xl transition-all duration-300 hover:scale-105 font-semibold z-10"
-      >
-        Admin
-      </Link> */}
 
       {/* Title overlay */}
       <div className="fixed top-3 left-3 z-10 rounded-2xl border border-slate-800/70 bg-slate-950/50 px-3 py-2 backdrop-blur sm:top-8 sm:left-8 sm:px-4 sm:py-3">

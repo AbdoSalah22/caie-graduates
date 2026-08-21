@@ -1,8 +1,10 @@
+import { Timestamp } from "firebase/firestore";
+
 export interface Node {
   id: string; // company name
   count: number;
-  radius: number; // computed size
-  logoUrl?: string; // path to logo image in public/logos/
+  radius: number; // computed bubble radius (half the rendered diameter)
+  logoUrl?: string;
   x?: number;
   y?: number;
   vx?: number;
@@ -14,13 +16,16 @@ export interface Submission {
   title: string;
   linkedin: string;
   company: string;
+  portfolioCv?: string;
   graduationClass?: string;
-  timestamp: any;
+  userId?: string;
+  timestamp: Timestamp | null;
+  updatedAt?: Timestamp | null;
 }
 
 export interface Company {
   count: number;
-  logoUrl?: string; // path to logo image in public/logos/
+  logoUrl?: string;
 }
 
 export interface Graduate {
@@ -29,5 +34,5 @@ export interface Graduate {
   linkedin: string;
   portfolioCv?: string;
   graduationClass?: string;
-  timestamp: any;
+  timestamp: Timestamp | null;
 }

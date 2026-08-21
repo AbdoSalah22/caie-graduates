@@ -9,20 +9,12 @@ interface ArtboardProps {
   nodes: Node[];
 }
 
-/** Compute responsive node size based on viewport width */
-function getNodeSize(width: number): number {
-  if (width < 480) return 64;
-  if (width < 768) return 80;
-  return 120;
-}
-
 /**
  * Artboard component - the main canvas for displaying company logos
  *
- * Manages the force simulation and renders all logo nodes
- * Automatically adjusts to full screen dimensions
- * Provides a dark, clean aesthetic background
- * Supports zoom (mouse wheel / pinch) and pan (drag / touch drag)
+ * Manages the D3 force simulation and renders all logo nodes.
+ * Nodes are sized proportionally to employee count (bubble grid).
+ * Supports zoom (mouse wheel / pinch) and pan (drag / touch drag).
  */
 export default function Artboard({ nodes }: ArtboardProps) {
   const containerRef = useRef<HTMLDivElement>(null);
@@ -40,12 +32,6 @@ export default function Artboard({ nodes }: ArtboardProps) {
   const lastTouchCenter = useRef<{ x: number; y: number } | null>(null);
   const isTouchDragging = useRef(false);
 
-  // Responsive node size
-  const nodeSize = getNodeSize(
-    dimensions.width ||
-      (typeof window !== "undefined" ? window.innerWidth : 1920),
-  );
-
   // Track container dimensions
   useEffect(() => {
     const updateDimensions = () => {
@@ -56,13 +42,9 @@ export default function Artboard({ nodes }: ArtboardProps) {
       }
     };
 
-    // Initial dimensions
     updateDimensions();
 
-    // Add resize listener
     window.addEventListener("resize", updateDimensions);
-
-    // Add a small delay to ensure DOM is ready
     const timeoutId = setTimeout(updateDimensions, 100);
 
     return () => {
@@ -80,7 +62,6 @@ export default function Artboard({ nodes }: ArtboardProps) {
     height:
       dimensions.height ||
       (typeof window !== "undefined" ? window.innerHeight : 1080),
-    nodeSize,
   });
 
   // Handle zoom with mouse wheel
@@ -125,9 +106,6 @@ export default function Artboard({ nodes }: ArtboardProps) {
   };
 
   // ── Touch handlers for mobile pan & pinch-to-zoom ──
-  // Registered as native (non-passive) listeners so e.preventDefault() works
-  // and the browser doesn't interfere with our custom gestures.
-
   const getTouchDistance = (touches: TouchList) => {
     const dx = touches[0].clientX - touches[1].clientX;
     const dy = touches[0].clientY - touches[1].clientY;
@@ -174,7 +152,7 @@ export default function Artboard({ nodes }: ArtboardProps) {
     };
 
     const onTouchMove = (e: TouchEvent) => {
-      e.preventDefault(); // stops browser zoom / scroll – requires non-passive
+      e.preventDefault();
       if (e.touches.length === 1 && isTouchDragging.current) {
         setPan({
           x: e.touches[0].clientX - dragStartRef.current.x,
@@ -183,18 +161,15 @@ export default function Artboard({ nodes }: ArtboardProps) {
       } else if (e.touches.length === 2 && lastTouchDistance.current !== null) {
         const newDist = getTouchDistance(e.touches);
 
-        // Guard against zero / degenerate distance that would produce NaN
         if (newDist > 1 && lastTouchDistance.current > 1) {
           const scale = newDist / lastTouchDistance.current;
 
-          // Sanity-check: ignore wild scale jumps from fast gestures
           if (isFinite(scale) && scale > 0.5 && scale < 2) {
             setZoom((prev) =>
               Math.max(MIN_ZOOM, Math.min(MAX_ZOOM, prev * scale)),
             );
           }
 
-          // Pan while pinching
           if (lastTouchCenter.current) {
             const newCenter = getTouchCenter(e.touches);
             const dx = newCenter.x - lastTouchCenter.current.x;
@@ -257,7 +232,7 @@ export default function Artboard({ nodes }: ArtboardProps) {
         }}
       >
         {simulatedNodes.map((node) => (
-          <LogoNode key={node.id} node={node} nodeSize={nodeSize} />
+          <LogoNode key={node.id} node={node} />
         ))}
       </div>
 

@@ -17,7 +17,6 @@ import {
 } from "firebase/firestore";
 import { auth, db } from "@/lib/firebase";
 import { isValidLinkedInUrl } from "@/lib/utils";
-import { useRouter } from "next/navigation";
 import Link from "next/link";
 
 interface ProfileModalProps {
@@ -49,7 +48,7 @@ export default function ProfileModal({ isOpen, onClose }: ProfileModalProps) {
   });
   const [error, setError] = useState("");
   const [success, setSuccess] = useState(false);
-  const router = useRouter();
+
   const graduationYears = Array.from({ length: 2027 - 2014 + 1 }, (_, index) =>
     String(2014 + index),
   );
@@ -133,9 +132,10 @@ export default function ProfileModal({ isOpen, onClose }: ProfileModalProps) {
       const provider = new GoogleAuthProvider();
       await signInWithPopup(auth, provider);
       // Profile will be loaded via auth state change
-    } catch (err: any) {
+    } catch (err: unknown) {
       console.error("Sign in error:", err);
-      setError(err.message || "Failed to sign in with Google");
+      const message = err instanceof Error ? err.message : "Failed to sign in with Google";
+      setError(message);
     } finally {
       setLoading(false);
     }
@@ -194,10 +194,14 @@ export default function ProfileModal({ isOpen, onClose }: ProfileModalProps) {
     }
 
     try {
+      // Get fresh ID token for server-side verification
+      const idToken = await user.getIdToken();
+
       const response = await fetch("/api/update-profile", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
+          Authorization: `Bearer ${idToken}`,
         },
         body: JSON.stringify({
           userId: user.uid,
@@ -220,11 +224,10 @@ export default function ProfileModal({ isOpen, onClose }: ProfileModalProps) {
       setTimeout(() => {
         onClose();
         setSuccess(false);
-        // Refresh the page to reflect changes
-        router.refresh();
       }, 1000);
-    } catch (err: any) {
-      setError(err.message || "An error occurred");
+    } catch (err: unknown) {
+      const message = err instanceof Error ? err.message : "An error occurred";
+      setError(message);
     } finally {
       setLoading(false);
     }
@@ -379,7 +382,7 @@ export default function ProfileModal({ isOpen, onClose }: ProfileModalProps) {
                 <div>
                   <label
                     htmlFor="profile-name"
-                    className="block text-gray-300 font-semibold mb-2"
+                    className="section-label"
                   >
                     Your Name
                   </label>
@@ -391,7 +394,7 @@ export default function ProfileModal({ isOpen, onClose }: ProfileModalProps) {
                       setProfileData({ ...profileData, name: e.target.value })
                     }
                     placeholder="John Doe"
-                    className="w-full px-4 py-3 bg-gray-700 text-white rounded-lg border border-gray-600 focus:border-blue-500 focus:outline-none focus:ring-2 focus:ring-blue-500 transition-all"
+                    className="field-input"
                     disabled={loading}
                   />
                 </div>
@@ -400,7 +403,7 @@ export default function ProfileModal({ isOpen, onClose }: ProfileModalProps) {
                 <div>
                   <label
                     htmlFor="profile-title"
-                    className="block text-gray-300 font-semibold mb-2"
+                    className="section-label"
                   >
                     Job Title
                   </label>
@@ -421,7 +424,7 @@ export default function ProfileModal({ isOpen, onClose }: ProfileModalProps) {
                 <div>
                   <label
                     htmlFor="profile-linkedin"
-                    className="block text-gray-300 font-semibold mb-2"
+                    className="section-label"
                   >
                     LinkedIn URL
                   </label>
@@ -445,7 +448,7 @@ export default function ProfileModal({ isOpen, onClose }: ProfileModalProps) {
                 <div>
                   <label
                     htmlFor="profile-portfolio-cv"
-                    className="block text-gray-300 font-semibold mb-2"
+                    className="section-label"
                   >
                     Portfolio/CV URL (optional)
                   </label>
@@ -469,7 +472,7 @@ export default function ProfileModal({ isOpen, onClose }: ProfileModalProps) {
                 <div>
                   <label
                     htmlFor="profile-graduation-class"
-                    className="block text-gray-300 font-semibold mb-2"
+                    className="section-label"
                   >
                     Graduation Class
                   </label>
@@ -482,7 +485,7 @@ export default function ProfileModal({ isOpen, onClose }: ProfileModalProps) {
                         graduationClass: e.target.value,
                       }))
                     }
-                    className="w-full px-4 py-3 bg-gray-700 text-white rounded-lg border border-gray-600 focus:border-blue-500 focus:outline-none focus:ring-2 focus:ring-blue-500 transition-all"
+                    className="field-select"
                     disabled={loading}
                   >
                     <option value="">Select your graduation class</option>
@@ -498,7 +501,7 @@ export default function ProfileModal({ isOpen, onClose }: ProfileModalProps) {
                 <div>
                   <label
                     htmlFor="profile-company"
-                    className="block text-gray-300 font-semibold mb-2"
+                    className="section-label"
                   >
                     Company
                   </label>
@@ -528,7 +531,7 @@ export default function ProfileModal({ isOpen, onClose }: ProfileModalProps) {
 
                 {/* Suggest Company Section */}
                 <div className="rounded-2xl border border-slate-700/70 bg-slate-800/70 p-4">
-                  <label className="block text-gray-300 font-semibold mb-2">
+                  <label className="section-label">
                     If your company is not in the list, add it here
                   </label>
                   <a

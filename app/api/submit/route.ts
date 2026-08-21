@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import { db } from "@/lib/firebase";
 import { isValidLinkedInUrl } from "@/lib/utils";
+import { rateLimit, getClientIp } from "@/lib/rateLimit";
 import {
   collection,
   addDoc,
@@ -15,24 +16,33 @@ import {
 /**
  * POST /api/submit
  *
- * Handles graduate submission form
+ * Handles graduate submission form.
+ *
+ * Security:
+ * - Rate-limited to 5 requests per minute per IP
  *
  * Flow:
- * 1. Validate input data
- * 2. Add submission to 'submissions' collection
- * 3. Update or create company in 'companies' collection
- * 4. Increment company count
- * 5. Create default logo if new company
- *
- * Returns success message or error
+ * 1. Rate limit check
+ * 2. Validate input data
+ * 3. Add submission to 'submissions' collection
+ * 4. Update or create company in 'companies' collection
+ * 5. Increment company count
  */
 export async function POST(request: NextRequest) {
   try {
-    // Parse request body
+    // ── Rate limit ──
+    const clientIp = getClientIp(request.headers);
+    if (!rateLimit(clientIp, 5, 60_000)) {
+      return NextResponse.json(
+        { error: "Too many requests. Please try again later." },
+        { status: 429 },
+      );
+    }
+
+    // ── Parse & validate ──
     const body = await request.json();
     const { name, title, linkedin, company } = body;
 
-    // Validation
     if (!name || typeof name !== "string" || !name.trim()) {
       return NextResponse.json({ error: "Name is required" }, { status: 400 });
     }
@@ -67,7 +77,7 @@ export async function POST(request: NextRequest) {
       );
     }
 
-    // 1. Add submission to submissions collection
+    // ── Create submission ──
     const submissionsRef = collection(db, "submissions");
     await addDoc(submissionsRef, {
       name: trimmedName,
@@ -77,7 +87,7 @@ export async function POST(request: NextRequest) {
       timestamp: serverTimestamp(),
     });
 
-    // 2. Update or create company document only when a company is selected
+    // ── Update company count ──
     if (trimmedCompany) {
       const companyRef = doc(db, "companies", trimmedCompany);
       const companyDoc = await getDoc(companyRef);
@@ -106,13 +116,15 @@ export async function POST(request: NextRequest) {
       },
       { status: 200 },
     );
-  } catch (error: any) {
+  } catch (error: unknown) {
     console.error("Error processing submission:", error);
 
+    const message =
+      error instanceof Error ? error.message : "Unknown error occurred";
     return NextResponse.json(
       {
         error: "Failed to process submission",
-        details: error.message,
+        details: message,
       },
       { status: 500 },
     );

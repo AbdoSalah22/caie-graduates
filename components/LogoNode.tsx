@@ -3,26 +3,25 @@ import Link from "next/link";
 
 interface LogoNodeProps {
   node: Node;
-  nodeSize?: number;
 }
 
 /**
- * LogoNode component - renders a single company name with smooth animations
+ * LogoNode component - renders a single company as a proportionally-sized bubble.
  *
- * The node is absolutely positioned based on force simulation coordinates
- * CSS transitions provide smooth movement when positions update
- * Transform: translate(-50%, -50%) centers the node on its coordinates
+ * The size is driven by `node.radius` (computed from employee count).
+ * Absolutely positioned based on force simulation coordinates.
+ * CSS transitions provide smooth movement when positions update.
  */
-export default function LogoNode({ node, nodeSize }: LogoNodeProps) {
-  const { x = 0, y = 0, id, logoUrl } = node;
+export default function LogoNode({ node }: LogoNodeProps) {
+  const { x = 0, y = 0, id, logoUrl, radius } = node;
 
-  // Responsive square size — smaller on mobile
-  const size = nodeSize ?? 120;
-  const borderRadius = Math.round(size * 0.1);
+  // Diameter is 2× radius
+  const size = Math.round(radius * 2);
+  const borderRadius = Math.round(size * 0.18);
 
-  // Calculate font size based on text length to fit nicely in square
+  // Scale font size based on available space for the fallback text
   const textLength = id.length;
-  const fontSize = Math.max(10, Math.min(14, 120 / textLength));
+  const fontSize = Math.max(9, Math.min(size * 0.14, 120 / textLength));
 
   // White glow for hover effect
   const whiteGlow = "255, 255, 255";
@@ -30,7 +29,7 @@ export default function LogoNode({ node, nodeSize }: LogoNodeProps) {
   return (
     <Link
       href={`/company/${encodeURIComponent(id)}`}
-      className="absolute transition-transform duration-150 ease-out transform-gpu -translate-x-1/2 -translate-y-1/2 flex items-center justify-center shadow-lg hover:scale-110 hover:z-50 hover:brightness-110 active:scale-95 cursor-pointer"
+      className="absolute transition-all duration-300 ease-out transform-gpu -translate-x-1/2 -translate-y-1/2 flex items-center justify-center shadow-lg hover:scale-110 hover:z-50 hover:brightness-110 active:scale-95 cursor-pointer"
       onMouseEnter={(e) => {
         e.currentTarget.style.boxShadow = `0 20px 60px rgba(${whiteGlow}, 0.6)`;
       }}
@@ -43,7 +42,7 @@ export default function LogoNode({ node, nodeSize }: LogoNodeProps) {
         width: `${size}px`,
         height: `${size}px`,
         borderRadius: `${borderRadius}px`,
-        background: logoUrl ? "#ffffff" : "#374151", // Gray background if no logo
+        background: logoUrl ? "#ffffff" : "#374151",
       }}
     >
       {logoUrl ? (
@@ -51,14 +50,21 @@ export default function LogoNode({ node, nodeSize }: LogoNodeProps) {
           src={logoUrl}
           alt={`${id} logo`}
           className="max-w-[85%] max-h-[85%] object-contain"
+          draggable={false}
         />
       ) : (
-        <div className="text-center px-4">
+        <div className="text-center px-2 overflow-hidden">
           <div
-            className="font-bold text-white whitespace-nowrap"
+            className="font-bold text-white leading-tight"
             style={{ fontSize: `${fontSize}px` }}
           >
             {id}
+          </div>
+          <div
+            className="text-slate-400 mt-0.5"
+            style={{ fontSize: `${Math.max(8, fontSize * 0.7)}px` }}
+          >
+            {node.count}
           </div>
         </div>
       )}

@@ -10,9 +10,9 @@ import { useRouter } from "next/navigation";
 /**
  * Submission form page
  *
- * Allows graduates to submit their name and company
- * Features auto-suggest for existing companies
- * Validates input and provides user feedback
+ * Allows graduates to submit their name and company.
+ * Features a dropdown of existing companies.
+ * Validates input and provides user feedback.
  */
 export default function SubmitPage() {
   const [name, setName] = useState("");
@@ -20,8 +20,6 @@ export default function SubmitPage() {
   const [linkedin, setLinkedin] = useState("");
   const [company, setCompany] = useState("");
   const [companies, setCompanies] = useState<string[]>([]);
-  const [filteredCompanies, setFilteredCompanies] = useState<string[]>([]);
-  const [showSuggestions, setShowSuggestions] = useState(false);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
   const [success, setSuccess] = useState(false);
@@ -42,20 +40,6 @@ export default function SubmitPage() {
 
     fetchCompanies();
   }, []);
-
-  // Filter companies based on input
-  useEffect(() => {
-    if (company.trim()) {
-      const filtered = companies.filter((c) =>
-        c.toLowerCase().includes(company.toLowerCase()),
-      );
-      setFilteredCompanies(filtered);
-      setShowSuggestions(filtered.length > 0);
-    } else {
-      setFilteredCompanies([]);
-      setShowSuggestions(false);
-    }
-  }, [company, companies]);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -88,7 +72,6 @@ export default function SubmitPage() {
     }
 
     try {
-      // Call API route
       const response = await fetch("/api/submit", {
         method: "POST",
         headers: {
@@ -119,8 +102,10 @@ export default function SubmitPage() {
       setTimeout(() => {
         router.push("/");
       }, 2000);
-    } catch (err: any) {
-      setError(err.message || "An error occurred");
+    } catch (err: unknown) {
+      const message =
+        err instanceof Error ? err.message : "An error occurred";
+      setError(message);
     } finally {
       setLoading(false);
     }

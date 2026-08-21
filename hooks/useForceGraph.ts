@@ -1,69 +1,37 @@
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
+import {
+  forceSimulation,
+  forceCenter,
+  forceManyBody,
+  forceCollide,
+  forceX,
+  forceY,
+  type Simulation,
+} from "d3-force";
 import { Node } from "@/types";
+import { BUBBLE_PADDING } from "@/lib/constants";
 
 interface UseForceGraphProps {
   nodes: Node[];
   width: number;
   height: number;
-  nodeSize?: number;
 }
 
 /**
- * Generate spiral grid coordinates from center outward (heap-like pattern)
- * Order: center(0,0), right(0,1), up(-1,1), left(-1,0), left(-1,-1),
- *        down(0,-1), down(1,-1), right(1,0), right(1,1) -> 9 nodes in 3x3
- * Then continues to next frame outward
+ * Custom hook that creates a D3 force simulation to position nodes.
+ *
+ * Each node's `radius` drives collision detection and spacing, producing
+ * the "bubble grid" effect where larger companies get bigger bubbles.
+ *
+ * Forces applied:
+ * - Center gravity: pulls nodes toward the viewport center
+ * - Collision: prevents overlaps, respects per-node radius + padding
+ * - Many-body: gentle repulsion to spread nodes out
+ * - X/Y positioning: weak pull toward center to keep layout compact
  */
-function generateSpiralGrid(
-  count: number,
-): Array<{ row: number; col: number }> {
-  const positions: Array<{ row: number; col: number }> = [];
-  if (count <= 0) return positions;
-
-  let x = 0;
-  let y = 0;
-  positions.push({ row: y, col: x });
-
-  if (count === 1) return positions;
-
-  const directions = [
-    { dx: 1, dy: 0 },
-    { dx: 0, dy: -1 },
-    { dx: -1, dy: 0 },
-    { dx: 0, dy: 1 },
-  ];
-
-  let steps = 1;
-  let dirIndex = 0;
-
-  while (positions.length < count) {
-    for (let repeat = 0; repeat < 2 && positions.length < count; repeat++) {
-      const { dx, dy } = directions[dirIndex % 4];
-      for (let step = 0; step < steps && positions.length < count; step++) {
-        x += dx;
-        y += dy;
-        positions.push({ row: y, col: x });
-      }
-      dirIndex += 1;
-    }
-    steps += 1;
-  }
-
-  return positions;
-}
-
-/**
- * Custom hook that organizes nodes in a fixed grid layout
- * Nodes are sorted by employee count (largest first)
- * Layout is responsive and centers nodes on the screen
- */
-export function useForceGraph({
-  nodes,
-  width,
-  height,
-  nodeSize: externalNodeSize,
-}: UseForceGraphProps) {
+export function useForceGraph({ nodes, width, height }: UseForceGraphProps) {
   const [positionedNodes, setPositionedNodes] = useState<Node[]>([]);
+  const simulationRef = useRef<Simulation<Node, undefined> | null>(null);
 
   useEffect(() => {
     if (!nodes.length || !width || !height) {
@@ -71,35 +39,63 @@ export function useForceGraph({
       return;
     }
 
-    // Sort nodes by count (largest first)
-    const sortedNodes = [...nodes].sort((a, b) => b.count - a.count);
+    // Stop any existing simulation before creating a new one
+    if (simulationRef.current) {
+      simulationRef.current.stop();
+    }
 
     const centerX = width / 2;
     const centerY = height / 2;
 
-    // Responsive node size
-    const nodeSize = externalNodeSize ?? 120;
-    const spacing = Math.round(nodeSize * 0.08);
+    // Clone nodes so D3 can mutate x/y/vx/vy on them
+    const simNodes: Node[] = nodes.map((n) => ({
+      ...n,
+      x: n.x ?? centerX + (Math.random() - 0.5) * width * 0.3,
+      y: n.y ?? centerY + (Math.random() - 0.5) * height * 0.3,
+    }));
 
-    // Spiral grid pattern from center outward
-    // Position 0 is center, then spiral outward in a square pattern
-    const spiralPositions = generateSpiralGrid(sortedNodes.length);
+    const simulation = forceSimulation<Node>(simNodes)
+      // Pull toward center
+      .force("center", forceCenter<Node>(centerX, centerY).strength(0.05))
+      // Weak X/Y attraction to keep cluster compact
+      .force("x", forceX<Node>(centerX).strength(0.04))
+      .force("y", forceY<Node>(centerY).strength(0.04))
+      // Repulsion between nodes
+      .force(
+        "charge",
+        forceManyBody<Node>()
+          .strength((d) => -d.radius * 1.5)
+          .distanceMax(400),
+      )
+      // Collision — each node's radius + padding
+      .force(
+        "collide",
+        forceCollide<Node>()
+          .radius((d) => d.radius + BUBBLE_PADDING)
+          .strength(0.9)
+          .iterations(3),
+      )
+      .alphaDecay(0.02)
+      .velocityDecay(0.35);
 
-    const positioned = sortedNodes.map((node, index) => {
-      const spiralPos = spiralPositions[index];
-
-      // Convert grid coordinates to screen coordinates
-      const x = centerX + spiralPos.col * (nodeSize + spacing);
-      const y = centerY + spiralPos.row * (nodeSize + spacing);
-
-      return {
-        ...node,
-        x,
-        y,
-      };
+    // Update React state on each tick
+    simulation.on("tick", () => {
+      setPositionedNodes(
+        simNodes.map((n) => ({
+          ...n,
+          x: n.x,
+          y: n.y,
+        })),
+      );
     });
 
-    setPositionedNodes(positioned);
+    simulationRef.current = simulation;
+
+    return () => {
+      simulation.stop();
+      simulationRef.current = null;
+    };
   }, [nodes, width, height]);
+
   return positionedNodes;
 }

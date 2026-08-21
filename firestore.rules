@@ -1,23 +1,35 @@
 /**
  * Firestore Security Rules
- * 
+ *
  * Copy these rules to Firebase Console → Firestore Database → Rules
+ *
+ * NOTE: All write operations go through Next.js API routes which use
+ * the client SDK on the server side. Since the SDK runs with the
+ * project's own credentials, `allow write: if false` blocks direct
+ * client-side writes while API route writes still succeed because
+ * they originate from the server environment.
  */
 
 rules_version = '2';
 service cloud.firestore {
   match /databases/{database}/documents {
-    
-    // Companies collection - readable by all, writable only by server
+
+    // Companies collection — readable by all, writable only by server
     match /companies/{company} {
       allow read: if true;
-      allow write: if false; // Only server-side API can write
+      allow write: if false;
     }
-    
-    // Submissions collection - no public access
+
+    // Submissions collection — readable by all (public browse), writable only by server
     match /submissions/{submission} {
-      allow read: if false;  // Keep submissions private
-      allow write: if false; // Only server-side API can write
+      allow read: if true;
+      allow write: if false;
+    }
+
+    // Settings collection — readable by all, writable only by server
+    match /settings/{document} {
+      allow read: if true;
+      allow write: if false;
     }
   }
 }

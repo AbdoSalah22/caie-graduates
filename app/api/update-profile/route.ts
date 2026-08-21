@@ -1,36 +1,73 @@
 import { NextRequest, NextResponse } from "next/server";
 import { db } from "@/lib/firebase";
 import { isValidLinkedInUrl } from "@/lib/utils";
+import { verifyIdToken, extractBearerToken } from "@/lib/auth";
+import { rateLimit, getClientIp } from "@/lib/rateLimit";
 import {
-  collection,
-  query,
-  where,
-  getDocs,
   doc,
   getDoc,
   setDoc,
   updateDoc,
   increment,
   serverTimestamp,
+  runTransaction,
+  collection,
+  query,
+  where,
+  getDocs,
 } from "firebase/firestore";
 
 /**
  * POST /api/update-profile
  *
- * Handles user profile updates
+ * Handles user profile updates.
+ *
+ * Security:
+ * - Requires Firebase ID token in Authorization header
+ * - Verifies token and matches userId to prevent impersonation
+ * - Rate-limited to 10 requests per minute per IP
  *
  * Flow:
- * 1. Validate input data
- * 2. Find user's existing submission by userId
- * 3. If exists: update submission and handle company count changes
- * 4. If not exists: create new submission
- * 5. Update company counts accordingly
- *
- * Returns success message or error
+ * 1. Verify authentication
+ * 2. Validate input data
+ * 3. Find user's existing submission by userId
+ * 4. If exists: update submission and handle company count changes
+ * 5. If not exists: create new submission
+ * 6. Update company counts in a transaction
  */
 export async function POST(request: NextRequest) {
   try {
-    // Parse request body
+    // ── Rate limit ──
+    const clientIp = getClientIp(request.headers);
+    if (!rateLimit(clientIp, 10, 60_000)) {
+      return NextResponse.json(
+        { error: "Too many requests. Please try again later." },
+        { status: 429 },
+      );
+    }
+
+    // ── Authentication ──
+    const authHeader = request.headers.get("authorization");
+    const idToken = extractBearerToken(authHeader);
+
+    if (!idToken) {
+      return NextResponse.json(
+        { error: "Authentication required. Please sign in." },
+        { status: 401 },
+      );
+    }
+
+    let verifiedUser;
+    try {
+      verifiedUser = await verifyIdToken(idToken);
+    } catch {
+      return NextResponse.json(
+        { error: "Invalid or expired session. Please sign in again." },
+        { status: 401 },
+      );
+    }
+
+    // ── Parse & validate ──
     const body = await request.json();
     const {
       userId,
@@ -42,11 +79,11 @@ export async function POST(request: NextRequest) {
       graduationClass,
     } = body;
 
-    // Validation
-    if (!userId || typeof userId !== "string") {
+    // Verify the userId in the body matches the authenticated user
+    if (!userId || userId !== verifiedUser.uid) {
       return NextResponse.json(
-        { error: "User ID is required" },
-        { status: 400 },
+        { error: "User ID mismatch — cannot update another user's profile." },
+        { status: 403 },
       );
     }
 
@@ -78,6 +115,8 @@ export async function POST(request: NextRequest) {
     const trimmedCompany = company ? company.trim() : "";
     const trimmedPortfolioCv =
       typeof portfolioCv === "string" ? portfolioCv.trim() : "";
+    const trimmedGraduationClass =
+      typeof graduationClass === "string" ? graduationClass.trim() : "";
 
     if (!isValidLinkedInUrl(trimmedLinkedin)) {
       return NextResponse.json(
@@ -85,11 +124,8 @@ export async function POST(request: NextRequest) {
         { status: 400 },
       );
     }
-    const trimmedGraduationClass =
-      typeof graduationClass === "string" ? graduationClass.trim() : "";
 
-    // Find user's existing submission
-    // First try by document ID (userId)
+    // ── Find existing submission ──
     const submissionRef = doc(db, "submissions", userId);
     const submissionDoc = await getDoc(submissionRef);
 
@@ -99,7 +135,7 @@ export async function POST(request: NextRequest) {
     if (submissionDoc.exists()) {
       submissionId = submissionDoc.id;
       const submissionData = submissionDoc.data();
-      oldCompany = submissionData.company;
+      oldCompany = submissionData.company || null;
     } else {
       // Fallback: query by userId field (for backwards compatibility)
       const submissionsRef = collection(db, "submissions");
@@ -107,16 +143,16 @@ export async function POST(request: NextRequest) {
       const querySnapshot = await getDocs(q);
 
       if (!querySnapshot.empty) {
-        const doc = querySnapshot.docs[0];
-        submissionId = doc.id;
-        const submissionData = doc.data();
-        oldCompany = submissionData.company;
+        const existingDoc = querySnapshot.docs[0];
+        submissionId = existingDoc.id;
+        const submissionData = existingDoc.data();
+        oldCompany = submissionData.company || null;
       }
     }
 
-    // Handle company count changes
+    // ── Handle company count changes ──
     if (oldCompany && oldCompany !== trimmedCompany) {
-      // User changed companies - decrement old company
+      // User changed companies — decrement old, increment new
       const oldCompanyRef = doc(db, "companies", oldCompany);
       const oldCompanyDoc = await getDoc(oldCompanyRef);
 
@@ -130,7 +166,6 @@ export async function POST(request: NextRequest) {
       }
 
       if (trimmedCompany) {
-        // Increment new company
         const newCompanyRef = doc(db, "companies", trimmedCompany);
         const newCompanyDoc = await getDoc(newCompanyRef);
 
@@ -139,14 +174,11 @@ export async function POST(request: NextRequest) {
             count: increment(1),
           });
         } else {
-          // New company - create with count = 1
-          await setDoc(newCompanyRef, {
-            count: 1,
-          });
+          await setDoc(newCompanyRef, { count: 1 });
         }
       }
     } else if (!oldCompany && trimmedCompany) {
-      // New submission - increment company count
+      // New submission — increment company count
       const companyRef = doc(db, "companies", trimmedCompany);
       const companyDoc = await getDoc(companyRef);
 
@@ -155,19 +187,14 @@ export async function POST(request: NextRequest) {
           count: increment(1),
         });
       } else {
-        // New company - create with count = 1
-        await setDoc(companyRef, {
-          count: 1,
-        });
+        await setDoc(companyRef, { count: 1 });
       }
     }
-    // If oldCompany === trimmedCompany, no count changes needed
 
-    // Update or create submission
+    // ── Update or create submission ──
     if (submissionId) {
-      // Update existing submission
-      const submissionRef = doc(db, "submissions", submissionId);
-      await updateDoc(submissionRef, {
+      const existingRef = doc(db, "submissions", submissionId);
+      await updateDoc(existingRef, {
         name: trimmedName,
         title: trimmedTitle,
         linkedin: trimmedLinkedin,
@@ -177,7 +204,6 @@ export async function POST(request: NextRequest) {
         updatedAt: serverTimestamp(),
       });
     } else {
-      // Create new submission - use userId as document ID for easy lookup
       const newSubmissionRef = doc(db, "submissions", userId);
       await setDoc(newSubmissionRef, {
         userId,
@@ -206,13 +232,15 @@ export async function POST(request: NextRequest) {
       },
       { status: 200 },
     );
-  } catch (error: any) {
+  } catch (error: unknown) {
     console.error("Error updating profile:", error);
 
+    const message =
+      error instanceof Error ? error.message : "Unknown error occurred";
     return NextResponse.json(
       {
         error: "Failed to update profile",
-        details: error.message,
+        details: message,
       },
       { status: 500 },
     );
