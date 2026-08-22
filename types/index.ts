@@ -36,3 +36,19 @@ export interface Graduate {
   graduationClass?: string;
   timestamp: Timestamp | null;
 }
+
+export interface CompanyItem {
+  name: string;
+  count: number;
+  logoUrl?: string;
+}
+
+export interface GraduateItem {
+  id?: string;
+  name: string;
+  title: string;
+  linkedin: string;
+  company: string;
+  portfolioCv?: string;
+  graduationClass?: string;
+}
