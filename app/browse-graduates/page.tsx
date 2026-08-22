@@ -20,13 +20,30 @@ type CompanyRow = {
   count?: number;
 };
 
+type Filters = {
+  name: string;
+  company: string;
+  graduationClass: string;
+  title: string;
+};
+
+const EMPTY_FILTERS: Filters = {
+  name: "",
+  company: "",
+  graduationClass: "",
+  title: "",
+};
+
 export default function BrowseGraduatesPage() {
   const [submissions, setSubmissions] = useState<SubmissionRow[]>([]);
   const [companies, setCompanies] = useState<Record<string, CompanyRow>>({});
   const [loading, setLoading] = useState(true);
 
-  const [selectedCompany, setSelectedCompany] = useState<string>("all");
-  const [search, setSearch] = useState<string>("");
+  // Draft filters are what the user types; applied filters are what the
+  // results actually use. Results only appear after pressing Search.
+  const [draft, setDraft] = useState<Filters>(EMPTY_FILTERS);
+  const [applied, setApplied] = useState<Filters>(EMPTY_FILTERS);
+  const [hasSearched, setHasSearched] = useState(false);
 
   const fetchData = useCallback(async () => {
     setLoading(true);
@@ -67,32 +84,66 @@ export default function BrowseGraduatesPage() {
     fetchData();
   }, [fetchData]);
 
+  const updateDraft = (key: keyof Filters, value: string) =>
+    setDraft((prev) => ({ ...prev, [key]: value }));
+
+  const handleSearch = (e?: React.FormEvent) => {
+    e?.preventDefault();
+    setApplied(draft);
+    setHasSearched(true);
+  };
+
+  const handleClear = () => {
+    setDraft(EMPTY_FILTERS);
+    setApplied(EMPTY_FILTERS);
+    setHasSearched(false);
+  };
+
   const companyOptions = useMemo(() => {
-    const names = Object.keys(companies).filter((name) => {
-      const c = companies[name]?.count ?? 0;
-      return c > 0;
+    const names = new Set<string>();
+    Object.keys(companies).forEach((name) => {
+      if ((companies[name]?.count ?? 0) > 0) names.add(name);
     });
-    return names.sort((a, b) => a.localeCompare(b));
-  }, [companies]);
+    // Include companies that appear in submissions even without a record
+    submissions.forEach((s) => {
+      if (s.company) names.add(s.company);
+    });
+    return Array.from(names).sort((a, b) => a.localeCompare(b));
+  }, [companies, submissions]);
+
+  const classOptions = useMemo(() => {
+    const years = new Set<string>();
+    submissions.forEach((s) => {
+      if (s.graduationClass) years.add(s.graduationClass);
+    });
+    return Array.from(years).sort((a, b) => b.localeCompare(a));
+  }, [submissions]);
 
   const filtered = useMemo(() => {
-    const q = search.trim().toLowerCase();
+    const nameQ = applied.name.trim().toLowerCase();
+    const titleQ = applied.title.trim().toLowerCase();
 
     return submissions
+      .filter((s) => (applied.company ? s.company === applied.company : true))
       .filter((s) =>
-        selectedCompany === "all" ? true : s.company === selectedCompany,
+        applied.graduationClass
+          ? s.graduationClass === applied.graduationClass
+          : true,
       )
-      .filter((s) => {
-        if (!q) return true;
-        return (
-          s.name.toLowerCase().includes(q) ||
-          s.title.toLowerCase().includes(q) ||
-          s.company.toLowerCase().includes(q) ||
-          (s.graduationClass || "").toLowerCase().includes(q)
-        );
-      })
+      .filter((s) =>
+        nameQ ? s.name.toLowerCase().includes(nameQ) : true,
+      )
+      .filter((s) =>
+        titleQ ? s.title.toLowerCase().includes(titleQ) : true,
+      )
       .sort((a, b) => a.name.localeCompare(b.name));
-  }, [submissions, selectedCompany, search]);
+  }, [submissions, applied]);
+
+  const hasActiveFilters =
+    !!applied.name ||
+    !!applied.company ||
+    !!applied.graduationClass ||
+    !!applied.title;
 
   return (
     <div className="page-shell px-4 py-4 sm:px-6 sm:py-6 lg:px-8 lg:py-8">
@@ -103,21 +154,38 @@ export default function BrowseGraduatesPage() {
           </Link>
           <h1 className="page-title">Browse Graduates</h1>
           <p className="page-subtitle">
-            Filter by company and view Portfolio/CV + LinkedIn for each
-            graduate.
+            Use the filters to find graduates by name, company, class, or
+            title.
           </p>
         </div>
 
-        <div className="surface-card p-4 sm:p-6 mb-6">
-          <div className="flex flex-col sm:flex-row gap-3 sm:items-end">
-            <div className="flex-1">
-              <label className="section-label">Company</label>
+        {/* ── Advanced filter panel ─────────────────────────────── */}
+        <form onSubmit={handleSearch} className="surface-card p-4 sm:p-6 mb-6">
+          <div className="grid gap-4 sm:grid-cols-2">
+            <div>
+              <label htmlFor="filter-name" className="section-label">
+                Name
+              </label>
+              <input
+                id="filter-name"
+                value={draft.name}
+                onChange={(e) => updateDraft("name", e.target.value)}
+                placeholder="e.g. Ahmed Hassan"
+                className="field-input"
+              />
+            </div>
+
+            <div>
+              <label htmlFor="filter-company" className="section-label">
+                Company
+              </label>
               <select
-                value={selectedCompany}
-                onChange={(e) => setSelectedCompany(e.target.value)}
+                id="filter-company"
+                value={draft.company}
+                onChange={(e) => updateDraft("company", e.target.value)}
                 className="field-select"
               >
-                <option value="all">All companies</option>
+                <option value="">All companies</option>
                 {companyOptions.map((name) => (
                   <option key={name} value={name}>
                     {name}
@@ -126,44 +194,116 @@ export default function BrowseGraduatesPage() {
               </select>
             </div>
 
-            <div className="flex-1">
-              <label className="section-label">Search</label>
+            <div>
+              <label htmlFor="filter-title" className="section-label">
+                Job Title
+              </label>
               <input
-                value={search}
-                onChange={(e) => setSearch(e.target.value)}
-                placeholder="Search name, title, or company"
+                id="filter-title"
+                value={draft.title}
+                onChange={(e) => updateDraft("title", e.target.value)}
+                placeholder="e.g. Software Engineer"
                 className="field-input"
               />
             </div>
 
-            <div className="flex gap-2 sm:pb-1">
-              <button
-                onClick={() => {
-                  setSelectedCompany("all");
-                  setSearch("");
-                }}
-                className="secondary-btn px-4 py-3"
+            <div>
+              <label htmlFor="filter-class" className="section-label">
+                Graduation Class
+              </label>
+              <select
+                id="filter-class"
+                value={draft.graduationClass}
+                onChange={(e) => updateDraft("graduationClass", e.target.value)}
+                className="field-select"
               >
-                Clear
-              </button>
-              <button
-                onClick={fetchData}
-                disabled={loading}
-                className="secondary-btn px-4 py-3 disabled:opacity-50"
-              >
-                {loading ? "Loading..." : "Refresh"}
-              </button>
+                <option value="">All classes</option>
+                {classOptions.map((year) => (
+                  <option key={year} value={year}>
+                    Class of {year}
+                  </option>
+                ))}
+              </select>
             </div>
           </div>
 
-          <div className="mt-4 text-gray-400 text-sm">
-            Showing {filtered.length} graduate{filtered.length === 1 ? "" : "s"}
-          </div>
-        </div>
+          <div className="mt-5 flex flex-wrap items-center gap-2">
+            <button
+              type="submit"
+              disabled={loading}
+              className="primary-btn gap-2 px-6 py-3 disabled:opacity-50"
+            >
+              <svg
+                className="w-4 h-4"
+                fill="none"
+                stroke="currentColor"
+                strokeWidth={2}
+                viewBox="0 0 24 24"
+                strokeLinecap="round"
+                strokeLinejoin="round"
+              >
+                <circle cx="11" cy="11" r="8" />
+                <path d="m21 21-4.3-4.3" />
+              </svg>
+              Search
+            </button>
 
-        {filtered.length === 0 ? (
+            <button
+              type="button"
+              onClick={handleClear}
+              className="secondary-btn px-4 py-3"
+            >
+              Clear
+            </button>
+
+            <button
+              type="button"
+              onClick={fetchData}
+              disabled={loading}
+              className="secondary-btn px-4 py-3 disabled:opacity-50"
+            >
+              {loading ? "Loading..." : "Refresh"}
+            </button>
+
+            {hasSearched && hasActiveFilters ? (
+              <span className="ml-auto text-sm text-slate-400">
+                {filtered.length} graduate{filtered.length === 1 ? "" : "s"}{" "}
+                found
+              </span>
+            ) : null}
+          </div>
+        </form>
+
+        {/* ── Results ───────────────────────────────────────────── */}
+        {!hasSearched ? (
+          <div className="surface-card p-10 text-center">
+            <svg
+              className="mx-auto mb-4 h-10 w-10 text-slate-600"
+              fill="none"
+              stroke="currentColor"
+              strokeWidth={1.5}
+              viewBox="0 0 24 24"
+              strokeLinecap="round"
+              strokeLinejoin="round"
+            >
+              <circle cx="11" cy="11" r="8" />
+              <path d="m21 21-4.3-4.3" />
+            </svg>
+            <p className="text-slate-300 font-medium">
+              Set your filters above and press Search
+            </p>
+            <p className="mt-1 text-sm text-slate-500">
+              Results will appear here once you search.
+            </p>
+          </div>
+        ) : filtered.length === 0 ? (
           <div className="surface-card p-8 text-center">
-            <p className="text-slate-400">No graduates match your filters.</p>
+            <p className="text-slate-400">
+              No graduates match your filters. Try loosening your search.
+            </p>
+            <button onClick={handleClear} className="secondary-btn mt-4 px-4 py-2">
+              Clear filters
+            </button>
           </div>
         ) : (
           <div className="space-y-4">

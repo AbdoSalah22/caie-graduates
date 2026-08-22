@@ -1,5 +1,7 @@
+import { useEffect, useState } from "react";
 import { Node } from "@/types";
 import Link from "next/link";
+import { getDominantColor } from "@/lib/logoColor";
 
 interface LogoNodeProps {
   node: Node;
@@ -26,6 +28,19 @@ export default function LogoNode({ node }: LogoNodeProps) {
   // White glow for hover effect
   const whiteGlow = "255, 255, 255";
 
+  // Square takes the logo's dominant color when one clearly exists
+  const [bg, setBg] = useState("#ffffff");
+  useEffect(() => {
+    if (!logoUrl) return;
+    let active = true;
+    getDominantColor(logoUrl).then((color) => {
+      if (active && color) setBg(`rgb(${color})`);
+    });
+    return () => {
+      active = false;
+    };
+  }, [logoUrl]);
+
   return (
     <Link
       href={`/company/${encodeURIComponent(id)}`}
@@ -42,7 +57,7 @@ export default function LogoNode({ node }: LogoNodeProps) {
         width: `${size}px`,
         height: `${size}px`,
         borderRadius: `${borderRadius}px`,
-        background: logoUrl ? "#ffffff" : "#374151",
+        background: logoUrl ? bg : "#374151",
       }}
     >
       {logoUrl ? (
