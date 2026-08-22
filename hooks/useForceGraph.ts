@@ -9,29 +9,69 @@ import {
 import { Node } from "@/types";
 import { BUBBLE_PADDING } from "@/lib/constants";
 
+export type BoardView = "bubble" | "grid";
+
 interface UseForceGraphProps {
   nodes: Node[];
   width: number;
   height: number;
+  view?: BoardView;
 }
 
 /**
- * Custom hook that computes a deterministic, size-centered bubble layout.
+ * Custom hook that computes node positions for the board.
  *
- * Companies with more graduates end up near the center of the board:
- * - Nodes are sorted by count (largest first) and seeded on a golden-angle
- *   spiral around the center, so the biggest bubbles start closest to it.
- * - A radial pull (via forceX/forceY) scales with each node's radius, so
- *   larger companies are attracted to the center more strongly.
- * - The simulation is run synchronously to completion, producing the same
- *   fixed layout on every load (no randomness, no animated jitter).
+ * - "bubble" view: deterministic, size-centered bubble layout. Companies with
+ *   more graduates end up near the center of the board (sorted largest-first
+ *   onto a golden-angle spiral, radial pull scaled by radius).
+ * - "grid" view: every company the same fixed size on a near-square grid,
+ *   centered on screen and filled alphabetically starting from the top-left.
  */
-export function useForceGraph({ nodes, width, height }: UseForceGraphProps) {
+export function useForceGraph({
+  nodes,
+  width,
+  height,
+  view = "bubble",
+}: UseForceGraphProps) {
   const [positionedNodes, setPositionedNodes] = useState<Node[]>([]);
 
   useEffect(() => {
     if (!nodes.length || !width || !height) {
       setPositionedNodes([]);
+      return;
+    }
+
+    if (view === "grid") {
+      // Uniform squares, alphabetical order, filled from the top-left
+      const sortedNodes = [...nodes].sort((a, b) =>
+        a.id.localeCompare(b.id),
+      );
+
+      const centerX = width / 2;
+      const centerY = height / 2;
+
+      const nodeSize = 120;
+      const spacing = Math.round(nodeSize * 0.08);
+      const cell = nodeSize + spacing;
+
+      // Near-square grid: as many columns as rows
+      const cols = Math.ceil(Math.sqrt(sortedNodes.length));
+      const rows = Math.ceil(sortedNodes.length / cols);
+
+      const positioned = sortedNodes.map((node, index) => {
+        const row = Math.floor(index / cols);
+        const col = index % cols;
+
+        // Center the whole matrix on the screen
+        return {
+          ...node,
+          radius: nodeSize / 2,
+          x: centerX + (col - (cols - 1) / 2) * cell,
+          y: centerY + (row - (rows - 1) / 2) * cell,
+        };
+      });
+
+      setPositionedNodes(positioned);
       return;
     }
 
@@ -95,7 +135,7 @@ export function useForceGraph({ nodes, width, height }: UseForceGraphProps) {
     setPositionedNodes(simNodes.map((n) => ({ ...n })));
 
     return () => {};
-  }, [nodes, width, height]);
+  }, [nodes, width, height, view]);
 
   return positionedNodes;
 }

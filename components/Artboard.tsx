@@ -2,11 +2,12 @@
 
 import { useEffect, useRef, useState } from "react";
 import { Node } from "@/types";
-import { useForceGraph } from "@/hooks/useForceGraph";
+import { useForceGraph, BoardView } from "@/hooks/useForceGraph";
 import LogoNode from "./LogoNode";
 
 interface ArtboardProps {
   nodes: Node[];
+  view?: BoardView;
 }
 
 /**
@@ -16,16 +17,22 @@ interface ArtboardProps {
  * Nodes are sized proportionally to employee count (bubble grid).
  * Supports zoom (mouse wheel / pinch) and pan (drag / touch drag).
  */
-export default function Artboard({ nodes }: ArtboardProps) {
+export default function Artboard({ nodes, view = "bubble" }: ArtboardProps) {
   const containerRef = useRef<HTMLDivElement>(null);
   const [dimensions, setDimensions] = useState({ width: 0, height: 0 });
-  const [zoom, setZoom] = useState(1);
-  const [pan, setPan] = useState({ x: 0, y: 0 });
   const [isDragging, setIsDragging] = useState(false);
   const [dragStart, setDragStart] = useState({ x: 0, y: 0 });
 
   const MIN_ZOOM = 0.3;
   const MAX_ZOOM = 2.5;
+
+  // Smartphones start at 50% zoom, desktops at 100%
+  // (< 640px matches Tailwind's "sm:" breakpoint)
+  const getDefaultZoom = () =>
+    typeof window !== "undefined" && window.innerWidth < 640 ? 0.5 : 1;
+
+  const [zoom, setZoom] = useState(getDefaultZoom);
+  const [pan, setPan] = useState({ x: 0, y: 0 });
 
   // Refs for touch gesture tracking
   const lastTouchDistance = useRef<number | null>(null);
@@ -56,6 +63,7 @@ export default function Artboard({ nodes }: ArtboardProps) {
   // Get simulated node positions from force graph hook
   const simulatedNodes = useForceGraph({
     nodes,
+    view,
     width:
       dimensions.width ||
       (typeof window !== "undefined" ? window.innerWidth : 1920),
@@ -207,7 +215,7 @@ export default function Artboard({ nodes }: ArtboardProps) {
   }, []);
 
   const handleReset = () => {
-    setZoom(1);
+    setZoom(getDefaultZoom());
     setPan({ x: 0, y: 0 });
   };
 

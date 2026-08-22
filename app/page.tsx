@@ -4,6 +4,7 @@ import { useEffect, useState } from "react";
 import { collection, onSnapshot, query, doc, getDoc } from "firebase/firestore";
 import { db } from "@/lib/firebase";
 import { Node } from "@/types";
+import { BoardView } from "@/hooks/useForceGraph";
 import { MIN_BUBBLE_SIZE, MAX_BUBBLE_SIZE } from "@/lib/constants";
 import Artboard from "@/components/Artboard";
 import ProfileModal from "@/components/ProfileModal";
@@ -39,6 +40,7 @@ export default function Home() {
   const [loading, setLoading] = useState(true);
   const [isProfileModalOpen, setIsProfileModalOpen] = useState(false);
   const [showProfileButton, setShowProfileButton] = useState(true);
+  const [view, setView] = useState<BoardView>("bubble");
 
   useEffect(() => {
     const loadSettings = async () => {
@@ -117,7 +119,7 @@ export default function Home() {
 
   return (
     <main className="page-shell relative overflow-hidden">
-      <Artboard nodes={nodes} />
+      <Artboard nodes={nodes} view={view} />
 
       {/* My Profile button */}
       {showProfileButton ? (
@@ -141,12 +143,22 @@ export default function Home() {
           {nodes.length} {nodes.length === 1 ? "company" : "companies"} •{" "}
           {nodes.reduce((sum, node) => sum + node.count, 0)} graduates
         </p>
-        <Link
-          href="/browse-graduates"
-          className="mt-3 inline-flex rounded-full border border-slate-700/70 bg-slate-800/80 px-3 py-1.5 text-[11px] font-semibold text-slate-100 shadow-[0_10px_24px_rgba(2,8,23,0.18)] transition-all duration-300 hover:bg-slate-700"
-        >
-          Browse Graduates
-        </Link>
+        <div className="mt-3 flex flex-wrap items-center gap-2">
+          <Link
+            href="/browse-graduates"
+            className="inline-flex rounded-full border border-slate-700/70 bg-slate-800/80 px-3 py-1.5 text-[11px] font-semibold text-slate-100 shadow-[0_10px_24px_rgba(2,8,23,0.18)] transition-all duration-300 hover:bg-slate-700"
+          >
+            Browse Graduates
+          </Link>
+          <button
+            onClick={() =>
+              setView((v) => (v === "bubble" ? "grid" : "bubble"))
+            }
+            className="inline-flex rounded-full border border-slate-700/70 bg-slate-800/80 px-3 py-1.5 text-[11px] font-semibold text-slate-100 shadow-[0_10px_24px_rgba(2,8,23,0.18)] transition-all duration-300 hover:bg-slate-700"
+          >
+            {view === "bubble" ? "Grid View" : "Bubble View"}
+          </button>
+        </div>
       </div>
 
       {/* Profile Modal */}
