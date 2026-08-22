@@ -34,6 +34,9 @@ const EMPTY_FILTERS: Filters = {
   title: "",
 };
 
+/** Sentinel value for filtering graduates with no company assigned */
+const UNASSIGNED_COMPANY = "__unassigned__";
+
 export default function BrowseGraduatesPage() {
   const [submissions, setSubmissions] = useState<SubmissionRow[]>([]);
   const [companies, setCompanies] = useState<Record<string, CompanyRow>>({});
@@ -124,7 +127,11 @@ export default function BrowseGraduatesPage() {
     const titleQ = applied.title.trim().toLowerCase();
 
     return submissions
-      .filter((s) => (applied.company ? s.company === applied.company : true))
+      .filter((s) => {
+        if (!applied.company) return true;
+        if (applied.company === UNASSIGNED_COMPANY) return !s.company;
+        return s.company === applied.company;
+      })
       .filter((s) =>
         applied.graduationClass
           ? s.graduationClass === applied.graduationClass
@@ -186,6 +193,7 @@ export default function BrowseGraduatesPage() {
                 className="field-select"
               >
                 <option value="">All companies</option>
+                <option value={UNASSIGNED_COMPANY}>Unassigned</option>
                 {companyOptions.map((name) => (
                   <option key={name} value={name}>
                     {name}

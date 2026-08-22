@@ -2,7 +2,17 @@
 
 import { useState, useEffect } from "react";
 import Link from "next/link";
-import { collection, getDocs, doc, setDoc } from "firebase/firestore";
+import {
+  collection,
+  getDocs,
+  getDoc,
+  doc,
+  setDoc,
+  updateDoc,
+  deleteDoc,
+  query,
+  where,
+} from "firebase/firestore";
 import { db } from "@/lib/firebase";
 import { CompanyItem } from "@/types";
 import AdminGate from "@/components/AdminGate";
@@ -17,20 +27,59 @@ function CompanySection({
   loading,
   onAddCompany,
   onUpdateLogo,
+  onEditCompany,
+  onDeleteCompany,
 }: {
   companies: CompanyItem[];
   loading: boolean;
   onAddCompany: (name: string, logoUrl: string) => Promise<void>;
   onUpdateLogo: (name: string, logoUrl: string) => Promise<void>;
+  onEditCompany: (oldName: string, newName: string) => Promise<void>;
+  onDeleteCompany: (name: string) => Promise<void>;
 }) {
   const [newCompanyName, setNewCompanyName] = useState("");
   const [newCompanyLogo, setNewCompanyLogo] = useState("");
+
+  // ── Per-row edit state ──
+  const [editingName, setEditingName] = useState<string | null>(null);
+  const [editValue, setEditValue] = useState("");
+  const [savingEdit, setSavingEdit] = useState(false);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     await onAddCompany(newCompanyName, newCompanyLogo);
     setNewCompanyName("");
     setNewCompanyLogo("");
+  };
+
+  const startEdit = (company: CompanyItem) => {
+    setEditingName(company.name);
+    setEditValue(company.name);
+  };
+
+  const cancelEdit = () => {
+    setEditingName(null);
+    setEditValue("");
+  };
+
+  const trimmedEdit = editValue.trim();
+  const editIsDuplicate =
+    !!trimmedEdit && companies.some((c) => c.name === trimmedEdit);
+  const canSaveEdit =
+    !!trimmedEdit &&
+    !editIsDuplicate &&
+    trimmedEdit !== editingName &&
+    !savingEdit;
+
+  const handleSaveEdit = async () => {
+    if (!editingName || !canSaveEdit) return;
+    setSavingEdit(true);
+    try {
+      await onEditCompany(editingName, trimmedEdit);
+      cancelEdit();
+    } finally {
+      setSavingEdit(false);
+    }
   };
 
   return (
@@ -93,9 +142,9 @@ function CompanySection({
               key={company.name}
               className="space-y-3 rounded-2xl border border-slate-800/80 bg-slate-800/70 p-4"
             >
-              <div className="flex items-center justify-between">
-                <div className="flex items-center gap-4 flex-1">
-                  <div className="w-12 h-12 rounded-lg flex items-center justify-center bg-gray-600">
+              <div className="flex items-center justify-between gap-3">
+                <div className="flex items-center gap-4 flex-1 min-w-0">
+                  <div className="w-12 h-12 rounded-lg flex items-center justify-center bg-gray-600 shrink-0">
                     {company.logoUrl && (
                       <img
                         src={company.logoUrl}
@@ -104,8 +153,8 @@ function CompanySection({
                       />
                     )}
                   </div>
-                  <div>
-                    <h3 className="text-white font-semibold text-lg">
+                  <div className="min-w-0">
+                    <h3 className="text-white font-semibold text-lg truncate">
                       {company.name}
                     </h3>
                     <p className="text-gray-400 text-sm">
@@ -114,15 +163,70 @@ function CompanySection({
                     </p>
                   </div>
                 </div>
-                <div className="flex items-center gap-3">
+                <div className="flex items-center gap-2 sm:gap-3 flex-wrap justify-end">
                   <Link
                     href={`/company/${encodeURIComponent(company.name)}`}
-                    className="text-cyan-400 transition-colors hover:text-cyan-300"
+                    className="text-cyan-400 transition-colors hover:text-cyan-300 text-sm whitespace-nowrap"
                   >
                     View Details →
                   </Link>
+                  <button
+                    type="button"
+                    onClick={() =>
+                      editingName === company.name
+                        ? cancelEdit()
+                        : startEdit(company)
+                    }
+                    disabled={loading}
+                    className="secondary-btn px-3 py-1.5 text-sm"
+                  >
+                    {editingName === company.name ? "Cancel" : "Edit"}
+                  </button>
+                  <button
+                    type="button"
+                    onClick={() => onDeleteCompany(company.name)}
+                    disabled={loading}
+                    className="rounded-lg bg-red-600 px-3 py-1.5 text-sm font-semibold text-white transition-all hover:bg-red-500 disabled:cursor-not-allowed disabled:opacity-50"
+                  >
+                    Delete
+                  </button>
                 </div>
               </div>
+
+              {/* Rename editor */}
+              {editingName === company.name ? (
+                <div className="rounded-xl border border-slate-700 bg-slate-900/70 p-3">
+                  <label className="section-label">Company Name</label>
+                  <div className="flex flex-col sm:flex-row gap-2">
+                    <input
+                      type="text"
+                      value={editValue}
+                      onChange={(e) => setEditValue(e.target.value)}
+                      className="field-input flex-1"
+                      disabled={savingEdit || loading}
+                      autoFocus
+                    />
+                    <button
+                      type="button"
+                      onClick={handleSaveEdit}
+                      disabled={!canSaveEdit}
+                      className="primary-btn px-4 py-2.5 disabled:cursor-not-allowed disabled:opacity-50"
+                    >
+                      {savingEdit ? "Saving..." : "Save Changes"}
+                    </button>
+                  </div>
+                  {editIsDuplicate ? (
+                    <p className="mt-2 text-xs text-red-400">
+                      A company with this name already exists.
+                    </p>
+                  ) : (
+                    <p className="mt-2 text-xs text-slate-500">
+                      Renaming also updates all graduates assigned to this
+                      company.
+                    </p>
+                  )}
+                </div>
+              ) : null}
 
               {/* Logo URL input */}
               <div className="flex gap-2">
@@ -130,6 +234,7 @@ function CompanySection({
                   type="text"
                   placeholder="Logo URL (e.g., /logos/company.png)"
                   defaultValue={company.logoUrl || ""}
+                  key={company.logoUrl || ""}
                   onBlur={(e) => {
                     if (e.target.value !== (company.logoUrl || "")) {
                       onUpdateLogo(company.name, e.target.value);
@@ -228,6 +333,88 @@ export default function ManageCompaniesPage() {
     }
   };
 
+  const handleEditCompany = async (oldName: string, newName: string) => {
+    setLoading(true);
+    try {
+      const oldRef = doc(db, "companies", oldName);
+      const oldSnap = await getDoc(oldRef);
+      if (!oldSnap.exists()) {
+        showMsg("Company not found");
+        return;
+      }
+
+      const data = oldSnap.data();
+      const newRef = doc(db, "companies", newName);
+
+      // Create the renamed company first so nothing is lost mid-flight
+      await setDoc(newRef, {
+        count: data.count || 0,
+        logoUrl: data.logoUrl || null,
+      });
+
+      // Move all graduates to the new company name
+      const gradsQuery = query(
+        collection(db, "submissions"),
+        where("company", "==", oldName),
+      );
+      const gradsSnap = await getDocs(gradsQuery);
+      await Promise.all(
+        gradsSnap.docs.map((gradDoc) =>
+          updateDoc(doc(db, "submissions", gradDoc.id), {
+            company: newName,
+          }),
+        ),
+      );
+
+      await deleteDoc(oldRef);
+      showMsg(`Company renamed to "${newName}"`);
+      loadCompanies();
+    } catch (error) {
+      console.error("Error renaming company:", error);
+      showMsg("Error renaming company");
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const handleDeleteCompany = async (name: string) => {
+    const company = companies.find((c) => c.name === name);
+    const count = company?.count ?? 0;
+
+    const confirmed = window.confirm(
+      count > 0
+        ? `Delete company "${name}"? Its ${count} graduate${
+            count === 1 ? "" : "s"
+          } will be unassigned and hidden from the board. This cannot be undone.`
+        : `Delete company "${name}"? This cannot be undone.`,
+    );
+    if (!confirmed) return;
+
+    try {
+      // Unassign all graduates so they fall back to the default
+      // ("Hide from board") company option
+      if (count > 0) {
+        const gradsQuery = query(
+          collection(db, "submissions"),
+          where("company", "==", name),
+        );
+        const gradsSnap = await getDocs(gradsQuery);
+        await Promise.all(
+          gradsSnap.docs.map((gradDoc) =>
+            updateDoc(doc(db, "submissions", gradDoc.id), { company: "" }),
+          ),
+        );
+      }
+
+      await deleteDoc(doc(db, "companies", name));
+      showMsg(`Company "${name}" deleted`);
+      loadCompanies();
+    } catch (error) {
+      console.error("Error deleting company:", error);
+      showMsg("Error deleting company");
+    }
+  };
+
   return (
     <AdminGate>
       <div className="page-shell px-4 py-4 sm:px-6 sm:py-6 lg:px-8 lg:py-8">
@@ -239,7 +426,7 @@ export default function ManageCompaniesPage() {
               </Link>
               <h1 className="page-title">Manage Companies</h1>
               <p className="page-subtitle">
-                Add new companies or update existing company logos.
+                Add new companies or edit and remove existing ones.
               </p>
             </div>
             <div className="flex gap-3">
@@ -266,6 +453,8 @@ export default function ManageCompaniesPage() {
             loading={loading}
             onAddCompany={handleAddCompany}
             onUpdateLogo={handleUpdateLogo}
+            onEditCompany={handleEditCompany}
+            onDeleteCompany={handleDeleteCompany}
           />
         </div>
       </div>

@@ -23,6 +23,26 @@ export function isValidCompanyName(name: string): boolean {
 }
 
 /**
+ * Light validation for a company website link.
+ * Accepts with or without protocol (e.g., "acme.com" or "https://acme.com")
+ * and requires the host to look like a real domain.
+ */
+export function isValidWebsiteUrl(value: string): boolean {
+  const v = value.trim();
+  if (!v || /\s/.test(v)) return false;
+
+  const candidate = /^https?:\/\//i.test(v) ? v : `https://${v}`;
+  try {
+    const url = new URL(candidate);
+    return /^[a-z0-9]([a-z0-9-]*[a-z0-9])?(\.[a-z0-9]([a-z0-9-]*[a-z0-9])?)+$/i.test(
+      url.hostname,
+    );
+  } catch {
+    return false;
+  }
+}
+
+/**
  * Validate graduate name
  */
 export function isValidGraduateName(name: string): boolean {

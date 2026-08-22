@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState, useEffect, useCallback, useMemo, useRef } from "react";
 import {
   signInWithPopup,
   GoogleAuthProvider,
@@ -16,7 +16,10 @@ import {
   getDoc,
 } from "firebase/firestore";
 import { auth, db } from "@/lib/firebase";
-import { isValidLinkedInUrl } from "@/lib/utils";
+import {
+  isValidLinkedInUrl,
+  isValidWebsiteUrl,
+} from "@/lib/utils";
 import Link from "next/link";
 
 interface ProfileModalProps {
@@ -49,6 +52,89 @@ export default function ProfileModal({ isOpen, onClose }: ProfileModalProps) {
   const [error, setError] = useState("");
   const [success, setSuccess] = useState(false);
 
+  // ── Add Company popup state ──
+  const [showAddCompany, setShowAddCompany] = useState(false);
+  const [newCompanyName, setNewCompanyName] = useState("");
+  const [newCompanyWebsite, setNewCompanyWebsite] = useState("");
+  const [addingCompany, setAddingCompany] = useState(false);
+  const [addCompanyError, setAddCompanyError] = useState("");
+  const [companyAddedNote, setCompanyAddedNote] = useState("");
+
+  // ── Company search box state ──
+  const [companyQuery, setCompanyQuery] = useState("");
+  const [companyOpen, setCompanyOpen] = useState(false);
+  const [highlightedIndex, setHighlightedIndex] = useState(-1);
+
+  // Keep the text box in sync when the company changes programmatically
+  // (profile load, newly added company, etc.)
+  useEffect(() => {
+    setCompanyQuery(profileData.company);
+  }, [profileData.company]);
+
+  const companyMatches = useMemo(() => {
+    const q = companyQuery.trim().toLowerCase();
+    if (!q) return companies;
+    const starts = companies.filter((c) =>
+      c.toLowerCase().startsWith(q),
+    );
+    const includes = companies.filter(
+      (c) =>
+        !c.toLowerCase().startsWith(q) && c.toLowerCase().includes(q),
+    );
+    return [...starts, ...includes];
+  }, [companies, companyQuery]);
+
+  // Keep a live ref so the blur handler never reverts to a stale company
+  const companyRef = useRef(profileData.company);
+  useEffect(() => {
+    companyRef.current = profileData.company;
+  }, [profileData.company]);
+
+  const selectCompany = (name: string) => {
+    setProfileData((prev) => ({ ...prev, company: name }));
+    setCompanyQuery(name);
+    setCompanyOpen(false);
+    setHighlightedIndex(-1);
+  };
+
+  const clearCompany = () => {
+    setProfileData((prev) => ({ ...prev, company: "" }));
+    setCompanyQuery("");
+    setCompanyOpen(false);
+    setHighlightedIndex(-1);
+  };
+
+  const handleCompanyKeyDown = (
+    e: React.KeyboardEvent<HTMLInputElement>,
+  ) => {
+    if (!companyOpen && (e.key === "ArrowDown" || e.key === "ArrowUp")) {
+      setCompanyOpen(true);
+      return;
+    }
+    switch (e.key) {
+      case "ArrowDown":
+        e.preventDefault();
+        setHighlightedIndex((prev) =>
+          Math.min(prev + 1, companyMatches.length - 1),
+        );
+        break;
+      case "ArrowUp":
+        e.preventDefault();
+        setHighlightedIndex((prev) => Math.max(prev - 1, -1));
+        break;
+      case "Enter":
+        if (companyOpen && highlightedIndex >= 0) {
+          e.preventDefault();
+          const match = companyMatches[highlightedIndex];
+          if (match) selectCompany(match);
+        }
+        break;
+      case "Escape":
+        setCompanyOpen(false);
+        break;
+    }
+  };
+
   const graduationYears = Array.from({ length: 2027 - 2014 + 1 }, (_, index) =>
     String(2014 + index),
   );
@@ -67,23 +153,23 @@ export default function ProfileModal({ isOpen, onClose }: ProfileModalProps) {
   }, []);
 
   // Fetch companies list
-  useEffect(() => {
-    const fetchCompanies = async () => {
-      try {
-        const querySnapshot = await getDocs(collection(db, "companies"));
-        const companyNames = querySnapshot.docs
-          .map((doc) => doc.id)
-          .sort((a, b) => a.localeCompare(b));
-        setCompanies(companyNames);
-      } catch (err) {
-        console.error("Error fetching companies:", err);
-      }
-    };
+  const fetchCompanies = useCallback(async () => {
+    try {
+      const querySnapshot = await getDocs(collection(db, "companies"));
+      const companyNames = querySnapshot.docs
+        .map((doc) => doc.id)
+        .sort((a, b) => a.localeCompare(b));
+      setCompanies(companyNames);
+    } catch (err) {
+      console.error("Error fetching companies:", err);
+    }
+  }, []);
 
+  useEffect(() => {
     if (isOpen) {
       fetchCompanies();
     }
-  }, [isOpen]);
+  }, [isOpen, fetchCompanies]);
 
   // Load user's existing profile
   const loadUserProfile = async (userId: string) => {
@@ -155,6 +241,67 @@ export default function ProfileModal({ isOpen, onClose }: ProfileModalProps) {
       setSuccess(false);
     } catch (err) {
       console.error("Sign out error:", err);
+    }
+  };
+
+  // ── Add Company popup ──
+  const websiteIsValid = isValidWebsiteUrl(newCompanyWebsite);
+  const canSubmitCompany =
+    !!newCompanyName.trim() && websiteIsValid && !addingCompany;
+
+  const closeAddCompanyPopup = () => {
+    setShowAddCompany(false);
+    setNewCompanyName("");
+    setNewCompanyWebsite("");
+    setAddCompanyError("");
+  };
+
+  const handleAddCompany = async (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!canSubmitCompany) return;
+
+    const addedName = newCompanyName.trim();
+
+    setAddingCompany(true);
+    setAddCompanyError("");
+    try {
+      const response = await fetch("/api/add-company", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          name: addedName,
+          website: newCompanyWebsite.trim(),
+        }),
+      });
+
+      const data = await response.json();
+      if (!response.ok) {
+        throw new Error(data.error || "Failed to add company");
+      }
+
+      // Update the dropdown and select the new company immediately
+      setCompanies((prev) =>
+        prev.includes(addedName)
+          ? prev
+          : [...prev, addedName].sort((a, b) => a.localeCompare(b)),
+      );
+      setProfileData((prev) => ({
+        ...prev,
+        company: addedName,
+      }));
+
+      closeAddCompanyPopup();
+      setCompanyAddedNote("✓ Company added and selected below");
+      setTimeout(() => setCompanyAddedNote(""), 4000);
+
+      // Reconcile with Firestore in the background (no await needed)
+      fetchCompanies();
+    } catch (err: unknown) {
+      const message =
+        err instanceof Error ? err.message : "Failed to add company";
+      setAddCompanyError(message);
+    } finally {
+      setAddingCompany(false);
     }
   };
 
@@ -497,52 +644,124 @@ export default function ProfileModal({ isOpen, onClose }: ProfileModalProps) {
                   </select>
                 </div>
 
-                {/* Company Dropdown */}
-                <div>
+                {/* Company Search Box */}
+                <div className="relative">
                   <label
                     htmlFor="profile-company"
                     className="section-label"
                   >
                     Company
                   </label>
-                  <select
-                    id="profile-company"
-                    value={profileData.company}
-                    onChange={(e) =>
-                      setProfileData({
-                        ...profileData,
-                        company: e.target.value,
-                      })
-                    }
-                    className="w-full px-4 py-3 bg-gray-700 text-white rounded-lg border border-gray-600 focus:border-blue-500 focus:outline-none focus:ring-2 focus:ring-blue-500 transition-all"
-                    disabled={loading}
-                  >
-                    <option value="">Hide from board</option>
-                    {companies.map((companyName) => (
-                      <option key={companyName} value={companyName}>
-                        {companyName}
-                      </option>
-                    ))}
-                  </select>
+                  <div className="relative">
+                    <input
+                      id="profile-company"
+                      type="text"
+                      role="combobox"
+                      aria-expanded={companyOpen}
+                      aria-controls="profile-company-listbox"
+                      aria-autocomplete="list"
+                      autoComplete="off"
+                      value={companyQuery}
+                      onChange={(e) => {
+                        setCompanyQuery(e.target.value);
+                        setCompanyOpen(true);
+                        setHighlightedIndex(-1);
+                      }}
+                      onFocus={() => {
+                        setCompanyOpen(true);
+                        setHighlightedIndex(-1);
+                      }}
+                      onBlur={() => {
+                        // Delay so option mousedown/click wins over blur
+                        setTimeout(() => {
+                          setCompanyOpen(false);
+                          setHighlightedIndex(-1);
+                          setCompanyQuery(companyRef.current);
+                        }, 150);
+                      }}
+                      onKeyDown={handleCompanyKeyDown}
+                      placeholder="Start typing to search companies"
+                      className="field-input pr-9"
+                      disabled={loading}
+                    />
+                    {profileData.company ? (
+                      <button
+                        type="button"
+                        onMouseDown={(e) => e.preventDefault()}
+                        onClick={clearCompany}
+                        title="Clear company (hide from board)"
+                        className="absolute right-2 top-1/2 -translate-y-1/2 rounded-full p-1 text-slate-400 transition-colors hover:bg-slate-700 hover:text-white"
+                      >
+                        <svg
+                          className="w-4 h-4"
+                          fill="none"
+                          stroke="currentColor"
+                          viewBox="0 0 24 24"
+                        >
+                          <path
+                            strokeLinecap="round"
+                            strokeLinejoin="round"
+                            strokeWidth={2}
+                            d="M6 18L18 6M6 6l12 12"
+                          />
+                        </svg>
+                      </button>
+                    ) : null}
+
+                    {companyOpen && !loading ? (
+                      <div
+                        id="profile-company-listbox"
+                        role="listbox"
+                        className="absolute z-20 mt-1 w-full overflow-y-auto rounded-xl border border-slate-700 bg-slate-900 shadow-2xl max-h-52"
+                      >
+                        {companyMatches.length ? (
+                          companyMatches.map((name, index) => (
+                            <button
+                              key={name}
+                              type="button"
+                              onMouseDown={(e) => e.preventDefault()}
+                              onClick={() => selectCompany(name)}
+                              onMouseEnter={() => setHighlightedIndex(index)}
+                              className={`block w-full px-4 py-2.5 text-left text-sm transition-colors ${
+                                index === highlightedIndex
+                                  ? "bg-cyan-500/10 text-cyan-200"
+                                  : "text-slate-200 hover:bg-slate-800"
+                              }`}
+                            >
+                              {name}
+                            </button>
+                          ))
+                        ) : (
+                          <p className="px-4 py-3 text-sm text-slate-500">
+                            No matching company — use “Add it here” below
+                          </p>
+                        )}
+                      </div>
+                    ) : null}
+                  </div>
                   <p className="mt-2 text-sm text-slate-400">
-                    Leave blank to hide your profile from the board.
+                    Leave empty to hide your profile from the board.
                   </p>
                 </div>
 
-                {/* Suggest Company Section */}
+                {/* Add Company Section */}
                 <div className="rounded-2xl border border-slate-700/70 bg-slate-800/70 p-4">
                   <label className="section-label">
-                    If your company is not in the list, add it here
+                    Can&apos;t find your company? Add it here:
                   </label>
-                  <a
-                    href="https://docs.google.com/forms/d/e/1FAIpQLScG4TfmYF4Is0Xzu07tY-I_bl9z8HVKC7MXK-w7D7_r-mS2HA/viewform?usp=publish-editor"
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    onClick={onClose}
+                  <button
+                    type="button"
+                    onClick={() => setShowAddCompany(true)}
+                    disabled={loading}
                     className="secondary-btn w-full py-2.5"
                   >
-                    Suggest
-                  </a>
+                    + Add Company
+                  </button>
+                  {companyAddedNote ? (
+                    <p className="mt-2 text-sm text-emerald-300">
+                      {companyAddedNote}
+                    </p>
+                  ) : null}
                 </div>
 
                 {/* Error Message */}
@@ -565,6 +784,100 @@ export default function ProfileModal({ isOpen, onClose }: ProfileModalProps) {
           )}
         </div>
       </div>
+
+      {/* Add Company Popup */}
+      {showAddCompany ? (
+        <div
+          className="fixed inset-0 z-[60] flex items-center justify-center bg-slate-950/80 p-4 backdrop-blur-sm"
+          onClick={closeAddCompanyPopup}
+        >
+          <div
+            className="surface-card w-full max-w-sm p-5 sm:p-6"
+            onClick={(e) => e.stopPropagation()}
+          >
+            <div className="mb-4 flex items-center justify-between">
+              <h3 className="text-lg font-semibold text-white">
+                Add New Company
+              </h3>
+              <button
+                type="button"
+                onClick={closeAddCompanyPopup}
+                className="text-gray-400 transition-colors hover:text-white"
+              >
+                <svg
+                  className="w-5 h-5"
+                  fill="none"
+                  stroke="currentColor"
+                  viewBox="0 0 24 24"
+                >
+                  <path
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    strokeWidth={2}
+                    d="M6 18L18 6M6 6l12 12"
+                  />
+                </svg>
+              </button>
+            </div>
+
+            <form onSubmit={handleAddCompany} className="space-y-4">
+              <div>
+                <label htmlFor="new-company-name" className="section-label">
+                  Company Name
+                </label>
+                <input
+                  id="new-company-name"
+                  type="text"
+                  value={newCompanyName}
+                  onChange={(e) => setNewCompanyName(e.target.value)}
+                  placeholder="e.g. Siemens"
+                  className="field-input"
+                  disabled={addingCompany}
+                  autoFocus
+                />
+              </div>
+
+              <div>
+                <label htmlFor="new-company-website" className="section-label">
+                  Company Website
+                </label>
+                <input
+                  id="new-company-website"
+                  type="url"
+                  value={newCompanyWebsite}
+                  onChange={(e) => setNewCompanyWebsite(e.target.value)}
+                  placeholder="https://company.com"
+                  className={`field-input ${
+                    newCompanyWebsite && !websiteIsValid
+                      ? "border-red-500/60 focus:border-red-500 focus:ring-red-500/20"
+                      : ""
+                  }`}
+                  disabled={addingCompany}
+                />
+                {newCompanyWebsite && !websiteIsValid ? (
+                  <p className="mt-1.5 text-xs text-red-400">
+                    Please enter a valid link, e.g. https://company.com
+                  </p>
+                ) : null}
+              </div>
+
+              {addCompanyError ? (
+                <div className="bg-red-600 text-white px-4 py-2 rounded-lg text-sm">
+                  {addCompanyError}
+                </div>
+              ) : null}
+
+              <button
+                type="submit"
+                disabled={!canSubmitCompany}
+                className="primary-btn w-full py-3 disabled:cursor-not-allowed disabled:opacity-50"
+              >
+                {addingCompany ? "Adding..." : "Add Company"}
+              </button>
+            </form>
+          </div>
+        </div>
+      ) : null}
     </div>
   );
 }

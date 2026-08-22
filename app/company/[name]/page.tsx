@@ -166,7 +166,7 @@ export default function CompanyPage() {
                         href={grad.portfolioCv}
                         target="_blank"
                         rel="noopener noreferrer"
-                        className="primary-btn shrink-0 px-4 py-1.5 sm:px-6 sm:py-2"
+                        className="primary-btn shrink-0 gap-2 px-4 py-1.5 sm:px-6 sm:py-2"
                       >
                         <span>Portfolio/CV</span>
                         <svg
@@ -189,7 +189,7 @@ export default function CompanyPage() {
                       href={grad.linkedin}
                       target="_blank"
                       rel="noopener noreferrer"
-                      className="primary-btn shrink-0 px-4 py-1.5 sm:px-6 sm:py-2"
+                      className="primary-btn shrink-0 gap-2 px-4 py-1.5 sm:px-6 sm:py-2"
                     >
                       <svg
                         className="w-4 h-4 sm:w-5 sm:h-5"
