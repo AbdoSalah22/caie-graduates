@@ -123,6 +123,9 @@ export default function BrowseGraduatesPage() {
       .sort((a, b) => a.name.localeCompare(b.name));
   }, [rows, applied]);
 
+  // Remount the results list (and re-run the entrance animation) on each new search
+  const resultsKey = JSON.stringify(applied);
+
   const hasActiveFilters =
     !!applied.name ||
     !!applied.company ||
@@ -291,13 +294,14 @@ export default function BrowseGraduatesPage() {
             </button>
           </div>
         ) : (
-          <div className="space-y-4">
-            {filtered.map((grad) => {
+          <div key={resultsKey} className="space-y-4">
+            {filtered.map((grad, index) => {
               const logoUrl = companiesMap[grad.company]?.logoUrl;
               return (
                 <div
                   key={grad.id}
-                  className="flex flex-col gap-3 rounded-2xl border border-slate-800/80 bg-slate-800/70 p-3 transition-all duration-200 hover:-translate-y-0.5 hover:border-slate-600 hover:bg-slate-700/80 sm:flex-row sm:items-center sm:justify-between sm:p-4"
+                  className="flex flex-col gap-3 rounded-2xl border border-slate-800/80 bg-slate-800/70 p-3 transition-all duration-200 animate-rise hover:-translate-y-0.5 hover:border-slate-600 hover:bg-slate-700/80 sm:flex-row sm:items-center sm:justify-between sm:p-4"
+                  style={{ animationDelay: `${Math.min(index * 30, 240)}ms` }}
                 >
                   <div className="flex items-center gap-3 min-w-0">
                     <div className="flex h-12 w-12 shrink-0 items-center justify-center overflow-hidden rounded-xl border border-slate-600/70 bg-white p-1.5 shadow-sm">

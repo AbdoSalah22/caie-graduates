@@ -94,7 +94,7 @@ export default function CompanyPage() {
     <div className="page-shell px-4 py-4 sm:px-6 sm:py-6 lg:px-8 lg:py-8">
       <div className="page-container">
         {/* Header */}
-        <div className="page-header mb-8">
+        <div className="page-header mb-8 animate-rise">
           <Link href="/" className="ghost-link mb-4">
             ← Back to Board
           </Link>
@@ -124,7 +124,10 @@ export default function CompanyPage() {
         </div>
 
         {/* Employees List */}
-        <div className="surface-card p-4 sm:p-6">
+        <div
+          className="surface-card p-4 sm:p-6 animate-rise"
+          style={{ animationDelay: "80ms" }}
+        >
           <div className="mb-4 flex items-center justify-between sm:mb-6">
             <h2 className="text-xl font-semibold text-white sm:text-2xl">
               Employees
@@ -141,7 +144,8 @@ export default function CompanyPage() {
               {graduates.map((grad, index) => (
                 <div
                   key={index}
-                  className="flex flex-col gap-3 rounded-2xl border border-slate-800/80 bg-slate-800/70 p-3 transition-all duration-200 hover:-translate-y-0.5 hover:border-slate-600 hover:bg-slate-700/80 sm:flex-row sm:items-center sm:justify-between sm:gap-4 sm:p-4"
+                  className="flex flex-col gap-3 rounded-2xl border border-slate-800/80 bg-slate-800/70 p-3 transition-all duration-200 hover:-translate-y-0.5 hover:border-slate-600 hover:bg-slate-700/80 animate-rise sm:flex-row sm:items-center sm:justify-between sm:gap-4 sm:p-4"
+                  style={{ animationDelay: `${Math.min(index * 30, 240)}ms` }}
                 >
                   <div className="flex-1 min-w-0">
                     <div className="flex flex-wrap items-center gap-2">
