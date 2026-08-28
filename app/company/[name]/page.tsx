@@ -1,16 +1,13 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import {
-  collection,
-  query,
-  where,
-  getDocs,
-  doc,
-  getDoc,
-} from "firebase/firestore";
-import { db } from "@/lib/firebase";
-import { Graduate } from "@/types";
+  CompaniesMap,
+  CompanyDoc,
+  SubmissionRow,
+  companiesStore,
+  submissionsStore,
+} from "@/lib/dataStores";
 import Link from "next/link";
 import { useParams } from "next/navigation";
 
@@ -19,63 +16,55 @@ export default function CompanyPage() {
   const companyName = params?.name
     ? decodeURIComponent(params.name as string)
     : "";
-  const [graduates, setGraduates] = useState<Graduate[]>([]);
-  const [companyLogoUrl, setCompanyLogoUrl] = useState<string | null>(null);
-  const [loading, setLoading] = useState(true);
+
+  // Seed straight from the shared caches; going back to a previously
+  // visited company is instant and only changed docs are ever fetched.
+  const [submissions, setSubmissions] = useState<SubmissionRow[] | null>(
+    () => submissionsStore.get(),
+  );
+  const [companies, setCompanies] = useState<CompaniesMap | null>(() =>
+    companiesStore.get(),
+  );
   const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
-    const fetchGraduates = async () => {
-      if (!companyName) {
-        setError("Invalid company selected");
-        setLoading(false);
-        return;
-      }
+    const unsubSubs = submissionsStore.subscribe((data) => {
+      if (data !== null) setSubmissions(data);
+    });
+    const unsubComps = companiesStore.subscribe((data) => {
+      if (data !== null) setCompanies(data);
+    });
 
-      try {
-        const companyRef = doc(db, "companies", companyName);
-        const submissionsQuery = query(
-          collection(db, "submissions"),
-          where("company", "==", companyName),
-        );
-
-        const [companyDoc, querySnapshot] = await Promise.all([
-          getDoc(companyRef),
-          getDocs(submissionsQuery),
-        ]);
-
-        if (companyDoc.exists()) {
-          const companyData = companyDoc.data() as { logoUrl?: string };
-          setCompanyLogoUrl(companyData.logoUrl || null);
-        } else {
-          setCompanyLogoUrl(null);
-        }
-
-        const grads: Graduate[] = [];
-        querySnapshot.forEach((doc) => {
-          const data = doc.data();
-          grads.push({
-            name: data.name,
-            title: data.title,
-            linkedin: data.linkedin,
-            portfolioCv: data.portfolioCv || undefined,
-            graduationClass: data.graduationClass || undefined,
-            timestamp: data.timestamp,
-          });
-        });
-
-        grads.sort((a, b) => a.name.localeCompare(b.name));
-        setGraduates(grads);
-      } catch (fetchError) {
-        console.error("Error fetching graduates:", fetchError);
-        setError("Unable to load company graduates. Please try again.");
-      } finally {
-        setLoading(false);
-      }
+    return () => {
+      unsubSubs();
+      unsubComps();
     };
+  }, []);
 
-    fetchGraduates();
+  useEffect(() => {
+    if (!companyName) setError("Invalid company selected");
   }, [companyName]);
+
+  const loading = submissions === null || companies === null;
+
+  const companyDoc: CompanyDoc | undefined =
+    companies?.[companyName] || undefined;
+
+  // Filter the cached submissions for this company and sort by name
+  const graduates = useMemo(() => {
+    if (!submissions || !companyName) return [];
+    return submissions
+      .filter((s) => s.company === companyName)
+      .map((s) => ({
+        name: s.name,
+        title: s.title,
+        linkedin: s.linkedin,
+        portfolioCv: s.portfolioCv,
+        graduationClass: s.graduationClass,
+        timestamp: s.timestamp,
+      }))
+      .sort((a, b) => a.name.localeCompare(b.name));
+  }, [submissions, companyName]);
 
   if (loading) {
     return (
@@ -111,9 +100,9 @@ export default function CompanyPage() {
           </Link>
           <div className="flex items-center gap-4">
             <div className="flex h-16 w-16 items-center justify-center rounded-lg border border-slate-700/70 bg-white p-2 shadow-sm">
-              {companyLogoUrl && (
+              {companyDoc?.logoUrl && (
                 <img
-                  src={companyLogoUrl}
+                  src={companyDoc.logoUrl}
                   alt={`${companyName} logo`}
                   className="max-h-full max-w-full object-contain"
                 />

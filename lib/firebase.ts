@@ -1,5 +1,9 @@
 import { initializeApp, getApps, FirebaseApp } from "firebase/app";
-import { getFirestore, Firestore } from "firebase/firestore";
+import {
+  getFirestore,
+  Firestore,
+  enableMultiTabIndexedDbPersistence,
+} from "firebase/firestore";
 import { getStorage, FirebaseStorage } from "firebase/storage";
 import { getAuth, Auth } from "firebase/auth";
 
@@ -22,6 +26,17 @@ if (!getApps().length) {
 
 // Initialize Firestore
 export const db: Firestore = getFirestore(app);
+
+// Enable IndexedDB persistence so the board replays from local cache on
+// reloads and Firestore syncs only changed documents with the backend.
+// Must be called before any Firestore reads/writes/listeners.
+if (typeof window !== "undefined") {
+  enableMultiTabIndexedDbPersistence(db).catch((error) => {
+    if (error.code !== "already-exists") {
+      console.error("Error enabling Firestore persistence:", error);
+    }
+  });
+}
 
 // Initialize Storage
 export const storage: FirebaseStorage = getStorage(app);

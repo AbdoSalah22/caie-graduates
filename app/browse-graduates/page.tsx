@@ -1,24 +1,13 @@
 "use client";
 
-import { useEffect, useMemo, useState, useCallback } from "react";
+import { useEffect, useMemo, useState } from "react";
 import Link from "next/link";
-import { collection, getDocs } from "firebase/firestore";
-import { db } from "@/lib/firebase";
-
-type SubmissionRow = {
-  id: string;
-  name: string;
-  title: string;
-  linkedin: string;
-  company: string;
-  portfolioCv?: string;
-  graduationClass?: string;
-};
-
-type CompanyRow = {
-  logoUrl?: string;
-  count?: number;
-};
+import {
+  CompaniesMap,
+  SubmissionRow,
+  companiesStore,
+  submissionsStore,
+} from "@/lib/dataStores";
 
 type Filters = {
   name: string;
@@ -38,9 +27,14 @@ const EMPTY_FILTERS: Filters = {
 const UNASSIGNED_COMPANY = "__unassigned__";
 
 export default function BrowseGraduatesPage() {
-  const [submissions, setSubmissions] = useState<SubmissionRow[]>([]);
-  const [companies, setCompanies] = useState<Record<string, CompanyRow>>({});
-  const [loading, setLoading] = useState(true);
+  // Seed from the shared caches so returning here is instant; the live
+  // listeners keep them fresh and only deliver changed documents.
+  const [submissions, setSubmissions] = useState<SubmissionRow[] | null>(
+    () => submissionsStore.get(),
+  );
+  const [companies, setCompanies] = useState<CompaniesMap | null>(() =>
+    companiesStore.get(),
+  );
 
   // Draft filters are what the user types; applied filters are what the
   // results actually use. Results only appear after pressing Search.
@@ -48,44 +42,27 @@ export default function BrowseGraduatesPage() {
   const [applied, setApplied] = useState<Filters>(EMPTY_FILTERS);
   const [hasSearched, setHasSearched] = useState(false);
 
-  const fetchData = useCallback(async () => {
-    setLoading(true);
-    try {
-      const [submissionsSnapshot, companiesSnapshot] = await Promise.all([
-        getDocs(collection(db, "submissions")),
-        getDocs(collection(db, "companies")),
-      ]);
+  useEffect(() => {
+    const unsubSubs = submissionsStore.subscribe((data) => {
+      if (data !== null) setSubmissions(data);
+    });
+    const unsubComps = companiesStore.subscribe((data) => {
+      if (data !== null) setCompanies(data);
+    });
 
-      const rows: SubmissionRow[] = [];
-      submissionsSnapshot.forEach((doc) => {
-        const data = doc.data();
-        rows.push({
-          id: doc.id,
-          name: data.name || "",
-          title: data.title || "",
-          linkedin: data.linkedin || "",
-          company: data.company || "",
-          portfolioCv: data.portfolioCv || undefined,
-          graduationClass: data.graduationClass || undefined,
-        });
-      });
-      setSubmissions(rows);
-
-      const map: Record<string, CompanyRow> = {};
-      companiesSnapshot.forEach((doc) => {
-        map[doc.id] = doc.data() as CompanyRow;
-      });
-      setCompanies(map);
-    } catch (error) {
-      console.error("Error fetching data:", error);
-    } finally {
-      setLoading(false);
-    }
+    return () => {
+      unsubSubs();
+      unsubComps();
+    };
   }, []);
 
-  useEffect(() => {
-    fetchData();
-  }, [fetchData]);
+  const loading = submissions === null || companies === null;
+  const rows = useMemo(() => submissions ?? [], [submissions]);
+  const companiesMap = useMemo(() => companies ?? {}, [companies]);
+
+  const handleRefresh = async () => {
+    await Promise.all([submissionsStore.refresh(), companiesStore.refresh()]);
+  };
 
   const updateDraft = (key: keyof Filters, value: string) =>
     setDraft((prev) => ({ ...prev, [key]: value }));
@@ -104,29 +81,29 @@ export default function BrowseGraduatesPage() {
 
   const companyOptions = useMemo(() => {
     const names = new Set<string>();
-    Object.keys(companies).forEach((name) => {
-      if ((companies[name]?.count ?? 0) > 0) names.add(name);
+    Object.keys(companiesMap).forEach((name) => {
+      if ((companiesMap[name]?.count ?? 0) > 0) names.add(name);
     });
     // Include companies that appear in submissions even without a record
-    submissions.forEach((s) => {
+    rows.forEach((s) => {
       if (s.company) names.add(s.company);
     });
     return Array.from(names).sort((a, b) => a.localeCompare(b));
-  }, [companies, submissions]);
+  }, [companiesMap, rows]);
 
   const classOptions = useMemo(() => {
     const years = new Set<string>();
-    submissions.forEach((s) => {
+    rows.forEach((s) => {
       if (s.graduationClass) years.add(s.graduationClass);
     });
     return Array.from(years).sort((a, b) => b.localeCompare(a));
-  }, [submissions]);
+  }, [rows]);
 
   const filtered = useMemo(() => {
     const nameQ = applied.name.trim().toLowerCase();
     const titleQ = applied.title.trim().toLowerCase();
 
-    return submissions
+    return rows
       .filter((s) => {
         if (!applied.company) return true;
         if (applied.company === UNASSIGNED_COMPANY) return !s.company;
@@ -144,7 +121,7 @@ export default function BrowseGraduatesPage() {
         titleQ ? s.title.toLowerCase().includes(titleQ) : true,
       )
       .sort((a, b) => a.name.localeCompare(b.name));
-  }, [submissions, applied]);
+  }, [rows, applied]);
 
   const hasActiveFilters =
     !!applied.name ||
@@ -266,7 +243,7 @@ export default function BrowseGraduatesPage() {
 
             <button
               type="button"
-              onClick={fetchData}
+              onClick={handleRefresh}
               disabled={loading}
               className="secondary-btn px-4 py-3 disabled:opacity-50"
             >
@@ -316,7 +293,7 @@ export default function BrowseGraduatesPage() {
         ) : (
           <div className="space-y-4">
             {filtered.map((grad) => {
-              const logoUrl = companies[grad.company]?.logoUrl;
+              const logoUrl = companiesMap[grad.company]?.logoUrl;
               return (
                 <div
                   key={grad.id}

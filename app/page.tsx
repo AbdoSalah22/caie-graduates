@@ -1,46 +1,42 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { collection, onSnapshot, query, doc, getDoc } from "firebase/firestore";
+import { doc, getDoc } from "firebase/firestore";
 import { db } from "@/lib/firebase";
 import { Node } from "@/types";
-import { BoardView } from "@/hooks/useForceGraph";
-import { MIN_BUBBLE_SIZE, MAX_BUBBLE_SIZE } from "@/lib/constants";
+import { getCachedNodes, subscribeToBoard } from "@/lib/boardStore";
 import Artboard from "@/components/Artboard";
 import ProfileModal from "@/components/ProfileModal";
 import Link from "next/link";
+import { BoardView } from "@/hooks/useForceGraph";
 
 /**
- * Compute bubble radius using logarithmic scaling.
+ * Main page - displays the dynamic logo artboard.
  *
- * Log scaling prevents a single dominant company from dwarfing all others.
- * A company with 50 employees will be noticeably larger than one with 5,
- * but not 10× larger.
- */
-function computeRadius(count: number, maxCount: number): number {
-  if (maxCount <= 1) return MIN_BUBBLE_SIZE / 2;
-  const logScale = Math.log(count + 1) / Math.log(maxCount + 1);
-  const diameter = MIN_BUBBLE_SIZE + (MAX_BUBBLE_SIZE - MIN_BUBBLE_SIZE) * logScale;
-  return diameter / 2; // radius = half of diameter
-}
-
-/**
- * Main page - displays the dynamic logo artboard
- *
- * Real-time Firestore listener updates the display whenever:
- * - A new company is added
- * - A company's graduate count changes
- * - Logo URLs are updated
- *
- * Companies are sized proportionally to their graduate count
- * using logarithmic scaling and D3 force-directed layout.
+ * Board data is read from a module-level cache (lib/boardStore) whose
+ * real-time Firestore listener stays alive across navigations, so going
+ * back to the board renders instantly without re-downloading everything:
+ * - First visit establishes the listener.
+ * - Navigating away keeps the listener (and cached snapshot) alive.
+ * - Returning reuses the cached snapshot; the page is already up to date.
+ * - A new company added elsewhere updates the cache through the same
+ *   listener, so only that change is ever fetched.
  */
 export default function Home() {
-  const [nodes, setNodes] = useState<Node[]>([]);
-  const [loading, setLoading] = useState(true);
+  const [nodes, setNodes] = useState<Node[]>(() => getCachedNodes() ?? []);
+  const [loading, setLoading] = useState(() => getCachedNodes() === null);
   const [isProfileModalOpen, setIsProfileModalOpen] = useState(false);
   const [showProfileButton, setShowProfileButton] = useState(true);
   const [view, setView] = useState<BoardView>("bubble");
+
+  useEffect(() => {
+    const unsubscribe = subscribeToBoard((latest) => {
+      setNodes(latest);
+      setLoading(false);
+    });
+
+    return unsubscribe;
+  }, []);
 
   useEffect(() => {
     const loadSettings = async () => {
@@ -56,54 +52,6 @@ export default function Home() {
     };
 
     loadSettings();
-
-    // Set up real-time listener for companies collection
-    const q = query(collection(db, "companies"));
-
-    const unsubscribe = onSnapshot(
-      q,
-      (snapshot) => {
-        // First pass: collect raw data and find maxCount
-        const rawData: { id: string; count: number; logoUrl?: string }[] = [];
-        let maxCount = 1;
-
-        snapshot.forEach((doc) => {
-          const data = doc.data();
-          const count = data.count || 0;
-
-          if (count <= 0) return; // Skip empty companies
-
-          rawData.push({
-            id: doc.id,
-            count,
-            logoUrl: data.logoUrl,
-          });
-
-          if (count > maxCount) maxCount = count;
-        });
-
-        // Second pass: compute logarithmic radii
-        const companiesData: Node[] = rawData.map((company) => ({
-          id: company.id,
-          count: company.count,
-          radius: computeRadius(company.count, maxCount),
-          logoUrl: company.logoUrl,
-        }));
-
-        // Sort by count descending (largest companies first)
-        companiesData.sort((a, b) => b.count - a.count);
-
-        setNodes(companiesData);
-        setLoading(false);
-      },
-      (error) => {
-        console.error("Error fetching companies:", error);
-        setLoading(false);
-      },
-    );
-
-    // Cleanup listener on unmount
-    return () => unsubscribe();
   }, []);
 
   if (loading) {
