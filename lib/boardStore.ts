@@ -17,7 +17,12 @@ function computeRadius(count: number, maxCount: number): number {
 }
 
 function computeNodes(companies: CompaniesMap): Node[] {
-  const rawData: { id: string; count: number; logoUrl?: string }[] = [];
+  const rawData: {
+    id: string;
+    count: number;
+    logoUrl?: string;
+    squareColor?: string;
+  }[] = [];
   let maxCount = 1;
 
   Object.entries(companies).forEach(([id, company]) => {
@@ -28,6 +33,7 @@ function computeNodes(companies: CompaniesMap): Node[] {
       id,
       count,
       logoUrl: company.logoUrl,
+      squareColor: company.squareColor,
     });
 
     if (count > maxCount) maxCount = count;
@@ -39,6 +45,7 @@ function computeNodes(companies: CompaniesMap): Node[] {
       count: company.count,
       radius: computeRadius(company.count, maxCount),
       logoUrl: company.logoUrl,
+      squareColor: company.squareColor,
     }))
     .sort((a, b) => b.count - a.count);
 }

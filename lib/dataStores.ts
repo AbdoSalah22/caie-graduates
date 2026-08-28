@@ -23,6 +23,7 @@ export type SubmissionRow = {
 export type CompanyDoc = {
   logoUrl?: string;
   count?: number;
+  squareColor?: string;
 };
 
 export type CompaniesMap = Record<string, CompanyDoc>;

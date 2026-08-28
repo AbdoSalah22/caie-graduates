@@ -28,8 +28,9 @@ export default function LogoNode({ node }: LogoNodeProps) {
   // White glow for hover effect
   const whiteGlow = "255, 255, 255";
 
-  // Square takes the logo's dominant color when one clearly exists
-  const [bg, setBg] = useState("#ffffff");
+  // Square takes the logo's dominant color when one clearly exists,
+  // otherwise the company's own configured square color (default white).
+  const [bg, setBg] = useState<string | null>(null);
   useEffect(() => {
     if (!logoUrl) return;
     let active = true;
@@ -57,7 +58,7 @@ export default function LogoNode({ node }: LogoNodeProps) {
         width: `${size}px`,
         height: `${size}px`,
         borderRadius: `${borderRadius}px`,
-        background: logoUrl ? bg : "#374151",
+        background: logoUrl ? (bg ?? node.squareColor ?? "#ffffff") : "#374151",
       }}
     >
       {logoUrl ? (

@@ -27,7 +27,7 @@ export default function Home() {
   const [loading, setLoading] = useState(() => getCachedNodes() === null);
   const [isProfileModalOpen, setIsProfileModalOpen] = useState(false);
   const [showProfileButton, setShowProfileButton] = useState(true);
-  const [view, setView] = useState<BoardView>("bubble");
+  const [view, setView] = useState<BoardView>("grid");
 
   useEffect(() => {
     const unsubscribe = subscribeToBoard((latest) => {

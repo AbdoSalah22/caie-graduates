@@ -27,18 +27,21 @@ function CompanySection({
   loading,
   onAddCompany,
   onUpdateLogo,
+  onUpdateSquareColor,
   onEditCompany,
   onDeleteCompany,
 }: {
   companies: CompanyItem[];
   loading: boolean;
-  onAddCompany: (name: string, logoUrl: string) => Promise<void>;
+  onAddCompany: (name: string, logoUrl: string, squareColor: string) => Promise<void>;
   onUpdateLogo: (name: string, logoUrl: string) => Promise<void>;
+  onUpdateSquareColor: (name: string, squareColor: string) => Promise<void>;
   onEditCompany: (oldName: string, newName: string) => Promise<void>;
   onDeleteCompany: (name: string) => Promise<void>;
 }) {
   const [newCompanyName, setNewCompanyName] = useState("");
   const [newCompanyLogo, setNewCompanyLogo] = useState("");
+  const [newCompanyColor, setNewCompanyColor] = useState("#ffffff");
 
   // ── Per-row edit state ──
   const [editingName, setEditingName] = useState<string | null>(null);
@@ -47,9 +50,10 @@ function CompanySection({
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    await onAddCompany(newCompanyName, newCompanyLogo);
+    await onAddCompany(newCompanyName, newCompanyLogo, newCompanyColor);
     setNewCompanyName("");
     setNewCompanyLogo("");
+    setNewCompanyColor("#ffffff");
   };
 
   const startEdit = (company: CompanyItem) => {
@@ -101,6 +105,40 @@ function CompanySection({
                 className="field-input"
                 disabled={loading}
               />
+            </div>
+          </div>
+          <div className="flex gap-4 items-end">
+            <div className="flex-1">
+              <label className="section-label">
+                Square Color{" "}
+                <span className="text-slate-500 text-sm">
+                  (optional - defaults to white)
+                </span>
+              </label>
+              <div className="flex items-center gap-2">
+                <input
+                  type="color"
+                  value={newCompanyColor}
+                  onChange={(e) => setNewCompanyColor(e.target.value)}
+                  className="h-10 w-14 cursor-pointer rounded-lg border border-slate-700 bg-transparent p-1"
+                  aria-label="New company square color"
+                />
+                <input
+                  type="text"
+                  value={newCompanyColor}
+                  onChange={(e) => setNewCompanyColor(e.target.value)}
+                  placeholder="#ffffff"
+                  className="field-input w-32 font-mono"
+                  aria-label="New company square color (hex)"
+                />
+                <button
+                  type="button"
+                  onClick={() => setNewCompanyColor("#ffffff")}
+                  className="secondary-btn px-3 py-2"
+                >
+                  Default
+                </button>
+              </div>
             </div>
           </div>
           <div className="flex gap-4 items-end">
@@ -243,6 +281,51 @@ function CompanySection({
                   className="field-input flex-1 text-sm"
                 />
               </div>
+
+              {/* Square color input */}
+              <div className="flex flex-wrap items-center gap-2">
+                <label className="shrink-0 text-xs text-slate-400">
+                  Square color
+                </label>
+                <input
+                  type="color"
+                  defaultValue={company.squareColor || "#ffffff"}
+                  key={`color-${company.squareColor || "#ffffff"}`}
+                  onBlur={(e) => {
+                    if (
+                      e.target.value.toLowerCase() !==
+                      (company.squareColor || "#ffffff").toLowerCase()
+                    ) {
+                      onUpdateSquareColor(company.name, e.target.value);
+                    }
+                  }}
+                  className="h-8 w-12 cursor-pointer rounded-lg border border-slate-700 bg-transparent p-0.5"
+                  aria-label={`Square color for ${company.name}`}
+                />
+                <input
+                  type="text"
+                  defaultValue={company.squareColor || "#ffffff"}
+                  key={`colorhex-${company.squareColor || "#ffffff"}`}
+                  onBlur={(e) => {
+                    const value = e.target.value.trim();
+                    if (
+                      value.toLowerCase() !==
+                      (company.squareColor || "#ffffff").toLowerCase()
+                    ) {
+                      onUpdateSquareColor(company.name, value || "#ffffff");
+                    }
+                  }}
+                  className="field-input w-28 font-mono text-sm"
+                  aria-label={`Square color hex for ${company.name}`}
+                />
+                <button
+                  type="button"
+                  onClick={() => onUpdateSquareColor(company.name, "#ffffff")}
+                  className="secondary-btn px-3 py-1 text-xs"
+                >
+                  Reset to white
+                </button>
+              </div>
             </div>
           ))}
         </div>
@@ -277,6 +360,7 @@ export default function ManageCompaniesPage() {
           name: docSnap.id,
           count: data.count || 0,
           logoUrl: data.logoUrl,
+          squareColor: data.squareColor,
         });
       });
       companiesList.sort((a, b) => a.name.localeCompare(b.name));
@@ -295,7 +379,11 @@ export default function ManageCompaniesPage() {
   }, [user]);
 
   // ── Action handlers ──
-  const handleAddCompany = async (name: string, logoUrl: string) => {
+  const handleAddCompany = async (
+    name: string,
+    logoUrl: string,
+    squareColor: string,
+  ) => {
     if (!name.trim()) {
       showMsg("Company name is required");
       return;
@@ -306,6 +394,7 @@ export default function ManageCompaniesPage() {
       await setDoc(companyRef, {
         count: 0,
         logoUrl: logoUrl.trim() || null,
+        squareColor: squareColor.trim() || null,
       });
       showMsg(`Company "${name}" added successfully!`);
       loadCompanies();
@@ -333,6 +422,25 @@ export default function ManageCompaniesPage() {
     }
   };
 
+  const handleUpdateSquareColor = async (
+    companyName: string,
+    squareColor: string,
+  ) => {
+    try {
+      const companyRef = doc(db, "companies", companyName);
+      await setDoc(
+        companyRef,
+        { squareColor: squareColor || null },
+        { merge: true },
+      );
+      showMsg(`Square color updated for ${companyName}`);
+      loadCompanies();
+    } catch (error) {
+      console.error("Error updating square color:", error);
+      showMsg("Error updating square color");
+    }
+  };
+
   const handleEditCompany = async (oldName: string, newName: string) => {
     setLoading(true);
     try {
@@ -350,6 +458,7 @@ export default function ManageCompaniesPage() {
       await setDoc(newRef, {
         count: data.count || 0,
         logoUrl: data.logoUrl || null,
+        squareColor: data.squareColor || null,
       });
 
       // Move all graduates to the new company name
@@ -453,6 +562,7 @@ export default function ManageCompaniesPage() {
             loading={loading}
             onAddCompany={handleAddCompany}
             onUpdateLogo={handleUpdateLogo}
+            onUpdateSquareColor={handleUpdateSquareColor}
             onEditCompany={handleEditCompany}
             onDeleteCompany={handleDeleteCompany}
           />

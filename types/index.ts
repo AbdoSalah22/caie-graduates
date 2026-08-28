@@ -5,6 +5,7 @@ export interface Node {
   count: number;
   radius: number; // computed bubble radius (half the rendered diameter)
   logoUrl?: string;
+  squareColor?: string;
   x?: number;
   y?: number;
   vx?: number;
@@ -41,6 +42,7 @@ export interface CompanyItem {
   name: string;
   count: number;
   logoUrl?: string;
+  squareColor?: string;
 }
 
 export interface GraduateItem {

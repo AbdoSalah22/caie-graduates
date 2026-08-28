@@ -99,7 +99,12 @@ export default function CompanyPage() {
             ← Back to Board
           </Link>
           <div className="flex items-center gap-4">
-            <div className="flex h-16 w-16 items-center justify-center rounded-lg border border-slate-700/70 bg-white p-2 shadow-sm">
+            <div
+              className="flex h-16 w-16 items-center justify-center rounded-lg border border-slate-700/70 p-2 shadow-sm"
+              style={{
+                backgroundColor: companyDoc?.squareColor || "#ffffff",
+              }}
+            >
               {companyDoc?.logoUrl && (
                 <img
                   src={companyDoc.logoUrl}
