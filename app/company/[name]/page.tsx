@@ -10,6 +10,7 @@ import {
 } from "@/lib/dataStores";
 import Link from "next/link";
 import { useParams } from "next/navigation";
+import SiteFooter from "@/components/SiteFooter";
 
 export default function CompanyPage() {
   const params = useParams();
@@ -205,6 +206,10 @@ export default function CompanyPage() {
           )}
         </div>
       </div>
+
+      <footer className="pb-6 text-center">
+        <SiteFooter />
+      </footer>
     </div>
   );
 }

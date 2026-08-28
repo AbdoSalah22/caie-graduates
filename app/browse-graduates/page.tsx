@@ -8,6 +8,7 @@ import {
   companiesStore,
   submissionsStore,
 } from "@/lib/dataStores";
+import SiteFooter from "@/components/SiteFooter";
 
 type Filters = {
   name: string;
@@ -386,6 +387,10 @@ export default function BrowseGraduatesPage() {
           </div>
         )}
       </div>
+
+      <footer className="pb-6 text-center">
+        <SiteFooter />
+      </footer>
     </div>
   );
 }

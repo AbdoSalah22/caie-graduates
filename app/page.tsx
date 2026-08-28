@@ -7,6 +7,7 @@ import { Node } from "@/types";
 import { getCachedNodes, subscribeToBoard } from "@/lib/boardStore";
 import Artboard from "@/components/Artboard";
 import ProfileModal from "@/components/ProfileModal";
+import SiteFooter from "@/components/SiteFooter";
 import Link from "next/link";
 import { BoardView } from "@/hooks/useForceGraph";
 
@@ -107,6 +108,11 @@ export default function Home() {
             {view === "bubble" ? "Grid View" : "Bubble View"}
           </button>
         </div>
+      </div>
+
+      {/* Bottom-left credit — dim, never blocks the board */}
+      <div className="fixed bottom-3 left-3 z-10 select-none sm:bottom-5 sm:left-5">
+        <SiteFooter />
       </div>
 
       {/* Profile Modal */}
