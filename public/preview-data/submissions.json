@@ -61,6 +61,16 @@
       "timestamp": "2026-07-26T08:24:48.646Z"
     },
     {
+      "id": "1lG7GpteGEa5zoAQDLPvuwaV5pl2",
+      "name": "Mostafa Mahmoud",
+      "title": "IT Automation Engineer",
+      "linkedin": "https://www.linkedin.com/in/mostafa-mahmoud-424665243",
+      "company": "Central Bank of Egypt",
+      "graduationClass": "2025",
+      "userId": "1lG7GpteGEa5zoAQDLPvuwaV5pl2",
+      "timestamp": "2026-09-11T15:44:46.734Z"
+    },
+    {
       "id": "2mnSMLhn8xeNq9zmxuCmiwvBpCW2",
       "name": "Mohamad Khalifa",
       "title": "Digitalization Engineer",
@@ -130,6 +140,16 @@
       "graduationClass": "2024",
       "userId": "6vzfsY0WI8WH1s4c563Er5Twk462",
       "timestamp": "2026-08-28T15:02:27.272Z"
+    },
+    {
+      "id": "70sHpT4hSjM2LJEKkEzKM6BQgm43",
+      "name": "Ahmed Mohamed Elsayed Tabbash",
+      "title": "SOC Analyst T1",
+      "linkedin": "https://www.linkedin.com/in/ahmed-tabbash/",
+      "company": "CyberForce",
+      "graduationClass": "2026",
+      "userId": "70sHpT4hSjM2LJEKkEzKM6BQgm43",
+      "timestamp": "2026-09-11T15:38:40.584Z"
     },
     {
       "id": "7Ly7LuXaYwOHoKPNGpJ3iqWXUtl1",
@@ -236,7 +256,7 @@
       "name": "Ahmed Tarek",
       "title": "Software Engineer",
       "linkedin": "https://www.linkedin.com/in/ahm3dtareek/",
-      "company": "noon",
+      "company": "",
       "graduationClass": "2025",
       "userId": "Dc6dMHkIJnhIjudWpwwXxo3CBFx2",
       "timestamp": "2026-07-24T14:44:31.905Z"
@@ -423,6 +443,16 @@
       "timestamp": "2026-09-07T21:12:24.690Z"
     },
     {
+      "id": "WRMgWKqngNcX6mlDSoqxgK7OaF73",
+      "name": "Kareem Wael",
+      "title": "Software Engineer",
+      "linkedin": "https://www.linkedin.com/in/kareem-wael1/",
+      "company": "Skaled",
+      "graduationClass": "2025",
+      "userId": "WRMgWKqngNcX6mlDSoqxgK7OaF73",
+      "timestamp": "2026-09-11T15:43:11.047Z"
+    },
+    {
       "id": "WSYrSkc6sLNjbWF0m7AOXn1UBK13",
       "name": "Ingy Mysara",
       "title": "Full-Stack Developer",
@@ -477,7 +507,7 @@
       "name": "Malak Elbakry",
       "title": "Ass. SAP Cloud Developer",
       "linkedin": "https://www.linkedin.com/in/malak-elbakry/",
-      "company": "",
+      "company": "Raptors Technology",
       "graduationClass": "2025",
       "userId": "Xw7L0ouJjMXQryMk00WTI8ivLeW2",
       "timestamp": "2026-08-01T07:52:04.187Z"
@@ -691,6 +721,15 @@
       "graduationClass": "2022",
       "userId": "hQ2FuzzZHhfsiVZLTXcxZ0KuZNs1",
       "timestamp": "2026-08-19T08:37:33.662Z"
+    },
+    {
+      "id": "hv2FUmtuYyjyIxvx2Ldz",
+      "name": "Hazem Zaki",
+      "title": "Software Engineer",
+      "linkedin": "https://www.linkedin.com/in/hazem-zaki-5212312b7",
+      "company": "Vodafone",
+      "graduationClass": "2025",
+      "timestamp": "2026-09-11T16:44:08.079Z"
     },
     {
       "id": "irhv2Y2BESR22AiMldNIh72TypX2",
