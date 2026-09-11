@@ -34,9 +34,9 @@ export default function SiteFooter() {
           className="overflow-hidden whitespace-nowrap text-xs transition-opacity duration-200"
           style={{ opacity: open ? 1 : 0, paddingLeft: open ? "0.375rem" : "0" }}
         >
-          © {new Date().getFullYear()} Abdelrahman Salah
+          © {new Date().getFullYear()} Abdelrahman
           <span className="mx-2 text-slate-500">•</span>
-          <span className="tabular-nums">01121105774</span>
+          <span className="tabular-nums">amsalahmaatok@gmail.com</span>
         </span>
       </span>
     </button>

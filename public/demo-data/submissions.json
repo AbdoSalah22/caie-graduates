@@ -1,0 +1,996 @@
+{
+  "submissions": [
+    {
+      "id": "06tz09axAght6L0IflZoqpFQMoj2",
+      "name": "Mustafa U. Abdelrahman",
+      "title": "Software Engineer",
+      "linkedin": "https://linkedin.com/in/mustafa-u-abdelrahman",
+      "company": "Procore",
+      "graduationClass": "2025",
+      "userId": "06tz09axAght6L0IflZoqpFQMoj2",
+      "timestamp": "2026-03-05T17:32:57.701Z"
+    },
+    {
+      "id": "0pzooogOJgXMv9tuOWLqBDRY30Y2",
+      "name": "Mahmoud Mohamed Soheil",
+      "title": "Data engineer",
+      "linkedin": "https://www.linkedin.com/in/mahmoud-soheil-7a6939180",
+      "company": "Alexbank",
+      "graduationClass": "2021",
+      "userId": "0pzooogOJgXMv9tuOWLqBDRY30Y2",
+      "timestamp": "2026-09-08T19:16:32.995Z"
+    },
+    {
+      "id": "168S7n0VIRT1XzNkRM9zgIgUs2i2",
+      "name": "Mohammed Saleh",
+      "title": "Senior Software Engineer",
+      "linkedin": "https://www.linkedin.com/in/msherifs/",
+      "company": "oliv",
+      "graduationClass": "2019",
+      "userId": "168S7n0VIRT1XzNkRM9zgIgUs2i2",
+      "timestamp": "2026-08-20T05:16:29.966Z"
+    },
+    {
+      "id": "1Cxzkc42PtXVeTQzqchLiN6pPRh1",
+      "name": "Mariam Fayed",
+      "title": "Software Engineer",
+      "linkedin": "https://www.linkedin.com/in/mariam-fayed-a480b8194/",
+      "company": "Siemens",
+      "graduationClass": "2022",
+      "userId": "1Cxzkc42PtXVeTQzqchLiN6pPRh1",
+      "timestamp": "2026-08-19T09:18:55.344Z"
+    },
+    {
+      "id": "1U7lnghRnxd6wv05WKVZdE8JAR33",
+      "name": "Ziad Mahmoud",
+      "title": "DevOps Engineer",
+      "linkedin": "https://www.linkedin.com/in/ziad-mahmoud-73831817a/",
+      "company": "Bosta",
+      "graduationClass": "2025",
+      "userId": "1U7lnghRnxd6wv05WKVZdE8JAR33",
+      "timestamp": "2026-03-22T22:44:41.255Z"
+    },
+    {
+      "id": "1itaZaILpRPYOxVQhYQ0Py2249l1",
+      "name": "Karim Bassel",
+      "title": "SDET/QA Engineer",
+      "linkedin": "https://www.linkedin.com/in/karim-bassel-19168821a",
+      "company": "Siemens",
+      "graduationClass": "2025",
+      "userId": "1itaZaILpRPYOxVQhYQ0Py2249l1",
+      "timestamp": "2026-07-26T08:24:48.646Z"
+    },
+    {
+      "id": "2mnSMLhn8xeNq9zmxuCmiwvBpCW2",
+      "name": "Mohamad Khalifa",
+      "title": "Digitalization Engineer",
+      "linkedin": "https://www.linkedin.com/in/mohamed-ayman-khalifa",
+      "company": "Fertiglobe",
+      "graduationClass": "2025",
+      "userId": "2mnSMLhn8xeNq9zmxuCmiwvBpCW2",
+      "timestamp": "2026-08-18T14:26:13.834Z"
+    },
+    {
+      "id": "3NRwbykcWVfjbATBwjaaLUgyyt52",
+      "name": "Yehia Hasan",
+      "title": "Integration Engineer",
+      "linkedin": "https://www.linkedin.com/in/yehia-hassan-817ab222b",
+      "company": "Ejada",
+      "graduationClass": "2025",
+      "userId": "3NRwbykcWVfjbATBwjaaLUgyyt52",
+      "timestamp": "2026-07-24T14:42:54.239Z"
+    },
+    {
+      "id": "3dPSGv4s3RYd7jV8987VhaIkAkL2",
+      "name": "Ahmed Sakr",
+      "title": "Software Engineer",
+      "linkedin": "https://www.linkedin.com/in/ahmeddsakrr",
+      "company": "Siemens",
+      "graduationClass": "2025",
+      "userId": "3dPSGv4s3RYd7jV8987VhaIkAkL2",
+      "timestamp": "2026-08-18T14:03:42.236Z"
+    },
+    {
+      "id": "45lxGGl1JvcnD9i6wX5O1jANHdj1",
+      "name": "Sharqawy Wael",
+      "title": "Full Stack Software Engineer",
+      "linkedin": "https://www.linkedin.com/in/sharqawycs",
+      "company": "",
+      "portfolioCv": "https://www.sherqo.me",
+      "graduationClass": "2027",
+      "userId": "45lxGGl1JvcnD9i6wX5O1jANHdj1",
+      "timestamp": "2026-08-30T15:14:59.712Z"
+    },
+    {
+      "id": "5Wl91J7sCldIoeMtfsjw5vR3XsS2",
+      "name": "Youssef Mikhaeil",
+      "title": "Software Engineer",
+      "linkedin": "https://www.linkedin.com/in/youssef-mikhaeil-16344a1b8/",
+      "company": "Capgemini",
+      "graduationClass": "2025",
+      "userId": "5Wl91J7sCldIoeMtfsjw5vR3XsS2",
+      "timestamp": "2026-03-05T18:21:07.517Z"
+    },
+    {
+      "id": "5pBUw4bl8OPegI7p6F5LQW2A2hj1",
+      "name": "Ziad Ashraf",
+      "title": "Network engineer",
+      "linkedin": "https://www.linkedin.com/in/ziad-kassem",
+      "company": "Huawei",
+      "graduationClass": "2024",
+      "userId": "5pBUw4bl8OPegI7p6F5LQW2A2hj1",
+      "timestamp": "2026-08-18T15:57:08.040Z"
+    },
+    {
+      "id": "6vzfsY0WI8WH1s4c563Er5Twk462",
+      "name": "Omar Ayoub",
+      "title": "SWE",
+      "linkedin": "https://www.linkedin.com/in/oaayoub",
+      "company": "Google",
+      "graduationClass": "2024",
+      "userId": "6vzfsY0WI8WH1s4c563Er5Twk462",
+      "timestamp": "2026-08-28T15:02:27.272Z"
+    },
+    {
+      "id": "7Ly7LuXaYwOHoKPNGpJ3iqWXUtl1",
+      "name": "Marita Osama",
+      "title": "Customer Insights Specialist",
+      "linkedin": "https://www.linkedin.com/in/marita-osama-92b23b267",
+      "company": "CIB",
+      "graduationClass": "2025",
+      "userId": "7Ly7LuXaYwOHoKPNGpJ3iqWXUtl1",
+      "timestamp": "2026-07-24T14:43:51.814Z"
+    },
+    {
+      "id": "8Ozi4g0SMYXhLjncOWSoYvPx1kB3",
+      "name": "Ali Hesham",
+      "title": "Software Engineer",
+      "linkedin": "https://www.linkedin.com/in/ali-%0Ahesham-1bb942249",
+      "company": "Orange",
+      "graduationClass": "2023",
+      "userId": "8Ozi4g0SMYXhLjncOWSoYvPx1kB3",
+      "timestamp": "2026-08-19T12:38:22.049Z"
+    },
+    {
+      "id": "8VWLZp8UB8NvmQXtXqgCYcFkmE72",
+      "name": "Basel Essam",
+      "title": "Sr. React Native developer",
+      "linkedin": "https://www.linkedin.com/in/bassel-essam-615069218",
+      "company": "Ejada",
+      "graduationClass": "2021",
+      "userId": "8VWLZp8UB8NvmQXtXqgCYcFkmE72",
+      "timestamp": "2026-08-18T18:52:16.536Z"
+    },
+    {
+      "id": "8WmsuJ2i4fc59ekFGMWhd7P1CuJ2",
+      "name": "Karen Habib",
+      "title": "Test Engineer",
+      "linkedin": "https://www.linkedin.com/in/karen-habib-2a03b81b2",
+      "company": "sonnen",
+      "graduationClass": "2022",
+      "userId": "8WmsuJ2i4fc59ekFGMWhd7P1CuJ2",
+      "timestamp": "2026-08-19T08:16:59.518Z"
+    },
+    {
+      "id": "8ryvTYRNzycmUO7YmRqJKPGq2tR2",
+      "name": "Donia Ahmed",
+      "title": "Software Engineer",
+      "linkedin": "https://www.linkedin.com/in/doniaahmed777",
+      "company": "Banque Misr",
+      "graduationClass": "2025",
+      "userId": "8ryvTYRNzycmUO7YmRqJKPGq2tR2",
+      "timestamp": "2026-07-25T19:22:20.507Z"
+    },
+    {
+      "id": "9xiEJIUjubeG4X2nC7TwpCTIOjX2",
+      "name": "Mark Bassem",
+      "title": "Backend engineer",
+      "linkedin": "https://www.linkedin.com/in/mark-bassem-b3035914b",
+      "company": "Thirdwayv Inc",
+      "graduationClass": "2025",
+      "userId": "9xiEJIUjubeG4X2nC7TwpCTIOjX2",
+      "timestamp": "2026-08-28T15:19:50.673Z"
+    },
+    {
+      "id": "Ay5RzqgvjfQuKiLnwNDUqWjOv8s2",
+      "name": "Ahmed Sameh",
+      "title": "Charging Software Engineer",
+      "linkedin": "https://www.linkedin.com/in/ahmedsshahin",
+      "company": "Orange",
+      "graduationClass": "2021",
+      "userId": "Ay5RzqgvjfQuKiLnwNDUqWjOv8s2",
+      "timestamp": "2026-08-18T19:14:14.567Z"
+    },
+    {
+      "id": "B95civFaMeej3Sdr5f82lpBP3Z12",
+      "name": "Mohamed Salah",
+      "title": "iOS Engineer",
+      "linkedin": "https://www.linkedin.com/in/mohasalah",
+      "company": "Luciq (Instabug)",
+      "graduationClass": "2025",
+      "userId": "B95civFaMeej3Sdr5f82lpBP3Z12",
+      "timestamp": "2026-07-25T16:19:11.736Z"
+    },
+    {
+      "id": "CEM7g12aLudppMIx2FJf0EsPklw2",
+      "name": "Yasmin Haitham Abdelmoaty",
+      "title": "Mobile developer",
+      "linkedin": "https://www.linkedin.com/in/yasmin-h-hekal",
+      "company": "Innovitics",
+      "graduationClass": "2024",
+      "userId": "CEM7g12aLudppMIx2FJf0EsPklw2",
+      "timestamp": "2026-08-28T15:39:46.133Z"
+    },
+    {
+      "id": "CFKpbVm0Kofm2vTwWy068U2ffH83",
+      "name": "Salma Nasreldin",
+      "title": "Testing Database administrator",
+      "linkedin": "https://www.linkedin.com/in/salma-hendawy",
+      "company": "CIB",
+      "graduationClass": "2025",
+      "userId": "CFKpbVm0Kofm2vTwWy068U2ffH83",
+      "timestamp": "2026-07-24T14:22:36.456Z"
+    },
+    {
+      "id": "Dc6dMHkIJnhIjudWpwwXxo3CBFx2",
+      "name": "Ahmed Tarek",
+      "title": "Software Engineer",
+      "linkedin": "https://www.linkedin.com/in/ahm3dtareek/",
+      "company": "noon",
+      "graduationClass": "2025",
+      "userId": "Dc6dMHkIJnhIjudWpwwXxo3CBFx2",
+      "timestamp": "2026-07-24T14:44:31.905Z"
+    },
+    {
+      "id": "FZTokJsmM4PMJJej3rUT816wK463",
+      "name": "Youssef Shaheen",
+      "title": "Technical support manager",
+      "linkedin": "www.linkedin.com/in/youssef-shahee-82a77617a",
+      "company": "Paymob",
+      "graduationClass": "2022",
+      "userId": "FZTokJsmM4PMJJej3rUT816wK463",
+      "timestamp": "2026-08-22T11:38:51.131Z"
+    },
+    {
+      "id": "FbNpaVGYJDSfCooka807BZbc6Fe2",
+      "name": "Mohamed Khaled",
+      "title": "Cybersecurity Engineer",
+      "linkedin": "https://www.linkedin.com/in/mohamed-khaled-b38314238",
+      "company": "Central Bank of Egypt",
+      "graduationClass": "2025",
+      "userId": "FbNpaVGYJDSfCooka807BZbc6Fe2",
+      "timestamp": "2026-08-18T22:24:13.755Z"
+    },
+    {
+      "id": "G6ENIwVZuUP0m2IN9fXyLnUnXAf2",
+      "name": "Basma Hassanien",
+      "title": "Presales Engineer",
+      "linkedin": "https://www.linkedin.com/in/basma-hassanien",
+      "company": "Dell",
+      "graduationClass": "2021",
+      "userId": "G6ENIwVZuUP0m2IN9fXyLnUnXAf2",
+      "timestamp": "2026-08-18T17:18:46.275Z"
+    },
+    {
+      "id": "Gj45YiTWcAXDiC3Pd8EoWfo9L0g2",
+      "name": "Nour Hammad",
+      "title": "Software Engineer",
+      "linkedin": "https://www.linkedin.com/in/nour-hammmad",
+      "company": "VOIS",
+      "graduationClass": "2025",
+      "userId": "Gj45YiTWcAXDiC3Pd8EoWfo9L0g2",
+      "timestamp": "2026-07-26T08:54:14.575Z"
+    },
+    {
+      "id": "H6vnDhzXoEf3Vw5c80NRNX2y8ov1",
+      "name": "Ziad Amerr",
+      "title": "AI/QA Engineer",
+      "linkedin": "https://linkedin.com/in/ziad-amerr",
+      "company": "Siemens",
+      "graduationClass": "2025",
+      "userId": "H6vnDhzXoEf3Vw5c80NRNX2y8ov1",
+      "timestamp": "2026-07-24T15:40:04.188Z"
+    },
+    {
+      "id": "HpX0CzZq6CdCeUm99WenntsBIwj1",
+      "name": "Mariam Wahdan",
+      "title": "Salesforce Developer",
+      "linkedin": "https://www.linkedin.com/in/mariamwahdan/",
+      "company": "Arcsen",
+      "graduationClass": "2025",
+      "userId": "HpX0CzZq6CdCeUm99WenntsBIwj1",
+      "timestamp": "2026-08-18T14:13:41.798Z"
+    },
+    {
+      "id": "IZRF5JOSXsRN49P22oZmpYKQXip2",
+      "name": "David Osama",
+      "title": "Software Engineer",
+      "linkedin": "https://www.linkedin.com/in/david-osama/",
+      "company": "Amazon",
+      "graduationClass": "2019",
+      "userId": "IZRF5JOSXsRN49P22oZmpYKQXip2",
+      "timestamp": "2026-08-18T19:10:48.154Z"
+    },
+    {
+      "id": "KuTtNG70D2aStwI5EdJ8w5cm9783",
+      "name": "Abdelrahman Issawi",
+      "title": "Sr. AI QA",
+      "linkedin": "https://www.linkedin.com/in/issawi/",
+      "company": "Siemens",
+      "graduationClass": "2021",
+      "userId": "KuTtNG70D2aStwI5EdJ8w5cm9783",
+      "timestamp": "2026-08-18T16:44:17.920Z"
+    },
+    {
+      "id": "M5eNWRYefoVDqSxC9wuUCj4ADzh2",
+      "name": "Menna Naiem",
+      "title": "Senior sap abap developer",
+      "linkedin": "https://www.linkedin.com/in/menna-naiem-301001126",
+      "company": "IBM",
+      "graduationClass": "2021",
+      "userId": "M5eNWRYefoVDqSxC9wuUCj4ADzh2",
+      "timestamp": "2026-08-19T04:57:26.468Z"
+    },
+    {
+      "id": "NR7nI0s4irgckkhP93yU0f84o8q1",
+      "name": "Steven Sameh",
+      "title": "Embedded Software Engineer",
+      "linkedin": "linkedin.com/in/steven-sameh",
+      "company": "Valeo",
+      "graduationClass": "2023",
+      "userId": "NR7nI0s4irgckkhP93yU0f84o8q1",
+      "timestamp": "2026-08-19T09:02:34.370Z"
+    },
+    {
+      "id": "P5pcji230hSxk03795GCLRgi62c2",
+      "name": "Salaheldeen Elsayed",
+      "title": "Project Support Intern",
+      "linkedin": "https://www.linkedin.com/in/salaheldeen-elsayed",
+      "company": "United Nations",
+      "graduationClass": "2025",
+      "userId": "P5pcji230hSxk03795GCLRgi62c2",
+      "timestamp": "2026-07-25T16:35:08.979Z"
+    },
+    {
+      "id": "QSDa9aPYVWOyDqFS6lwHWuDdvjA3",
+      "name": "Ahmed Wael",
+      "title": "Automation Application Specialist",
+      "linkedin": "https://linkedin.com/in/ahmed-wael-ibrahim",
+      "company": "Schneider",
+      "graduationClass": "2025",
+      "userId": "QSDa9aPYVWOyDqFS6lwHWuDdvjA3",
+      "timestamp": "2026-07-24T15:47:44.758Z"
+    },
+    {
+      "id": "SrELBb0XyuRl4Jmz1xzDIEf66uW2",
+      "name": "Omar Elesawy",
+      "title": "Software Engineer",
+      "linkedin": "https://www.linkedin.com/in/omarhassanelesawy/",
+      "company": "Siemens",
+      "graduationClass": "2022",
+      "userId": "SrELBb0XyuRl4Jmz1xzDIEf66uW2",
+      "timestamp": "2026-08-19T08:13:32.242Z"
+    },
+    {
+      "id": "Str6JV0SRvS090APKfUEawqkt052",
+      "name": "Salma Elsoly",
+      "title": "Software Engineer",
+      "linkedin": "https://www.linkedin.com/in/salmaelsoly",
+      "company": "Codescalers Egypt",
+      "graduationClass": "2025",
+      "userId": "Str6JV0SRvS090APKfUEawqkt052",
+      "timestamp": "2026-08-28T14:44:10.278Z"
+    },
+    {
+      "id": "TIvF7OcHOZPGrsFIShSmL84hQry2",
+      "name": "Abdelrahman Salaheldin",
+      "title": "Software QA Engineer",
+      "linkedin": "https://www.linkedin.com/in/amsalahmaatok/",
+      "company": "Siemens",
+      "portfolioCv": "https://drive.google.com/file/d/1u51kjllUoUtdl9trTXZMc2Prf_orC3_A/view?usp=sharing",
+      "graduationClass": "2025",
+      "userId": "TIvF7OcHOZPGrsFIShSmL84hQry2",
+      "timestamp": "2026-02-20T12:06:04.931Z"
+    },
+    {
+      "id": "U29LKlUDlEQ3d5JZWQmI5KLRQXk1",
+      "name": "Amr Ayman Hamouda",
+      "title": "Senior Software Engineer",
+      "linkedin": "https://www.linkedin.com/in/amr-algendi",
+      "company": "The DevHouse",
+      "graduationClass": "2025",
+      "userId": "U29LKlUDlEQ3d5JZWQmI5KLRQXk1",
+      "timestamp": "2026-08-28T14:25:07.895Z"
+    },
+    {
+      "id": "UM2TBOU8sTSh6vFRjRwNhlLXTGm1",
+      "name": "Mahmoud Fathy",
+      "title": "Data Engineer",
+      "linkedin": "https://www.linkedin.com/in/mahmoudfathy-",
+      "company": "Siemens",
+      "graduationClass": "2021",
+      "userId": "UM2TBOU8sTSh6vFRjRwNhlLXTGm1",
+      "timestamp": "2026-08-18T15:58:09.766Z"
+    },
+    {
+      "id": "VHBpACSZv0cfaolfr6mbDPvWJQr2",
+      "name": "Ahmed Elhadidy",
+      "title": "Advanced services engineer",
+      "linkedin": "https://www.linkedin.com/in/ahmedelhadidy1645",
+      "company": "Oracle",
+      "graduationClass": "2023",
+      "userId": "VHBpACSZv0cfaolfr6mbDPvWJQr2",
+      "timestamp": "2026-09-07T21:12:24.690Z"
+    },
+    {
+      "id": "WSYrSkc6sLNjbWF0m7AOXn1UBK13",
+      "name": "Ingy Mysara",
+      "title": "Full-Stack Developer",
+      "linkedin": "https://www.linkedin.com/in/ingy-mysara/",
+      "company": "Dar",
+      "graduationClass": "2023",
+      "userId": "WSYrSkc6sLNjbWF0m7AOXn1UBK13",
+      "timestamp": "2026-08-19T08:19:17.476Z"
+    },
+    {
+      "id": "We1arvKcwLWLW3z2cOUK32W8FP93",
+      "name": "Mohamed Adel Lotfy",
+      "title": "Junior Odoo Dev",
+      "linkedin": "https://www.linkedin.com/in/malotfy/",
+      "company": "",
+      "graduationClass": "2023",
+      "userId": "We1arvKcwLWLW3z2cOUK32W8FP93",
+      "timestamp": "2026-08-24T06:17:48.609Z"
+    },
+    {
+      "id": "WhqmPT2jc8Ur5WXxsvId3zXlh302",
+      "name": "Shaimaa Mohamed",
+      "title": "Software Engineer",
+      "linkedin": "https://www.linkedin.com/in/shaimaa-m-hassan/?lipi=urn%3Ali%3Apage%3Ap_mwlite_notifications%3B59%2Bu%2BDjsTsCPeAkjuh%2F6cQ%3D%3D",
+      "company": "PwC",
+      "graduationClass": "2024",
+      "userId": "WhqmPT2jc8Ur5WXxsvId3zXlh302",
+      "timestamp": "2026-08-18T16:01:21.919Z"
+    },
+    {
+      "id": "XYh4LNnHeLhfCdRVZZI3XFOQs3s1",
+      "name": "George Welson",
+      "title": "Software Engineer",
+      "linkedin": "https://www.linkedin.com/in/george-welson",
+      "company": "Vaes AI",
+      "graduationClass": "2025",
+      "userId": "XYh4LNnHeLhfCdRVZZI3XFOQs3s1",
+      "timestamp": "2026-07-24T14:40:16.962Z"
+    },
+    {
+      "id": "Xd5IBsKaYyRqJsh6ouXCBmtlYm82",
+      "name": "Jumana Yasser",
+      "title": "AI QA Engineer",
+      "linkedin": "https://www.linkedin.com/in/jumana-yasser-ab51612b4",
+      "company": "Siemens",
+      "graduationClass": "2025",
+      "userId": "Xd5IBsKaYyRqJsh6ouXCBmtlYm82",
+      "timestamp": "2026-08-18T17:28:42.884Z"
+    },
+    {
+      "id": "Xw7L0ouJjMXQryMk00WTI8ivLeW2",
+      "name": "Malak Elbakry",
+      "title": "Ass. SAP Cloud Developer",
+      "linkedin": "https://www.linkedin.com/in/malak-elbakry/",
+      "company": "",
+      "graduationClass": "2025",
+      "userId": "Xw7L0ouJjMXQryMk00WTI8ivLeW2",
+      "timestamp": "2026-08-01T07:52:04.187Z"
+    },
+    {
+      "id": "Y228z8COvuXHomYgTFFHnauXjyA3",
+      "name": "Sherwet Mohamed",
+      "title": "Junior Software Engineer",
+      "linkedin": "https://www.linkedin.com/in/sherwet-mohamed-170340280",
+      "company": "Valeo",
+      "graduationClass": "2025",
+      "userId": "Y228z8COvuXHomYgTFFHnauXjyA3",
+      "timestamp": "2026-08-18T20:07:18.833Z"
+    },
+    {
+      "id": "YbxVRZFME1fnea5VAHbokywVA3x1",
+      "name": "Mina George",
+      "title": "Software Engineer",
+      "linkedin": "https://www.linkedin.com/in/mina-george-0131b5231",
+      "company": "Capgemini",
+      "graduationClass": "2025",
+      "userId": "YbxVRZFME1fnea5VAHbokywVA3x1",
+      "timestamp": "2026-08-18T15:51:28.048Z"
+    },
+    {
+      "id": "YwYGaRzrHpQIb93pdmBqQPvmfmi2",
+      "name": "Ibrahim Elsawy",
+      "title": "Software Engineer",
+      "linkedin": "https://www.linkedin.com/in/ibrahim-elsawy-7b782617b",
+      "company": "eJad",
+      "graduationClass": "2022",
+      "userId": "YwYGaRzrHpQIb93pdmBqQPvmfmi2",
+      "timestamp": "2026-08-19T09:42:55.982Z"
+    },
+    {
+      "id": "Z2576pvrgyUUehDeIYSp6iO8c0Y2",
+      "name": "Youssef ElRaqabawy",
+      "title": "Data Engineer",
+      "linkedin": "https://www.linkedin.com/in/youssef-elraqabawy-6a8117180",
+      "company": "Credit Agricole Bank",
+      "graduationClass": "2021",
+      "userId": "Z2576pvrgyUUehDeIYSp6iO8c0Y2",
+      "timestamp": "2026-09-08T22:26:28.271Z"
+    },
+    {
+      "id": "aOkKZIkKIzLNXT3sZKXjsxXSEEh2",
+      "name": "Mohamed Mostafa",
+      "title": "Software Engineer 2",
+      "linkedin": "https://www.linkedin.com/in/mohamed-mostafa-2b082312a",
+      "company": "Microsoft",
+      "graduationClass": "2019",
+      "userId": "aOkKZIkKIzLNXT3sZKXjsxXSEEh2",
+      "timestamp": "2026-08-20T08:02:34.234Z"
+    },
+    {
+      "id": "aWelF79LXtMcIxjTtZaL5CBEo532",
+      "name": "Andrew Kuzman",
+      "title": "Senior Cloud Software Engineer",
+      "linkedin": "https://www.linkedin.com/in/andrew-kuzman-b591801b7",
+      "company": "Siemens",
+      "graduationClass": "2021",
+      "userId": "aWelF79LXtMcIxjTtZaL5CBEo532",
+      "timestamp": "2026-08-18T19:56:59.622Z"
+    },
+    {
+      "id": "aZtxBvfL8EOFeC26ZuicEHy8rF53",
+      "name": "Mahmoud Omar",
+      "title": "Software Engineer",
+      "linkedin": "https://www.linkedin.com/in/x01d/",
+      "company": "Luxoft",
+      "graduationClass": "2024",
+      "userId": "aZtxBvfL8EOFeC26ZuicEHy8rF53",
+      "timestamp": "2026-08-28T15:08:57.187Z"
+    },
+    {
+      "id": "b3gqNQUveeXhoHRBjrsuiDRFqV42",
+      "name": "AbdAllah Osama Diab",
+      "title": "Data & AI Engineer",
+      "linkedin": "https://www.linkedin.com/in/abdallahdiab",
+      "company": "Alinma Bank",
+      "graduationClass": "2019",
+      "userId": "b3gqNQUveeXhoHRBjrsuiDRFqV42",
+      "timestamp": "2026-08-18T15:18:32.523Z"
+    },
+    {
+      "id": "bd6U7yjO5qdi9xXM6L4wl2FJsuD2",
+      "name": "Mohamed Gira",
+      "title": "QA Software Engineer",
+      "linkedin": "https://www.linkedin.com/in/mohamed-gira-604a4b209",
+      "company": "Siemens",
+      "graduationClass": "2025",
+      "userId": "bd6U7yjO5qdi9xXM6L4wl2FJsuD2",
+      "timestamp": "2026-07-24T17:22:16.312Z"
+    },
+    {
+      "id": "cyl1ysJIzchEl1CSIQTrLabNMxq1",
+      "name": "Gina Salib",
+      "title": "Senior Software Engineer",
+      "linkedin": "https://www.linkedin.com/in/gina-salib-56bb19149",
+      "company": "Siemens",
+      "graduationClass": "2020",
+      "userId": "cyl1ysJIzchEl1CSIQTrLabNMxq1",
+      "timestamp": "2026-08-18T19:44:48.226Z"
+    },
+    {
+      "id": "dFo0uT2j4rWlT5G6X6fNMqxsF5K2",
+      "name": "Ahmed Eldera",
+      "title": "Java Backend Engineer",
+      "linkedin": "https://eg.linkedin.com/in/ahmed-eldera",
+      "company": "Orange",
+      "graduationClass": "2025",
+      "userId": "dFo0uT2j4rWlT5G6X6fNMqxsF5K2",
+      "timestamp": "2026-07-24T14:39:36.249Z"
+    },
+    {
+      "id": "epnQMH99jhUc0ZWzRz74ke0gWh82",
+      "name": "Youssef Walid",
+      "title": "Network Engineer L1.5",
+      "linkedin": "https://www.linkedin.com/in/youssef-walid-989339240",
+      "company": "Tech Mahindra",
+      "graduationClass": "2025",
+      "userId": "epnQMH99jhUc0ZWzRz74ke0gWh82",
+      "timestamp": "2026-07-25T16:57:45.193Z"
+    },
+    {
+      "id": "f4vjrelGFofq1kQZQ3Eh7SczCPg2",
+      "name": "Yehia Abdelhady",
+      "title": "Software Engineer",
+      "linkedin": "https://www.linkedin.com/in/yehiaabdelhady",
+      "company": "Orange",
+      "graduationClass": "2020",
+      "userId": "f4vjrelGFofq1kQZQ3Eh7SczCPg2",
+      "timestamp": "2026-08-18T16:14:17.194Z"
+    },
+    {
+      "id": "fsztS7xWImSFEWHNzQij8AheoYr2",
+      "name": "Mohamed Khafagy",
+      "title": "Sprinklr System Engineer",
+      "linkedin": "https://www.linkedin.com/in/mohamed-khafagy-59b024235",
+      "company": "IST Networks",
+      "graduationClass": "2025",
+      "userId": "fsztS7xWImSFEWHNzQij8AheoYr2",
+      "timestamp": "2026-07-24T15:50:34.951Z"
+    },
+    {
+      "id": "gCMQCRMHfKe4ioPm0AM7S5IaV1o1",
+      "name": "Omar Diab",
+      "title": "AI Software Engineer",
+      "linkedin": "https://www.linkedin.com/in/omarmdiab/",
+      "company": "3D|Diagnostix",
+      "graduationClass": "2025",
+      "userId": "gCMQCRMHfKe4ioPm0AM7S5IaV1o1",
+      "timestamp": "2026-08-28T14:55:47.559Z"
+    },
+    {
+      "id": "gWfNk1Y7ukV3eBV6bebsozUJgjE2",
+      "name": "Khalid Hesham",
+      "title": "Software Development Engineer",
+      "linkedin": "https://www.linkedin.com/in/khalid-hesham-087994120",
+      "company": "Siemens",
+      "graduationClass": "2020",
+      "userId": "gWfNk1Y7ukV3eBV6bebsozUJgjE2",
+      "timestamp": "2026-08-18T15:08:02.844Z"
+    },
+    {
+      "id": "ggy0eMWMXhNZ3Ke7p4RAeRRUg0u2",
+      "name": "Mohammed Ehab",
+      "title": "Software Engineer II",
+      "linkedin": "https://linkedin.com/in/m-elsaeed",
+      "company": "Amazon",
+      "graduationClass": "2021",
+      "userId": "ggy0eMWMXhNZ3Ke7p4RAeRRUg0u2",
+      "timestamp": "2026-08-18T15:23:54.373Z"
+    },
+    {
+      "id": "h41i6Deg8LNQpPLP7pBdJmQdsG32",
+      "name": "Shehab Adel",
+      "title": "Software Engineer",
+      "linkedin": "https://linkedin.com/in/shehabadel",
+      "company": "Halan",
+      "graduationClass": "2023",
+      "userId": "h41i6Deg8LNQpPLP7pBdJmQdsG32",
+      "timestamp": "2026-08-19T08:13:57.349Z"
+    },
+    {
+      "id": "hBSAaFA10BOVzVPilVngYpA3IW33",
+      "name": "Abdelrahman Khaled",
+      "title": "Software engineer",
+      "linkedin": "https://www.linkedin.com/in/abdelrahmankhaled18",
+      "company": "Aman",
+      "graduationClass": "2025",
+      "userId": "hBSAaFA10BOVzVPilVngYpA3IW33",
+      "timestamp": "2026-07-28T19:29:57.125Z"
+    },
+    {
+      "id": "hDYtsYZlmcaV9GHXlICJCF85Bis2",
+      "name": "Ahmed Mohamed Sadek Abelhamid",
+      "title": "Software Architect",
+      "linkedin": "https://www.linkedin.com/in/ahmedms-abdelhamid",
+      "company": "Stackdrop",
+      "graduationClass": "2022",
+      "userId": "hDYtsYZlmcaV9GHXlICJCF85Bis2",
+      "timestamp": "2026-08-23T14:17:20.040Z"
+    },
+    {
+      "id": "hQ2FuzzZHhfsiVZLTXcxZ0KuZNs1",
+      "name": "Karim Farid",
+      "title": "Process & Operations Lead",
+      "linkedin": "https://www.linkedin.com/in/karim-farid-021298/",
+      "company": "",
+      "graduationClass": "2022",
+      "userId": "hQ2FuzzZHhfsiVZLTXcxZ0KuZNs1",
+      "timestamp": "2026-08-19T08:37:33.662Z"
+    },
+    {
+      "id": "irhv2Y2BESR22AiMldNIh72TypX2",
+      "name": "Ramez Noshy",
+      "title": "Software Engineer",
+      "linkedin": "https://linkedin.com/in/ramez-noshy",
+      "company": "ShakaCode",
+      "graduationClass": "2022",
+      "userId": "irhv2Y2BESR22AiMldNIh72TypX2",
+      "timestamp": "2026-08-19T12:31:09.438Z"
+    },
+    {
+      "id": "jFANmnCydLUONjindUzGG7SBK4m2",
+      "name": "Salma Ehab",
+      "title": "Data Engineer",
+      "linkedin": "https://www.linkedin.com/in/salma-ehab-932247218/",
+      "company": "Atos",
+      "graduationClass": "2023",
+      "userId": "jFANmnCydLUONjindUzGG7SBK4m2",
+      "timestamp": "2026-08-23T18:23:39.978Z"
+    },
+    {
+      "id": "jIPdHIwBQBg4otIn7PHN7K2ruok1",
+      "name": "Ahmed Baher",
+      "title": "Software Tooling Engineer",
+      "linkedin": "https://www.linkedin.com/in/ahmed-baher-886319213?utm_source=share_via&utm_content=profile&utm_medium=member_ios",
+      "company": "eJad",
+      "graduationClass": "2025",
+      "userId": "jIPdHIwBQBg4otIn7PHN7K2ruok1",
+      "timestamp": "2026-07-24T14:38:18.353Z"
+    },
+    {
+      "id": "k24a3q8WuigkHKQUaRuTMlHykYw1",
+      "name": "Khaled Taha",
+      "title": "Founder",
+      "linkedin": "https://www.linkedin.com/in/khaled-m-taha",
+      "company": "Profitel.io",
+      "graduationClass": "2025",
+      "userId": "k24a3q8WuigkHKQUaRuTMlHykYw1",
+      "timestamp": "2026-08-29T15:42:29.501Z"
+    },
+    {
+      "id": "kQP9IPqC1FdG9sVz1oNGyk16mR52",
+      "name": "Abdelrahman ELGHAMRY",
+      "title": "Full-Stack Software Engineer",
+      "linkedin": "https://www.linkedin.com/in/abdelrahmanelghamry",
+      "company": "Siemens",
+      "graduationClass": "2021",
+      "userId": "kQP9IPqC1FdG9sVz1oNGyk16mR52",
+      "timestamp": "2026-08-10T03:17:47.066Z"
+    },
+    {
+      "id": "kzTG62qkulPQDFaUCqXpKCVqoIu1",
+      "name": "Ahmed Elbassal",
+      "title": "Software Engineer",
+      "linkedin": "https://www.linkedin.com/in/ahmed-elbassal-357087121",
+      "company": "eJad",
+      "graduationClass": "2022",
+      "userId": "kzTG62qkulPQDFaUCqXpKCVqoIu1",
+      "timestamp": "2026-08-28T14:12:45.579Z"
+    },
+    {
+      "id": "lJcSJkBnZvOmrYBq8Dt9iJ96vTF3",
+      "name": "Monica Maged",
+      "title": "Software Engineer",
+      "linkedin": "https://www.linkedin.com/in/monica-maged-monir",
+      "company": "PwC",
+      "graduationClass": "2020",
+      "userId": "lJcSJkBnZvOmrYBq8Dt9iJ96vTF3",
+      "timestamp": "2026-08-18T14:48:47.656Z"
+    },
+    {
+      "id": "mXI5cqsKRrb3kgrUNUF6bGv1cK52",
+      "name": "Ahmed Hossam",
+      "title": "Software Engineer",
+      "linkedin": "https://www.linkedin.com/in/ahmed-hossam-6b3a401ab",
+      "company": "Halan",
+      "graduationClass": "2024",
+      "userId": "mXI5cqsKRrb3kgrUNUF6bGv1cK52",
+      "timestamp": "2026-08-18T17:22:50.532Z"
+    },
+    {
+      "id": "mnDUKso2WRfCdJsmJfEs6FWr7JN2",
+      "name": "Mohamed Ihab Hekal",
+      "title": "VAS & IN Engineer",
+      "linkedin": "https://www.linkedin.com/in/mohamed-hekal-1a5486327",
+      "company": "Huawei",
+      "graduationClass": "2024",
+      "userId": "mnDUKso2WRfCdJsmJfEs6FWr7JN2",
+      "timestamp": "2026-08-18T16:37:11.606Z"
+    },
+    {
+      "id": "mnGbWFPxNBNaxCXVUo3yKVnfDVg1",
+      "name": "Hanya Elgef",
+      "title": "Software Engineer",
+      "linkedin": "https://www.linkedin.com/in/hanya-elged",
+      "company": "RelationalAI",
+      "graduationClass": "2024",
+      "userId": "mnGbWFPxNBNaxCXVUo3yKVnfDVg1",
+      "timestamp": "2026-08-28T15:57:48.099Z"
+    },
+    {
+      "id": "ocXufXYlRgMuToTTwGrn9h7OLM43",
+      "name": "Osama Saad",
+      "title": "AI/ML Engineer",
+      "linkedin": "https://www.linkedin.com/in/osama-saa3d/",
+      "company": "Siemens",
+      "graduationClass": "2025",
+      "userId": "ocXufXYlRgMuToTTwGrn9h7OLM43",
+      "timestamp": "2026-03-05T15:25:37.220Z"
+    },
+    {
+      "id": "pGLnMa27YYX0nX9YkeZj6Wh2IUL2",
+      "name": "Gehad Hassan",
+      "title": "Application Integration Engineer",
+      "linkedin": "https://www.linkedin.com/in/gehad-hassan-7948a8277",
+      "company": "Sumerge",
+      "graduationClass": "2025",
+      "userId": "pGLnMa27YYX0nX9YkeZj6Wh2IUL2",
+      "timestamp": "2026-03-05T20:08:42.511Z"
+    },
+    {
+      "id": "qjY3aBwpSEXcWvN7ESDhSUHbB7U2",
+      "name": "Peter Azmy",
+      "title": "QA Software Engineer",
+      "linkedin": "https://www.linkedin.com/in/peter-azmy-24a006198",
+      "company": "Siemens",
+      "graduationClass": "2025",
+      "userId": "qjY3aBwpSEXcWvN7ESDhSUHbB7U2",
+      "timestamp": "2026-07-24T17:18:15.887Z"
+    },
+    {
+      "id": "qwl6gWtMbMR1NI0kXkGqeby9U8x1",
+      "name": "Mina Shawket",
+      "title": "Software Engineer",
+      "linkedin": "https://www.linkedin.com/in/mina-shawket/",
+      "company": "noon",
+      "graduationClass": "2025",
+      "userId": "qwl6gWtMbMR1NI0kXkGqeby9U8x1",
+      "timestamp": "2026-07-24T14:41:15.273Z"
+    },
+    {
+      "id": "rEo3RfMJzvOtEQUIyamot2YhWlW2",
+      "name": "Moataz Khaled",
+      "title": "Software Engineer II",
+      "linkedin": "https://www.linkedin.com/in/moatazkh",
+      "company": "Microsoft",
+      "graduationClass": "2021",
+      "userId": "rEo3RfMJzvOtEQUIyamot2YhWlW2",
+      "timestamp": "2026-09-08T18:26:34.281Z"
+    },
+    {
+      "id": "rxk3FhfKHDUnGBY4T4L1atzqc0o2",
+      "name": "Ashrakat Hefny",
+      "title": "Software Engineer",
+      "linkedin": "https://www.linkedin.com/in/ashrakathefny",
+      "company": "Luciq (Instabug)",
+      "graduationClass": "2021",
+      "userId": "rxk3FhfKHDUnGBY4T4L1atzqc0o2",
+      "timestamp": "2026-08-18T20:08:13.235Z"
+    },
+    {
+      "id": "rzSwoCrZBDNjdMLAS7iesXwjiGP2",
+      "name": "Omar Magdy",
+      "title": "QA Engineer II",
+      "linkedin": "https://www.linkedin.com/in/omar-magdy-41996a1a7",
+      "company": "noon",
+      "graduationClass": "2021",
+      "userId": "rzSwoCrZBDNjdMLAS7iesXwjiGP2",
+      "timestamp": "2026-09-08T19:45:58.234Z"
+    },
+    {
+      "id": "sYGtRE9aQOfGCOnJy6nUFBy8Dyx1",
+      "name": "Haidy Ehab",
+      "title": "System Validation Engineer",
+      "linkedin": "https://www.linkedin.com/in/haidy-ahmed-8a575317b",
+      "company": "Valeo",
+      "graduationClass": "2022",
+      "userId": "sYGtRE9aQOfGCOnJy6nUFBy8Dyx1",
+      "timestamp": "2026-08-20T05:58:40.164Z"
+    },
+    {
+      "id": "sktXBOKYLTaMXTbqVvhjoxxMqa62",
+      "name": "Abdelrahman Aboel Nasr abdellatif",
+      "title": "Mobile application developer",
+      "linkedin": "www.linkedin.com/in/abdelrahman-aboel-nasr-917120194",
+      "company": "",
+      "graduationClass": "2026",
+      "userId": "sktXBOKYLTaMXTbqVvhjoxxMqa62",
+      "timestamp": "2026-08-18T14:07:07.435Z"
+    },
+    {
+      "id": "t5l34O6kWxbPnTODgWskK14GOKC3",
+      "name": "Mostafa Nasrat",
+      "title": "Software Engineer",
+      "linkedin": "https://www.linkedin.com/in/mostafanasrat4",
+      "company": "Egypt Gas",
+      "graduationClass": "2024",
+      "userId": "t5l34O6kWxbPnTODgWskK14GOKC3",
+      "timestamp": "2026-08-19T15:46:52.149Z"
+    },
+    {
+      "id": "tPCHP3c0a4OBZOCleFBKCg7V4TE3",
+      "name": "Shahd Ramzy",
+      "title": "Software Engineer",
+      "linkedin": "https://www.linkedin.com/in/shahd-ramzy-526983255",
+      "company": "VOIS",
+      "graduationClass": "2025",
+      "userId": "tPCHP3c0a4OBZOCleFBKCg7V4TE3",
+      "timestamp": "2026-07-26T10:01:29.697Z"
+    },
+    {
+      "id": "ubFAQ5TT78gSzUInWjzLOQBKN8F3",
+      "name": "Mohammed Makram",
+      "title": "E-Payment Operations Principal Engineer",
+      "linkedin": "https://www.linkedin.com/in/mohammed-makram-ba46b7233/",
+      "company": "e&",
+      "graduationClass": "2023",
+      "userId": "ubFAQ5TT78gSzUInWjzLOQBKN8F3",
+      "timestamp": "2026-09-05T15:00:43.697Z"
+    },
+    {
+      "id": "v3JpD9iVplMoFHYwwm2FBBYHmqi1",
+      "name": "Farah Zayed",
+      "title": "AI engineer",
+      "linkedin": "https://www.linkedin.com/in/farah-zayed-a6b00323a",
+      "company": "IBM",
+      "graduationClass": "2025",
+      "userId": "v3JpD9iVplMoFHYwwm2FBBYHmqi1",
+      "timestamp": "2026-08-18T15:17:58.677Z"
+    },
+    {
+      "id": "vdUELKYORte8HWowT47o9lfWLXv2",
+      "name": "Ahmed Ali",
+      "title": "Senior React Native Developer",
+      "linkedin": "https://www.linkedin.com/in/ahmedaliabouemran/",
+      "company": "Dirayaah",
+      "graduationClass": "2023",
+      "userId": "vdUELKYORte8HWowT47o9lfWLXv2",
+      "timestamp": "2026-08-19T12:18:25.140Z"
+    },
+    {
+      "id": "vmi5g7IYfKSTQg9sm5LeusIfCyE2",
+      "name": "Mina Morgan",
+      "title": "Quality Engineer",
+      "linkedin": "https://www.linkedin.com/in/mina-m-morgan",
+      "company": "IBM",
+      "graduationClass": "2025",
+      "userId": "vmi5g7IYfKSTQg9sm5LeusIfCyE2",
+      "timestamp": "2026-07-24T14:45:43.348Z"
+    },
+    {
+      "id": "wjHRwptuZgXs4frUUhgLT56XsiE3",
+      "name": "Marina Gamal",
+      "title": "Software Development Engineer in Testing",
+      "linkedin": "https://www.linkedin.com/in/marina-gamal-elias",
+      "company": "Siemens",
+      "graduationClass": "2020",
+      "userId": "wjHRwptuZgXs4frUUhgLT56XsiE3",
+      "timestamp": "2026-08-19T08:04:22.111Z"
+    },
+    {
+      "id": "xosQUYlwLHaVMjoLFIJJhOtz1vY2",
+      "name": "Bassil Oraby",
+      "title": "ML Engineer II",
+      "linkedin": "https://www.linkedin.com/in/bassil-oraby-606b28152",
+      "company": "blnk",
+      "graduationClass": "2021",
+      "userId": "xosQUYlwLHaVMjoLFIJJhOtz1vY2",
+      "timestamp": "2026-08-18T20:07:57.859Z"
+    },
+    {
+      "id": "yvkEt7F8dVfF5Lq1sNHwQxTCVXx1",
+      "name": "Moataz Elngar",
+      "title": "Test Automation Senior Engineer",
+      "linkedin": "https://www.linkedin.com/in/moatazelngar",
+      "company": "CIB",
+      "graduationClass": "2023",
+      "userId": "yvkEt7F8dVfF5Lq1sNHwQxTCVXx1",
+      "timestamp": "2026-08-19T08:17:31.790Z"
+    },
+    {
+      "id": "zTRwD6nUGoOgpZKcUYQ27xLjaQq1",
+      "name": "Norhan Waleed",
+      "title": "Software Engineer I",
+      "linkedin": "https://www.linkedin.com/in/norhanwaleed",
+      "company": "Thndr",
+      "graduationClass": "2025",
+      "userId": "zTRwD6nUGoOgpZKcUYQ27xLjaQq1",
+      "timestamp": "2026-07-24T14:45:13.709Z"
+    },
+    {
+      "id": "ztdbRaOW5We1i3M2jBAa4tSjs5g2",
+      "name": "Yahia Zaki",
+      "title": "Data Analytics and AI Engineer",
+      "linkedin": "https://www.linkedin.com/in/yahia-zaki-2173b2224",
+      "company": "e&",
+      "graduationClass": "2025",
+      "userId": "ztdbRaOW5We1i3M2jBAa4tSjs5g2",
+      "timestamp": "2026-07-25T17:08:48.444Z"
+    }
+  ]
+}
