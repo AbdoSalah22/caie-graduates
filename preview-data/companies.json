@@ -2,13 +2,13 @@
   "companies": [
     {
       "id": "3D|Diagnostix",
-      "logoUrl": "/preview-data/logos/3ddx.png",
-      "count": 1
+      "count": 1,
+      "logoUrl": "/preview-data/logos/3ddx.png"
     },
     {
       "id": "ABB",
-      "count": 0,
-      "logoUrl": "/preview-data/logos/ABB.webp"
+      "logoUrl": "/preview-data/logos/ABB.webp",
+      "count": 0
     },
     {
       "id": "Advansys",
@@ -22,13 +22,13 @@
     },
     {
       "id": "Alinma Bank",
-      "logoUrl": "/preview-data/logos/alinma.png",
-      "count": 1
+      "count": 1,
+      "logoUrl": "/preview-data/logos/alinma.png"
     },
     {
       "id": "Aman",
-      "logoUrl": "/preview-data/logos/Aman.webp",
-      "count": 1
+      "count": 1,
+      "logoUrl": "/preview-data/logos/Aman.webp"
     },
     {
       "id": "Amazon",
@@ -37,8 +37,8 @@
     },
     {
       "id": "Apple",
-      "logoUrl": "/preview-data/logos/Apple.jpg",
-      "count": 0
+      "count": 0,
+      "logoUrl": "/preview-data/logos/Apple.jpg"
     },
     {
       "id": "Arab African International Bank",
@@ -67,18 +67,18 @@
     },
     {
       "id": "Breadfast",
-      "count": 0,
-      "logoUrl": "/preview-data/logos/Breadfast.jpg"
+      "logoUrl": "/preview-data/logos/Breadfast.jpg",
+      "count": 0
     },
     {
       "id": "CIB",
-      "logoUrl": "/preview-data/logos/cib.png",
-      "count": 3
+      "count": 3,
+      "logoUrl": "/preview-data/logos/cib.png"
     },
     {
       "id": "Canonical",
-      "logoUrl": "/preview-data/logos/Canonical.webp",
-      "count": 0
+      "count": 0,
+      "logoUrl": "/preview-data/logos/Canonical.webp"
     },
     {
       "id": "Capgemini",
@@ -87,7 +87,7 @@
     },
     {
       "id": "Central Bank of Egypt",
-      "count": 1,
+      "count": 2,
       "logoUrl": "/preview-data/logos/cbe.jpg"
     },
     {
@@ -97,13 +97,18 @@
     },
     {
       "id": "Concentrix",
-      "logoUrl": "/preview-data/logos/Concentrix.jpg",
-      "count": 0
+      "count": 0,
+      "logoUrl": "/preview-data/logos/Concentrix.jpg"
     },
     {
       "id": "Credit Agricole Bank",
       "count": 1,
       "logoUrl": "/preview-data/logos/credit_agricole.webp"
+    },
+    {
+      "id": "CyberForce",
+      "logoUrl": "/preview-data/logos/CyberForce.webp",
+      "count": 1
     },
     {
       "id": "DXC",
@@ -117,8 +122,8 @@
     },
     {
       "id": "Dell",
-      "logoUrl": "/preview-data/logos/Dell.webp",
-      "count": 1
+      "count": 1,
+      "logoUrl": "/preview-data/logos/Dell.webp"
     },
     {
       "id": "Deloitte",
@@ -127,13 +132,13 @@
     },
     {
       "id": "Dirayaah",
-      "count": 1,
-      "logoUrl": "/preview-data/logos/Dirayaah.webp"
+      "logoUrl": "/preview-data/logos/Dirayaah.webp",
+      "count": 1
     },
     {
       "id": "Egypt Gas",
-      "count": 1,
-      "logoUrl": "/preview-data/logos/egypt_gas.png"
+      "logoUrl": "/preview-data/logos/egypt_gas.png",
+      "count": 1
     },
     {
       "id": "Ejada",
@@ -147,13 +152,13 @@
     },
     {
       "id": "Ericsson",
-      "logoUrl": "/preview-data/logos/Ericsson.webp",
-      "count": 0
+      "count": 0,
+      "logoUrl": "/preview-data/logos/Ericsson.webp"
     },
     {
       "id": "Fawry",
-      "logoUrl": "/preview-data/logos/Fawry.webp",
-      "count": 0
+      "count": 0,
+      "logoUrl": "/preview-data/logos/Fawry.webp"
     },
     {
       "id": "Fertiglobe",
@@ -173,33 +178,33 @@
     },
     {
       "id": "Huawei",
-      "logoUrl": "/preview-data/logos/huawei.png",
-      "count": 2
+      "count": 2,
+      "logoUrl": "/preview-data/logos/huawei.png"
     },
     {
       "id": "IBM",
-      "logoUrl": "/preview-data/logos/IBM.webp",
-      "count": 3
+      "count": 3,
+      "logoUrl": "/preview-data/logos/IBM.webp"
     },
     {
       "id": "IST Networks",
-      "count": 1,
-      "logoUrl": "/preview-data/logos/IST_Networks.jpg"
+      "logoUrl": "/preview-data/logos/IST_Networks.jpg",
+      "count": 1
     },
     {
       "id": "ITWorx",
-      "logoUrl": "/preview-data/logos/ITWorx.webp",
-      "count": 0
+      "count": 0,
+      "logoUrl": "/preview-data/logos/ITWorx.webp"
     },
     {
       "id": "Innovitics",
-      "count": 1,
-      "logoUrl": "/preview-data/logos/InnoviticsLogo.png"
+      "logoUrl": "/preview-data/logos/InnoviticsLogo.png",
+      "count": 1
     },
     {
       "id": "Jumia",
-      "logoUrl": "/preview-data/logos/Jumia.jpg",
-      "count": 0
+      "count": 0,
+      "logoUrl": "/preview-data/logos/Jumia.jpg"
     },
     {
       "id": "Klivvr",
@@ -208,8 +213,8 @@
     },
     {
       "id": "Konecta",
-      "logoUrl": "/preview-data/logos/Konecta.jpg",
-      "count": 0
+      "count": 0,
+      "logoUrl": "/preview-data/logos/Konecta.jpg"
     },
     {
       "id": "Link Development",
@@ -223,13 +228,13 @@
     },
     {
       "id": "Luxoft",
-      "count": 1,
-      "logoUrl": "/preview-data/logos/luxoft.png"
+      "logoUrl": "/preview-data/logos/luxoft.png",
+      "count": 1
     },
     {
       "id": "Microsoft",
-      "count": 2,
-      "logoUrl": "/preview-data/logos/Microsoft.jpg"
+      "logoUrl": "/preview-data/logos/Microsoft.jpg",
+      "count": 2
     },
     {
       "id": "Nokia",
@@ -238,8 +243,8 @@
     },
     {
       "id": "OpenAI",
-      "count": 0,
-      "logoUrl": "/preview-data/logos/OpenAI.webp"
+      "logoUrl": "/preview-data/logos/OpenAI.webp",
+      "count": 0
     },
     {
       "id": "Oracle",
@@ -258,8 +263,8 @@
     },
     {
       "id": "Procore",
-      "count": 1,
-      "logoUrl": "/preview-data/logos/Procore.jpg"
+      "logoUrl": "/preview-data/logos/Procore.jpg",
+      "count": 1
     },
     {
       "id": "Procter & Gamble",
@@ -268,28 +273,33 @@
     },
     {
       "id": "Profitel.io",
-      "logoUrl": "/preview-data/logos/profitel.png",
-      "count": 1
+      "count": 1,
+      "logoUrl": "/preview-data/logos/profitel.png"
     },
     {
       "id": "Pulse by Solutions (Giza Systems)",
-      "count": 0,
-      "logoUrl": "/preview-data/logos/Pulse_by_Solutions__Giza_Systems_.webp"
+      "logoUrl": "/preview-data/logos/Pulse_by_Solutions__Giza_Systems_.webp",
+      "count": 0
     },
     {
       "id": "PwC",
-      "logoUrl": "/preview-data/logos/pwc.png",
-      "count": 2
+      "count": 2,
+      "logoUrl": "/preview-data/logos/pwc.png"
+    },
+    {
+      "id": "Raptors Technology",
+      "count": 1,
+      "logoUrl": "/preview-data/logos/raptors.jpeg"
     },
     {
       "id": "RelationalAI",
-      "logoUrl": "/preview-data/logos/RelationalAI.webp",
-      "count": 1
+      "count": 1,
+      "logoUrl": "/preview-data/logos/RelationalAI.webp"
     },
     {
       "id": "SAP",
-      "logoUrl": "/preview-data/logos/SAP.jpg",
-      "count": 0
+      "count": 0,
+      "logoUrl": "/preview-data/logos/SAP.jpg"
     },
     {
       "id": "STMicroelectronics",
@@ -303,13 +313,13 @@
     },
     {
       "id": "Schneider",
-      "count": 1,
-      "logoUrl": "/preview-data/logos/Schneider.jpg"
+      "logoUrl": "/preview-data/logos/Schneider.jpg",
+      "count": 1
     },
     {
       "id": "ServiceNow",
-      "count": 0,
-      "logoUrl": "/preview-data/logos/ServiceNow.webp"
+      "logoUrl": "/preview-data/logos/ServiceNow.webp",
+      "count": 0
     },
     {
       "id": "ShakaCode",
@@ -322,9 +332,14 @@
       "count": 17
     },
     {
-      "id": "Stackdrop",
-      "squareColor": "#FEAC02",
+      "id": "Skaled",
       "count": 1,
+      "logoUrl": "/preview-data/logos/Skaled.webp"
+    },
+    {
+      "id": "Stackdrop",
+      "count": 1,
+      "squareColor": "#FEAC02",
       "logoUrl": "/preview-data/logos/stackdrop.jpeg"
     },
     {
@@ -334,8 +349,8 @@
     },
     {
       "id": "Synopsys",
-      "logoUrl": "/preview-data/logos/Synopsys.webp",
-      "count": 0
+      "count": 0,
+      "logoUrl": "/preview-data/logos/Synopsys.webp"
     },
     {
       "id": "Tactful",
@@ -344,19 +359,19 @@
     },
     {
       "id": "Tech Mahindra",
-      "logoUrl": "/preview-data/logos/Tech_Mahindra.webp",
-      "count": 1
+      "count": 1,
+      "logoUrl": "/preview-data/logos/Tech_Mahindra.webp"
     },
     {
       "id": "The DevHouse",
-      "squareColor": "#000000",
       "count": 1,
+      "squareColor": "#000000",
       "logoUrl": "/preview-data/logos/thedevhouse.jpeg"
     },
     {
       "id": "Thirdwayv Inc",
-      "logoUrl": "/preview-data/logos/thirdwayv.jpeg",
-      "count": 1
+      "count": 1,
+      "logoUrl": "/preview-data/logos/thirdwayv.jpeg"
     },
     {
       "id": "Thndr",
@@ -375,8 +390,8 @@
     },
     {
       "id": "Vaes AI",
-      "logoUrl": "/preview-data/logos/vaesai.png",
-      "count": 1
+      "count": 1,
+      "logoUrl": "/preview-data/logos/vaesai.png"
     },
     {
       "id": "Valeo",
@@ -385,13 +400,13 @@
     },
     {
       "id": "Vodafone",
-      "count": 0,
-      "logoUrl": "/preview-data/logos/Vodafone.jpg"
+      "logoUrl": "/preview-data/logos/Vodafone.jpg",
+      "count": 1
     },
     {
       "id": "WE Telecom Egypt",
-      "count": 0,
-      "logoUrl": "/preview-data/logos/WE_Telecom_Egypt.jpg"
+      "logoUrl": "/preview-data/logos/WE_Telecom_Egypt.jpg",
+      "count": 0
     },
     {
       "id": "WideBot",
@@ -400,23 +415,23 @@
     },
     {
       "id": "blnk",
-      "logoUrl": "/preview-data/logos/blnk.webp",
-      "count": 1
+      "count": 1,
+      "logoUrl": "/preview-data/logos/blnk.webp"
     },
     {
       "id": "e&",
-      "count": 2,
-      "logoUrl": "/preview-data/logos/e_.jpg"
+      "logoUrl": "/preview-data/logos/e_.jpg",
+      "count": 2
     },
     {
       "id": "eJad",
-      "logoUrl": "/preview-data/logos/ejad.png",
-      "count": 3
+      "count": 3,
+      "logoUrl": "/preview-data/logos/ejad.png"
     },
     {
       "id": "noon",
-      "logoUrl": "/preview-data/logos/noon.jpg",
-      "count": 3
+      "count": 2,
+      "logoUrl": "/preview-data/logos/noon.jpg"
     },
     {
       "id": "oliv",
