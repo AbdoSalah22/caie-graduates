@@ -5,6 +5,8 @@ import { getDominantColor } from "@/lib/logoColor";
 
 interface LogoNodeProps {
   node: Node;
+  /** Route prefix for the per-company detail page. Defaults to the live app. */
+  baseHref?: string;
 }
 
 /**
@@ -14,7 +16,7 @@ interface LogoNodeProps {
  * Absolutely positioned based on force simulation coordinates.
  * CSS transitions provide smooth movement when positions update.
  */
-export default function LogoNode({ node }: LogoNodeProps) {
+export default function LogoNode({ node, baseHref = "/company" }: LogoNodeProps) {
   const { x = 0, y = 0, id, logoUrl, radius } = node;
 
   // Diameter is 2× radius
@@ -44,7 +46,7 @@ export default function LogoNode({ node }: LogoNodeProps) {
 
   return (
     <Link
-      href={`/company/${encodeURIComponent(id)}`}
+      href={`${baseHref}/${encodeURIComponent(id)}`}
       className="absolute transition-all duration-300 ease-out transform-gpu -translate-x-1/2 -translate-y-1/2 flex items-center justify-center shadow-lg hover:scale-110 hover:z-50 hover:brightness-110 active:scale-95 cursor-pointer"
       onMouseEnter={(e) => {
         e.currentTarget.style.boxShadow = `0 20px 60px rgba(${whiteGlow}, 0.6)`;

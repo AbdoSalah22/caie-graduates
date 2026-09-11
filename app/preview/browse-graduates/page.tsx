@@ -2,7 +2,7 @@
 
 import { useMemo, useState } from "react";
 import Link from "next/link";
-import { useDemoData } from "@/lib/demoData";
+import { usePreviewData } from "@/lib/previewData";
 import SiteFooter from "@/components/SiteFooter";
 
 type Filters = {
@@ -22,8 +22,8 @@ const EMPTY_FILTERS: Filters = {
 /** Sentinel value for filtering graduates with no company assigned */
 const UNASSIGNED_COMPANY = "__unassigned__";
 
-export default function DemoBrowseGraduatesPage() {
-  const { submissions, companiesMap, loading, error } = useDemoData();
+export default function PreviewBrowseGraduatesPage() {
+  const { submissions, companiesMap, loading, error } = usePreviewData();
 
   const [draft, setDraft] = useState<Filters>(EMPTY_FILTERS);
   const [applied, setApplied] = useState<Filters>(EMPTY_FILTERS);
@@ -92,12 +92,9 @@ export default function DemoBrowseGraduatesPage() {
     <div className="page-shell px-4 py-4 sm:px-6 sm:py-6 lg:px-8 lg:py-8">
       <div className="page-container max-w-5xl">
         <div className="page-header mb-6">
-          <Link href="/demo" className="ghost-link mb-4">
-            ← Back to Demo Board
+          <Link href="/preview" className="ghost-link mb-4">
+            ← Back to Preview Board
           </Link>
-          <div className="mb-2 inline-flex items-center gap-2 rounded-full border border-amber-400/40 bg-amber-500/15 px-3 py-1 text-[11px] font-semibold uppercase tracking-wide text-amber-200">
-            Static demo
-          </div>
           <h1 className="page-title">Browse Graduates</h1>
           <p className="page-subtitle">
             Use the filters to find graduates by name, company, class, or
@@ -108,16 +105,16 @@ export default function DemoBrowseGraduatesPage() {
         {loading ? (
           <div className="surface-card p-10 text-center">
             <div className="mx-auto mb-4 h-10 w-10 animate-spin rounded-full border-2 border-cyan-400/30 border-t-cyan-400"></div>
-            <p className="text-slate-400">Loading demo data...</p>
+            <p className="text-slate-400">Loading preview data...</p>
           </div>
         ) : error ? (
           <div className="surface-card p-8 text-center">
             <p className="text-red-300 mb-4">
-              Demo data unavailable — run{" "}
-              <code className="text-cyan-300">npm run export-demo</code>.
+              Preview data unavailable — run{" "}
+              <code className="text-cyan-300">npm run export-preview</code>.
             </p>
-            <Link href="/demo" className="primary-btn px-4 py-2">
-              Back to Demo Board
+            <Link href="/preview" className="primary-btn px-4 py-2">
+              Back to Preview Board
             </Link>
           </div>
         ) : (

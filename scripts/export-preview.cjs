@@ -1,31 +1,31 @@
 /**
- * Export Firestore data into static JSON files for the /demo route.
+ * Export Firestore data into static JSON files for the /preview route.
  *
  * Reads companies, submissions and settings straight from Firestore via the
  * public REST API (no Admin SDK, no new dependencies) and writes:
  *
- *   public/demo-data/companies.json
- *   public/demo-data/submissions.json
- *   public/demo-data/settings.json
- *   public/demo-data/meta.json
- *   public/demo-data/logos/*          (company logos downloaded as local files)
+ *   public/preview-data/companies.json
+ *   public/preview-data/submissions.json
+ *   public/preview-data/settings.json
+ *   public/preview-data/meta.json
+ *   public/preview-data/logos/*          (company logos downloaded as local files)
  *
  * Logo URLs are rewritten to the local files so the exported JSON never ships
  * external logo.dev / Firebase Storage tokens.
  *
  * Usage:
- *   npm run export-demo
+ *   npm run export-preview
  */
 
 const fs = require("fs");
 const path = require("path");
 
 const ROOT = path.resolve(__dirname, "..");
-const OUT_DIR = path.join(ROOT, "public", "demo-data");
+const OUT_DIR = path.join(ROOT, "public", "preview-data");
 const LOGO_DIR = path.join(OUT_DIR, "logos");
 
 const PAGE_SIZE = 300;
-const MAX_DOCS = Number(process.env.DEMO_EXPORT_MAX || 3000);
+const MAX_DOCS = Number(process.env.PREVIEW_EXPORT_MAX || 3000);
 
 // ── Env ────────────────────────────────────────────────────────────────────
 
@@ -130,7 +130,7 @@ async function fetchCollection(collectionName) {
 
     if (docs.length >= MAX_DOCS) {
       console.warn(
-        `⚠  Stopped at ${MAX_DOCS} docs for "${collectionName}" (DEMO_EXPORT_MAX=${MAX_DOCS}).`,
+        `⚠  Stopped at ${MAX_DOCS} docs for "${collectionName}" (PREVIEW_EXPORT_MAX=${MAX_DOCS}).`,
       );
       break;
     }
@@ -169,6 +169,30 @@ function extFromUrl(url) {
   return match ? `.${match[1].toLowerCase()}` : "";
 }
 
+/**
+ * File-system-safe basename for a company logo. Every character that isn't
+ * alphanumeric or [._-] becomes "_", so names like "3D|Diagnostix" export as
+ * "3D_Diagnostix.webp" and never ship URL-unsafe bytes (%20, %7C, parens...).
+ */
+function sanitizeLogoName(value) {
+  return value.replace(/[^a-zA-Z0-9._-]/g, "_");
+}
+
+// Guard against two company names sanitizing to the same filename.
+const usedLogoNames = new Map();
+
+function uniqueLogoName(baseName, ext) {
+  if (!usedLogoNames.has(baseName + ext)) {
+    usedLogoNames.set(baseName + ext, baseName);
+    return baseName + ext;
+  }
+  let suffix = 2;
+  while (usedLogoNames.has(`${baseName}-${suffix}${ext}`)) suffix++;
+  const fileName = `${baseName}-${suffix}${ext}`;
+  usedLogoNames.set(fileName, baseName);
+  return fileName;
+}
+
 async function downloadLogo(companyId, logoUrl) {
   const res = await fetch(logoUrl);
   if (!res.ok) throw new Error(`HTTP ${res.status}`);
@@ -185,9 +209,9 @@ async function downloadLogo(companyId, logoUrl) {
   if (!ext) ext = extFromUrl(logoUrl);
   if (!ext) ext = ".png";
 
-  const fileName = encodeURIComponent(companyId) + ext;
+  const fileName = uniqueLogoName(sanitizeLogoName(companyId), ext);
   fs.writeFileSync(path.join(LOGO_DIR, fileName), buffer);
-  return `/demo-data/logos/${fileName}`;
+  return `/preview-data/logos/${fileName}`;
 }
 
 function snakeToCamel(value) {
@@ -201,16 +225,20 @@ function isRelativeLogoUrl(url) {
   return typeof url === "string" && /^\/[^/]/.test(url) && !/^\/\//.test(url);
 }
 
-/** Copy a root-relative public file (e.g. /logos/alinma.png) into demo-data/logos. */
+/** Copy a root-relative public file (e.g. /logos/alinma.png) into preview-data/logos. */
 function copyLocalLogo(relativeUrl) {
   const relPath = relativeUrl.replace(/^\//, "");
   const source = path.join(ROOT, "public", relPath);
   if (!fs.existsSync(source) || !fs.statSync(source).isFile()) {
     throw new Error(`local file not found: ${relativeUrl}`);
   }
-  const fileName = path.basename(relPath);
+  const parsed = path.parse(path.basename(relPath));
+  const fileName = uniqueLogoName(
+    sanitizeLogoName(parsed.name),
+    parsed.ext.toLowerCase() || ".png",
+  );
   fs.copyFileSync(source, path.join(LOGO_DIR, fileName));
-  return `/demo-data/logos/${fileName}`;
+  return `/preview-data/logos/${fileName}`;
 }
 
 async function exportCompanies() {
@@ -254,7 +282,7 @@ async function exportCompanies() {
 // ── Main ───────────────────────────────────────────────────────────────────
 
 async function main() {
-  console.log(`Exporting demo data from project "${projectId}"...`);
+  console.log(`Exporting preview data from project "${projectId}"...`);
   fs.mkdirSync(LOGO_DIR, { recursive: true });
 
   // Start with a clean logo folder so removals never linger in the snapshot.
@@ -305,10 +333,10 @@ async function main() {
       path.join(OUT_DIR, fileName),
       JSON.stringify(payload, null, 2) + "\n",
     );
-    console.log(`✓ wrote public/demo-data/${fileName}`);
+    console.log(`✓ wrote public/preview-data/${fileName}`);
   }
 
-  console.log("\nDone! /demo now serves the exported snapshot.");
+  console.log("\nDone! /preview now serves the exported snapshot.");
 }
 
 main().catch((err) => {

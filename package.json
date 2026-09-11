@@ -7,7 +7,7 @@
     "build": "next build",
     "start": "next start",
     "lint": "next lint",
-    "export-demo": "node scripts/export-demo.cjs"
+    "export-preview": "node scripts/export-preview.cjs"
   },
   "dependencies": {
     "react": "^18.3.1",

@@ -2,16 +2,16 @@ import { useEffect, useMemo, useState } from "react";
 import { MIN_BUBBLE_SIZE, MAX_BUBBLE_SIZE } from "@/lib/constants";
 
 /**
- * Static demo data layer.
+ * Static preview data layer.
  *
- * The /demo route is fully static: it loads companies, submissions and
- * settings from local JSON files exported by `npm run export-demo` (see
- * scripts/export-demo.cjs). Nothing here touches Firebase or Firestore —
+ * The /preview route is fully static: it loads companies, submissions and
+ * settings from local JSON files exported by `npm run export-preview` (see
+ * scripts/export-preview.cjs). Nothing here touches Firebase or Firestore —
  * no auth, no listeners, no network requests except fetching the JSON
  * files (and the logged-in-free page images) straight from the static bundle.
  */
 
-export type DemoCompany = {
+export type PreviewCompany = {
   id: string;
   count?: number;
   logoUrl?: string;
@@ -19,7 +19,7 @@ export type DemoCompany = {
   website?: string;
 };
 
-export type DemoSubmission = {
+export type PreviewSubmission = {
   id: string;
   name: string;
   title: string;
@@ -31,18 +31,18 @@ export type DemoSubmission = {
   timestamp?: string | null;
 };
 
-export type DemoHomeSettings = {
+export type PreviewHomeSettings = {
   showProfileButton?: boolean;
 };
 
-export type DemoData = {
+export type PreviewData = {
   exportedAt: string | null;
-  companies: DemoCompany[];
-  submissions: DemoSubmission[];
-  settings: DemoHomeSettings;
+  companies: PreviewCompany[];
+  submissions: PreviewSubmission[];
+  settings: PreviewHomeSettings;
 };
 
-export type DemoNode = {
+export type PreviewNode = {
   id: string;
   count: number;
   radius: number;
@@ -56,28 +56,28 @@ async function fetchJson<T>(url: string, fallback: T): Promise<T> {
     if (!res.ok) throw new Error(`HTTP ${res.status}`);
     return (await res.json()) as T;
   } catch (err) {
-    console.error(`Failed to load demo data from ${url}`, err);
+    console.error(`Failed to load preview data from ${url}`, err);
     return fallback;
   }
 }
 
-let cachedPromise: Promise<DemoData> | null = null;
+let cachedPromise: Promise<PreviewData> | null = null;
 
-/** Load the exported demo snapshot (fetched once, shared across pages). */
-export function loadDemoData(): Promise<DemoData> {
+/** Load the exported preview snapshot (fetched once, shared across pages). */
+export function loadPreviewData(): Promise<PreviewData> {
   if (!cachedPromise) {
     cachedPromise = Promise.all([
-      fetchJson<{ companies: DemoCompany[] }>("/demo-data/companies.json", {
+      fetchJson<{ companies: PreviewCompany[] }>("/preview-data/companies.json", {
         companies: [],
       }),
-      fetchJson<{ submissions: DemoSubmission[] }>(
-        "/demo-data/submissions.json",
+      fetchJson<{ submissions: PreviewSubmission[] }>(
+        "/preview-data/submissions.json",
         { submissions: [] },
       ),
-      fetchJson<{ settings: DemoHomeSettings }>("/demo-data/settings.json", {
+      fetchJson<{ settings: PreviewHomeSettings }>("/preview-data/settings.json", {
         settings: {},
       }),
-      fetchJson<{ exportedAt?: string }>("/demo-data/meta.json", {}),
+      fetchJson<{ exportedAt?: string }>("/preview-data/meta.json", {}),
     ]).then(([companiesPayload, submissionsPayload, settingsPayload, meta]) => ({
       exportedAt: meta?.exportedAt ?? null,
       companies: companiesPayload.companies ?? [],
@@ -89,7 +89,7 @@ export function loadDemoData(): Promise<DemoData> {
 }
 
 /**
- * Bubble sizing, mirroring lib/boardStore so the demo board renders exactly
+ * Bubble sizing, mirroring lib/boardStore so the preview board renders exactly
  * like the live one (logarithmic scaling between MIN and MAX diameter).
  */
 function computeRadius(count: number, maxCount: number): number {
@@ -100,9 +100,9 @@ function computeRadius(count: number, maxCount: number): number {
   return diameter / 2;
 }
 
-export function computeDemoNodes(companies: DemoCompany[]): DemoNode[] {
+export function computePreviewNodes(companies: PreviewCompany[]): PreviewNode[] {
   let maxCount = 1;
-  const raw: Omit<DemoNode, "radius">[] = [];
+  const raw: Omit<PreviewNode, "radius">[] = [];
 
   for (const company of companies) {
     const count = company.count || 0;
@@ -126,19 +126,19 @@ export function computeDemoNodes(companies: DemoCompany[]): DemoNode[] {
     .sort((a, b) => b.count - a.count);
 }
 
-export function useDemoData() {
-  const [data, setData] = useState<DemoData | null>(null);
+export function usePreviewData() {
+  const [data, setData] = useState<PreviewData | null>(null);
   const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
     let active = true;
-    loadDemoData()
+    loadPreviewData()
       .then((loaded) => {
         if (active) setData(loaded);
       })
       .catch((err) => {
         if (active) {
-          setError(err instanceof Error ? err.message : "Failed to load demo data");
+          setError(err instanceof Error ? err.message : "Failed to load preview data");
         }
       });
     return () => {
@@ -147,14 +147,14 @@ export function useDemoData() {
   }, []);
 
   const companiesMap = useMemo(() => {
-    const map: Record<string, DemoCompany> = {};
+    const map: Record<string, PreviewCompany> = {};
     (data?.companies ?? []).forEach((company) => {
       map[company.id] = company;
     });
     return map;
   }, [data]);
 
-  const nodes = useMemo(() => computeDemoNodes(data?.companies ?? []), [data]);
+  const nodes = useMemo(() => computePreviewNodes(data?.companies ?? []), [data]);
 
   return {
     data,

@@ -8,6 +8,8 @@ import LogoNode from "./LogoNode";
 interface ArtboardProps {
   nodes: Node[];
   view?: BoardView;
+  /** Route prefix for per-company pages (e.g. the preview board links to /preview/company). */
+  companyBaseHref?: string;
 }
 
 /**
@@ -17,7 +19,11 @@ interface ArtboardProps {
  * Nodes are sized proportionally to employee count (bubble grid).
  * Supports zoom (mouse wheel / pinch) and pan (drag / touch drag).
  */
-export default function Artboard({ nodes, view = "bubble" }: ArtboardProps) {
+export default function Artboard({
+  nodes,
+  view = "bubble",
+  companyBaseHref,
+}: ArtboardProps) {
   const containerRef = useRef<HTMLDivElement>(null);
   const [dimensions, setDimensions] = useState({ width: 0, height: 0 });
   const [isDragging, setIsDragging] = useState(false);
@@ -240,7 +246,7 @@ export default function Artboard({ nodes, view = "bubble" }: ArtboardProps) {
         }}
       >
         {simulatedNodes.map((node) => (
-          <LogoNode key={node.id} node={node} />
+          <LogoNode key={node.id} node={node} baseHref={companyBaseHref} />
         ))}
       </div>
 

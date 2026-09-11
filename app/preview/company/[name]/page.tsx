@@ -1,18 +1,18 @@
 "use client";
 
 import { useMemo } from "react";
-import { useDemoData } from "@/lib/demoData";
+import { usePreviewData } from "@/lib/previewData";
 import Link from "next/link";
 import { useParams } from "next/navigation";
 import SiteFooter from "@/components/SiteFooter";
 
-export default function DemoCompanyPage() {
+export default function PreviewCompanyPage() {
   const params = useParams();
   const companyName = params?.name
     ? decodeURIComponent(params.name as string)
     : "";
 
-  const { companiesMap, submissions, loading, error } = useDemoData();
+  const { companiesMap, submissions, loading, error } = usePreviewData();
 
   const companyDoc = companiesMap[companyName];
 
@@ -37,7 +37,7 @@ export default function DemoCompanyPage() {
       <div className="page-shell flex min-h-screen items-center justify-center">
         <div className="surface-card-soft px-8 py-10 text-center">
           <div className="mx-auto mb-4 h-14 w-14 animate-spin rounded-full border-2 border-cyan-400/30 border-t-cyan-400"></div>
-          <p className="text-slate-300">Loading demo data...</p>
+          <p className="text-slate-300">Loading preview data...</p>
         </div>
       </div>
     );
@@ -47,12 +47,9 @@ export default function DemoCompanyPage() {
     <div className="page-shell px-4 py-4 sm:px-6 sm:py-6 lg:px-8 lg:py-8">
       <div className="page-container">
         <div className="page-header mb-8 animate-rise">
-          <Link href="/demo" className="ghost-link mb-4">
-            ← Back to Demo Board
+          <Link href="/preview" className="ghost-link mb-4">
+            ← Back to Preview Board
           </Link>
-          <div className="mb-2 inline-flex items-center gap-2 rounded-full border border-amber-400/40 bg-amber-500/15 px-3 py-1 text-[11px] font-semibold uppercase tracking-wide text-amber-200">
-            Static demo
-          </div>
           <div className="flex items-center gap-4">
             <div
               className="flex h-16 w-16 items-center justify-center rounded-lg border border-slate-700/70 p-2 shadow-sm"
@@ -81,8 +78,8 @@ export default function DemoCompanyPage() {
         {pageError && !loading ? (
           <div className="surface-card p-8 text-center">
             <p className="mb-4 text-lg font-semibold text-white">{pageError}</p>
-            <Link href="/demo" className="primary-btn px-4 py-2">
-              Back to Demo Board
+            <Link href="/preview" className="primary-btn px-4 py-2">
+              Back to Preview Board
             </Link>
           </div>
         ) : (
