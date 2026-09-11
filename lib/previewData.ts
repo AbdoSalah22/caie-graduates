@@ -1,5 +1,10 @@
 import { useEffect, useMemo, useState } from "react";
-import { MIN_BUBBLE_SIZE, MAX_BUBBLE_SIZE } from "@/lib/constants";
+import {
+  MIN_BUBBLE_SIZE,
+  MAX_BUBBLE_SIZE,
+  BASE_PATH,
+  companySlug,
+} from "@/lib/constants";
 
 /**
  * Static preview data layer.
@@ -46,6 +51,7 @@ export type PreviewNode = {
   id: string;
   count: number;
   radius: number;
+  slug?: string; // URL/file-safe segment for the /preview/company/[name] route
   logoUrl?: string;
   squareColor?: string;
 };
@@ -63,24 +69,37 @@ async function fetchJson<T>(url: string, fallback: T): Promise<T> {
 
 let cachedPromise: Promise<PreviewData> | null = null;
 
+/** Prefix site-root asset paths (like /preview-data/...) with the basePath. */
+function prefixAssetPath(url?: string): string | undefined {
+  return url && url.startsWith("/") ? `${BASE_PATH}${url}` : url;
+}
+
 /** Load the exported preview snapshot (fetched once, shared across pages). */
 export function loadPreviewData(): Promise<PreviewData> {
   if (!cachedPromise) {
     cachedPromise = Promise.all([
-      fetchJson<{ companies: PreviewCompany[] }>("/preview-data/companies.json", {
-        companies: [],
-      }),
+      fetchJson<{ companies: PreviewCompany[] }>(
+        `${BASE_PATH}/preview-data/companies.json`,
+        { companies: [] },
+      ),
       fetchJson<{ submissions: PreviewSubmission[] }>(
-        "/preview-data/submissions.json",
+        `${BASE_PATH}/preview-data/submissions.json`,
         { submissions: [] },
       ),
-      fetchJson<{ settings: PreviewHomeSettings }>("/preview-data/settings.json", {
-        settings: {},
-      }),
-      fetchJson<{ exportedAt?: string }>("/preview-data/meta.json", {}),
+      fetchJson<{ settings: PreviewHomeSettings }>(
+        `${BASE_PATH}/preview-data/settings.json`,
+        { settings: {} },
+      ),
+      fetchJson<{ exportedAt?: string }>(
+        `${BASE_PATH}/preview-data/meta.json`,
+        {},
+      ),
     ]).then(([companiesPayload, submissionsPayload, settingsPayload, meta]) => ({
       exportedAt: meta?.exportedAt ?? null,
-      companies: companiesPayload.companies ?? [],
+      companies: (companiesPayload.companies ?? []).map((company) => ({
+        ...company,
+        logoUrl: prefixAssetPath(company.logoUrl),
+      })),
       submissions: submissionsPayload.submissions ?? [],
       settings: settingsPayload.settings ?? {},
     }));
@@ -89,8 +108,8 @@ export function loadPreviewData(): Promise<PreviewData> {
 }
 
 /**
- * Bubble sizing, mirroring lib/boardStore so the preview board renders exactly
- * like the live one (logarithmic scaling between MIN and MAX diameter).
+ * Bubble sizing, mirroring the live board so the preview renders exactly like
+ * the live one (logarithmic scaling between MIN and MAX diameter).
  */
 function computeRadius(count: number, maxCount: number): number {
   if (maxCount <= 1) return MIN_BUBBLE_SIZE / 2;
@@ -111,6 +130,7 @@ export function computePreviewNodes(companies: PreviewCompany[]): PreviewNode[] 
     raw.push({
       id: company.id,
       count,
+      slug: companySlug(company.id),
       logoUrl: company.logoUrl,
       squareColor: company.squareColor,
     });

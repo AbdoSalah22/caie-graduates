@@ -1,6 +1,7 @@
 "use client";
 
 import { useState } from "react";
+import Link from "next/link";
 import { usePreviewData } from "@/lib/previewData";
 import Artboard from "@/components/Artboard";
 import SiteFooter from "@/components/SiteFooter";
@@ -39,9 +40,9 @@ export default function PreviewHome() {
             to generate the snapshot under{" "}
             <code className="text-cyan-300">public/preview-data/</code>.
           </p>
-          <a href="/" className="primary-btn px-4 py-2">
-            Back to Live Board
-          </a>
+          <Link href="/preview/browse-graduates" className="primary-btn px-4 py-2">
+            Browse Graduates
+          </Link>
         </div>
       </div>
     );

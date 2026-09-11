@@ -46,7 +46,7 @@ export default function LogoNode({ node, baseHref = "/company" }: LogoNodeProps)
 
   return (
     <Link
-      href={`${baseHref}/${encodeURIComponent(id)}`}
+      href={`${baseHref}/${node.slug ?? encodeURIComponent(id)}`}
       className="absolute transition-all duration-300 ease-out transform-gpu -translate-x-1/2 -translate-y-1/2 flex items-center justify-center shadow-lg hover:scale-110 hover:z-50 hover:brightness-110 active:scale-95 cursor-pointer"
       onMouseEnter={(e) => {
         e.currentTarget.style.boxShadow = `0 20px 60px rgba(${whiteGlow}, 0.6)`;

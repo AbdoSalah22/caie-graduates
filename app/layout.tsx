@@ -1,6 +1,7 @@
 import type { Metadata, Viewport } from "next";
 import { Inter } from "next/font/google";
 import ErrorBoundary from "@/components/ErrorBoundary";
+import { BASE_PATH } from "@/lib/constants";
 import "./globals.css";
 
 const inter = Inter({ subsets: ["latin"] });
@@ -17,7 +18,7 @@ export const metadata: Metadata = {
   description:
     "A dynamic artboard displaying company logos sized by graduate count",
   icons: {
-    icon: "/favicon.svg",
+    icon: `${BASE_PATH}/favicon.svg`,
   },
 };
 

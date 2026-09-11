@@ -1,12 +1,10 @@
 /** @type {import('next').NextConfig} */
 const nextConfig = {
+    output: 'export',
+    basePath: '/caie-graduates',
+    trailingSlash: true,
     images: {
-        remotePatterns: [
-            {
-                protocol: 'https',
-                hostname: 'firebasestorage.googleapis.com',
-            },
-        ],
+        unoptimized: true,
     },
 }
 
