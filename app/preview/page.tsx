@@ -1,8 +1,10 @@
 "use client";
 
+import { useState } from "react";
 import { usePreviewData } from "@/lib/previewData";
 import Artboard from "@/components/Artboard";
 import SiteFooter from "@/components/SiteFooter";
+import { BoardView } from "@/hooks/useForceGraph";
 
 /**
  * Static preview board — read-only snapshot of the live board served from
@@ -11,7 +13,8 @@ import SiteFooter from "@/components/SiteFooter";
  * static /preview/company pages, so graduates render from the local JSON too.
  */
 export default function PreviewHome() {
-  const { nodes, submissions, loading, error, exportedAt } = usePreviewData();
+  const { nodes, submissions, loading, error } = usePreviewData();
+  const [view, setView] = useState<BoardView>("bubble");
 
   if (loading) {
     return (
@@ -51,7 +54,7 @@ export default function PreviewHome() {
 
   return (
     <main className="page-shell relative overflow-hidden">
-      <Artboard nodes={nodes} view="grid" companyBaseHref="/preview/company" />
+      <Artboard nodes={nodes} view={view} companyBaseHref="/preview/company" />
 
       {/* Title overlay */}
       <div className="fixed top-3 left-3 z-10 rounded-2xl border border-slate-800/70 bg-slate-950/50 px-3 py-2 backdrop-blur sm:top-8 sm:left-8 sm:px-4 sm:py-3">
@@ -65,11 +68,12 @@ export default function PreviewHome() {
           {nodes.length} {nodes.length === 1 ? "company" : "companies"} •{" "}
           {graduateCount} graduates
         </p>
-        {exportedAt ? (
-          <p className="mt-2 text-[10px] text-slate-500">
-            Snapshot: {new Date(exportedAt).toLocaleString()}
-          </p>
-        ) : null}
+        <button
+          onClick={() => setView((v) => (v === "bubble" ? "grid" : "bubble"))}
+          className="mt-3 inline-flex rounded-full border border-slate-700/70 bg-slate-800/80 px-3 py-1.5 text-[11px] font-semibold text-slate-100 shadow-[0_10px_24px_rgba(2,8,23,0.18)] transition-all duration-300 hover:bg-slate-700"
+        >
+          {view === "bubble" ? "Grid View" : "Bubble View"}
+        </button>
       </div>
 
       {/* Bottom-left credit */}
