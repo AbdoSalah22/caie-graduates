@@ -1,8 +1,8 @@
-name: Deploy to GitHub Pages
+name: Deploy preview to GitHub Pages
 
 on:
   push:
-    branches: [main]
+    branches: [preview]
   workflow_dispatch:
 
 permissions:
@@ -30,10 +30,13 @@ jobs:
       - name: Install dependencies
         run: npm ci
 
+      - name: Export preview data
+        run: npm run export-preview
+
       - name: Build static export
         run: npm run build
 
-      - name: Upload artifact
+      - name: Upload Pages artifact
         uses: actions/upload-pages-artifact@v3
         with:
           path: ./out
