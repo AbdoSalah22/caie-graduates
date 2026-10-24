@@ -252,6 +252,16 @@
       "timestamp": "2026-07-24T14:22:36.456Z"
     },
     {
+      "id": "CHLG47164iWF0vy7YiauT6nvDZS2",
+      "name": "Yousef Elsherif",
+      "title": "Senior Operations Manager",
+      "linkedin": "https://www.linkedin.com/in/yousefelsherif",
+      "company": "Orange Business",
+      "graduationClass": "2020",
+      "userId": "CHLG47164iWF0vy7YiauT6nvDZS2",
+      "timestamp": "2026-09-18T20:50:52.153Z"
+    },
+    {
       "id": "Dc6dMHkIJnhIjudWpwwXxo3CBFx2",
       "name": "Ahmed Tarek",
       "title": "Software Engineer",
@@ -655,7 +665,7 @@
     {
       "id": "gCMQCRMHfKe4ioPm0AM7S5IaV1o1",
       "name": "Omar Diab",
-      "title": "AI Software Engineer",
+      "title": "AI Engineer",
       "linkedin": "https://www.linkedin.com/in/omarmdiab/",
       "company": "3D|Diagnostix",
       "graduationClass": "2025",
@@ -721,6 +731,16 @@
       "graduationClass": "2022",
       "userId": "hQ2FuzzZHhfsiVZLTXcxZ0KuZNs1",
       "timestamp": "2026-08-19T08:37:33.662Z"
+    },
+    {
+      "id": "hW8dPZHSamMFHwgtvBwetqpzS5T2",
+      "name": "Muhammad Ashraf",
+      "title": "Build and Infrastructure (DevOps) Engineer",
+      "linkedin": "https://www.linkedin.com/in/muhammad-ashraf-9a83a4214",
+      "company": "Siemens",
+      "graduationClass": "2023",
+      "userId": "hW8dPZHSamMFHwgtvBwetqpzS5T2",
+      "timestamp": "2026-10-15T16:44:57.369Z"
     },
     {
       "id": "hv2FUmtuYyjyIxvx2Ldz",
